@@ -57,11 +57,3 @@
             │   ├── _product-detail.scss       # 商品詳情、規格切換、數量選擇器
             │   └── _checkout.scss             # 結帳流程與訂單摘要
             └── main.scss                      # 🚀 唯一全域入口 (僅包含 @import 順序)
-
-## 📂 系統架構圖 (Architecture)
-本專案採用前後端完全分離的架構設計：
-· 前端 (React + Vite) 透過 Axios 發送 HTTP 請求至後端 API。
-· 後端 (Pure PHP) 提供 RESTful API，並透過 JWT 進行身分驗證。
-· MySQL 資料庫 儲存所有會員、商品、訂單與行銷數據。
-撰寫了 `Middleware/Auth.php`，攔截所有 `/api/private/*` 的路由，解析 JWT 並將用戶 ID 注入 Request 中，確保 API 安全性。
-*(在此貼上您的攔截器程式碼片段)*
