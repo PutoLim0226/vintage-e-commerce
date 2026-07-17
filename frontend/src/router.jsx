@@ -40,7 +40,10 @@ const router = createBrowserRouter([
       { path: '*', element: <NotFoundPage /> },
     ],
   },
-])
+], {
+  basename: import.meta.env.DEV ? '/' : '/vintage-e-commerce',
+})
 
 export default router
+
 
