@@ -1,16 +1,65 @@
-# React + Vite
+# 🎨 復古刻痕 - 前端系統 (Frontend SPA)
+> **Version: 1.0.0**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+本目錄包含「復古刻痕」電商的前端 Single Page Application (SPA)。全站採用 React 18 搭配 Vite 構建，最大特色為**零 UI 庫依賴**，以底層 SCSS 與設計標記 (Design Tokens) 進行排版與精緻的微交互動畫。
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🛠 技術與架構亮點
 
-## React Compiler
+- **路由管理**：採用 `react-router-dom` v6/7，支援巢狀路由 (Nested Routes)，並實作 `<ProtectedRoute />` 確保會員結帳與中心安全。
+- **樣式系統**：手寫 SCSS，採 **7-1 模組化設計模式** (Abstracts, Base, Components, Layout, Pages)，具備極佳的可維護性。
+- **狀態管理**：
+  - `AuthContext`：管理使用者 JWT 登入狀態、角色權限（普通用戶、管理員）。
+  - `CartContext`：跨頁面即時同步購物車、客製化側欄購物車抽屜。
+- **網路請求攔截器 (Token Rotation)**：
+  - Axios 自定義攔截器，在 token 到期 (401) 時自動調用 `/api/auth/refresh`。
+  - 自動同步存取憑證，無感為用戶續期。
+  - 對未登入用戶自動注入 `X-Cart-Token`，實現遊客購物車。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 📂 7-1 SCSS 樣式架構
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+我們在 `src/assets/scss` 下實作了模組化樣式設計：
+- **`abstracts/`**：定義顏色色票 (Gold, Copper, Dark)、字體、間距 token 與 RWD 斷點 Mixins。
+- **`base/`**：自製 CSS Reset 與排版字體定義。
+- **`components/`**：按鈕 (`_button.scss`)、卡片 (`_product-card.scss`)、抽屜 (`_modal.scss`) 等高重用性元件。
+- **`layout/`**：網格系統、Header 與 Footer 佈局。
+- **`pages/`**：首頁、商品詳情、結帳與後台管理專屬樣式。
+
+### 樣式編譯命令
+```bash
+rtk npx sass src/assets/scss/main.scss src/assets/css/main.css --style=compressed
+```
+
+---
+
+## 🖥 頁面功能清單
+
+1. **首頁 (`HomePage.jsx`)**：精緻 Hero 區塊、新品推薦、促銷推廣與品牌理念。
+2. **商品列表 (`ProductListPage.jsx`)**：具備左側分類篩選、價格排序、即時關鍵字搜尋與分頁載入。
+3. **商品詳情 (`ProductDetailPage.jsx`)**：規格選擇器（顏色/尺寸）、動態庫存校驗、主圖/多視角輪播。
+4. **購物車頁面 (`CartPage.jsx`)**：數量增減控制、移除品項、即時計算金額小計與免運額度提示。
+5. **結帳與訂單 (`CheckoutPage.jsx` & `OrdersPage.jsx`)**：折價券套用、寄送資訊表單、歷史訂單追蹤與付款狀態。
+6. **後台管理 (`/admin/*`)**：
+   - 獨立的 Layout 佈局與管理員角色守衛 (Admin Guard)。
+   - 總覽儀表板：營收、訂單、商品統計。
+   - 商品管理：支持商品列表、即時上/下架狀態切換。
+   - 訂單管理：快速篩選與狀態（待確認、備貨中、已出貨等）修改。
+
+---
+
+## 📦 本地開發
+
+```bash
+# 安裝前端依賴
+rtk npm install
+
+# 啟動 Vite 開發伺服器 (包含後端 /api 反向代理設定)
+rtk npm run dev
+
+# 專案打包
+rtk npm run build
+```
+*開發伺服器啟動後，將代理 API 請求至 `http://127.0.0.1:8000`，解決跨網域 CORS 問題。*

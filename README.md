@@ -1,16 +1,7 @@
 # 🧥 復古刻痕 - 全端電商平台 (Vintage E-Commerce)
+> **Version: 1.0.0**
 
 這是一個從零到完整上線的電商作品，專注於復古服飾零售。**本專案最大的特色在於「零 UI 框架依賴」** — 所有視覺效果皆由底層 SCSS 手刻打造，前端採用 React + Vite，後端使用純 PHP 自製 RESTful API，完整實現電商進銷存、金物流串接與會員行銷系統。
-
----
-
-## ✨ 專案核心功能
-
-- **產品與目錄管理**：支援多層級分類、獨立 SKU 規格設定（顏色／尺寸／獨立庫存），並具備商品詳情與批量圖片上傳。
-- **金流與結帳系統**：串接第三方支付 (藍新/綠界)，支援信用卡分期、虛擬帳號 ATM、超商代碼，並實作 Webhook 自動對帳機制。
-- **物流與配送**：串聯第三方物流 API（宅配／超商店到店），具備動態運費計算與訂單狀態即時追蹤（出貨中、配送中、已送達）。
-- **客戶與行銷工具**：涵蓋會員分級制度、消費紅利點數累積、折價券發放，並實作動態 SEO Meta 標籤優化。
-- **數據分析後台**：自定義 SQL 報表，即時監控營收、熱銷商品排行與訂單轉換率。
 
 ---
 
@@ -20,40 +11,69 @@
 | :--- | :--- | :--- |
 | **前端框架** | React 18 + Vite | 極速開發與 HMR 熱更新 |
 | **樣式系統** | **自製 SCSS (7-1 模組化架構)** | **✅ 零 UI 框架依賴** (無 Bootstrap / Tailwind / MUI) |
-| **前端狀態管理** | React Context + useReducer | 自製輕量購物車與用戶狀態 |
-| **後端 API** | Pure PHP 8.2 (RESTful API) | **✅ 無框架** (自製 Router 與 Middleware) |
+| **前端狀態管理** | React Context | 自製輕量購物車與用戶狀態管理 |
+| **後端 API** | Pure PHP 8.3 (RESTful API) | **✅ 無框架** (自製 Router 與 Middleware) |
 | **資料庫** | MySQL 8.0 | 使用 PDO 預處理語句防範 SQL 注入 |
-| **身分驗證** | JWT (Access Token + Refresh Token) | 雙 Token 機制提升安全性 |
-| **部署** | 前端 (Vercel / Netlify) / 後端 (Apache / Nginx) | |
+| **身分驗證** | JWT (Access Token + Refresh Token) | 雙 Token 輪轉機制提升安全性 |
+| **部署自動化** | GitHub Actions + GitHub Pages | 前端靜態資源自動打包部署 |
 
 ---
 
-## 📂 前端 SCSS 目錄結構 (作品集精髓)
+## 🚀 快速啟動與開發指南
 
-所有樣式統一收納於 `src/assets/scss`，並嚴格採用 **7-1 模組化設計模式**，確保專案在大規模開發下仍具備極佳的可維護性：
+本專案將前後端分離開發，請確保您的開發環境已安裝 **PHP 8.3** 與 **Node.js 20+**。
+
+### 後端啟動 (Backend)
+1. 進入後端目錄並複製環境變數設定：
+   ```bash
+   cd backend
+   cp .env.example .env
+   ```
+2. 設定資料庫連線資訊與 JWT Secret，並執行資料庫導入：
+   ```bash
+   # 導入 schema.sql 與 seeds.sql
+   rtk mysql -u USER -p DATABASE < backend/database/schema.sql
+   rtk mysql -u USER -p DATABASE < backend/database/seeds.sql
+   ```
+3. 啟動 PHP 開發伺服器：
+   ```bash
+   rtk bash backend/start-dev.sh
+   ```
+   *伺服器將在 `http://127.0.0.1:8000` 運行。*
+
+### 前端啟動 (Frontend)
+1. 進入前端目錄並安裝依賴：
+   ```bash
+   cd frontend
+   rtk npm install
+   ```
+2. 啟動前端開發伺服器：
+   ```bash
+   rtk npm run dev
+   ```
+   *前端將在 `http://localhost:5173` 運行。*
+
+---
+
+## 📂 專案目錄結構
 
 ```text
-/frontend
-└── /src
-    └── /assets
-        └── /scss
-            ├── /abstracts                     # 抽象工具層
-            │   ├── _variables.scss            # 品牌色票、字體基數、間距系統 (Design Tokens)
-            │   ├── _functions.scss            # 自動計算 rem / 顏色運算函數
-            │   └── _mixins.scss               # 自製 RWD 斷點 (@include mobile) 與 Flex/CSS 語法糖
-            ├── /base                          # 基礎重置層
-            │   ├── _reset.scss                # 自製 CSS Reset (清除預設樣式)
-            │   └── _typography.scss           # 標題、段落、連結全域設定
-            ├── /components                    # 獨立元件層 (顆粒化)
-            │   ├── _button.scss               # 主要/次要/危險按鈕變化
-            │   ├── _product-card.scss         # 商品卡片 (含 hover 動畫)
-            │   └── _modal.scss                # 彈窗與購物車抽屜
-            ├── /layout                        # 整體佈局層
-            │   ├── _header.scss               # 導航列與搜尋框
-            │   ├── _footer.scss               # 頁尾資訊
-            │   └── _grid-system.scss          # 自製響應式網格系統 (Flexbox / CSS Grid)
-            ├── /pages                         # 頁面專屬層
-            │   ├── _home.scss                 # 首頁與主視覺 (Hero)
-            │   ├── _product-detail.scss       # 商品詳情、規格切換、數量選擇器
-            │   └── _checkout.scss             # 結帳流程與訂單摘要
-            └── main.scss                      # 🚀 唯一全域入口 (僅包含 @import 順序)
+vintage-e-commerce/
+├── backend/                   # PHP 自製後端 API 系統
+│   ├── database/              # SQL 綱要與種子資料
+│   ├── public/                # 單一入口 index.php
+│   └── src/                   # 核心 MVC 控制器、路由與中間件
+├── frontend/                  # React + Vite 前端 SPA
+│   ├── src/
+│   │   ├── api/               # Axios 客戶端與攔截器設定
+│   │   ├── assets/scss/       # 自製 7-1 SCSS 樣式系統
+│   │   ├── components/        # 共用元件 (Header, Footer, Layout 等)
+│   │   └── pages/             # 頁面元件 (首頁, 商品, 購物車, 會員, 後台)
+└── README.md                  # 專案總說明文件 (本檔案)
+```
+
+---
+
+## 📄 各模組詳細說明
+- **前端詳情與樣式系統**：請參閱 [frontend/README.md](file:///home/puto/project/vintage-e-commerce/frontend/README.md)
+- **後端架構與 API 接口**：請參閱 [backend/README.md](file:///home/puto/project/vintage-e-commerce/backend/README.md)
