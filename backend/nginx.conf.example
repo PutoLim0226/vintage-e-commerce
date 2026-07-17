@@ -1,0 +1,62 @@
+# ============================================================
+# Nginx 設定：復古刻痕電商
+# 放置位置：/etc/nginx/sites-available/vintage-ec
+# 啟用：sudo ln -s /etc/nginx/sites-available/vintage-ec /etc/nginx/sites-enabled/
+# ============================================================
+
+# 前端（React + Vite build）
+server {
+    listen 80;
+    server_name localhost;
+
+    # 前端靜態資源
+    root /home/puto/project/vintage-e-commerce/frontend/dist;
+    index index.html;
+
+    # React Router（SPA fallback）
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # 靜態資源快取
+    location ~* \.(js|css|png|jpg|gif|svg|ico|woff2?)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # ── 後端 API proxy ──────────────────────────────────
+    location /api/ {
+        # 若後端 PHP 用 php-fpm 同一台機器
+        fastcgi_pass   unix:/run/php/php8.3-fpm.sock;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME /home/puto/project/vintage-e-commerce/backend/public/index.php;
+        fastcgi_param  REQUEST_URI     $request_uri;
+        include        fastcgi_params;
+    }
+}
+
+# ─── 或者前後端分離：後端獨立 Port（開發用）───────────────
+
+server {
+    listen 8000;
+    server_name localhost;
+
+    root /home/puto/project/vintage-e-commerce/backend/public;
+    index index.php;
+
+    location / {
+        try_files $uri /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   unix:/run/php/php8.3-fpm.sock;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+    # 不允許訪問非 public 目錄
+    location ~ /\.(env|git) {
+        deny all;
+    }
+}

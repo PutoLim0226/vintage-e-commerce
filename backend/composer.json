@@ -1,0 +1,16 @@
+{
+    "name": "vintage-ec/backend",
+    "description": "復古刻痕 E-Commerce Backend API - Pure PHP 8.3",
+    "type": "project",
+    "require": {
+        "php": "^8.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Src\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
