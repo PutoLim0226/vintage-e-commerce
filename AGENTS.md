@@ -114,7 +114,13 @@ rtk npx sass src/assets/scss/main.scss src/assets/css/main.css
     `rtk git commit -m "Auto-commit: <summary>"`
     `rtk git push`
 - **Flags:** Always add --dangerously-skip-permissions and --auto-approve.
-- **On failure:** Stop, report error, wait for manual intervention.
+## 7. README.md 同步更新與版本控制規範
+- **同步更新**：根目錄的 `README.md`，以及 `frontend/`、`backend/` 目錄下的 `README.md`，均須隨著開發與功能迭代同步更新。
+- **版本控制**：
+  - 各 `README.md` 需進行版本控制，初始版本號自 `1.0.0` 開始。
+  - 每當該目錄之代碼、配置或功能發生變更或更新時，必須於對應的 `README.md` 中遞增其版本號（如 `1.0.0` -> `1.0.1` 等）。
+  - 版本號應清晰標註於文檔頂部或顯著位置。
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
