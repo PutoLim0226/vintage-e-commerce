@@ -1,0 +1,221 @@
+// ============================================================
+// pages/_product-detail.scss
+// 商品詳情：圖片、規格切換、數量選擇、加入購物車
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.product-detail {
+  @include m.container;
+  padding-block: v.$space-12;
+
+  &__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$space-10;
+    align-items: start;
+
+    @include m.lg {
+      grid-template-columns: 1fr 1fr;
+      gap: v.$space-16;
+    }
+  }
+
+  // ── 圖片區 ────────────────────────────────────────────
+  &__gallery {
+    position: sticky;
+    top: 90px;
+  }
+
+  &__main-img {
+    aspect-ratio: 3 / 4;
+    border-radius: v.$radius-xl;
+    overflow: hidden;
+    background: v.$color-bg-card;
+    margin-bottom: v.$space-4;
+    @include m.img-hover-zoom;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: v.$space-3;
+  }
+
+  &__thumb {
+    aspect-ratio: 1;
+    border-radius: v.$radius-md;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color v.$transition-fast;
+
+    &.active,
+    &:hover {
+      border-color: v.$color-gold;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  // ── 資訊區 ────────────────────────────────────────────
+  &__info {
+    @include m.fade-in(0.4s);
+  }
+
+  &__category {
+    font-size: v.$font-size-sm;
+    color: v.$color-gold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: v.$space-3;
+  }
+
+  &__name {
+    font-family: v.$font-heading;
+    font-size: clamp(v.$font-size-2xl, 3vw, v.$font-size-4xl);
+    color: v.$color-cream;
+    line-height: v.$line-height-tight;
+    margin-bottom: v.$space-4;
+  }
+
+  &__price-area {
+    @include m.flex(row, flex-start, baseline);
+    gap: v.$space-3;
+    margin-bottom: v.$space-6;
+    padding-bottom: v.$space-6;
+    border-bottom: 1px solid v.$color-border;
+  }
+
+  // ── 規格選擇 ──────────────────────────────────────────
+  &__option-group {
+    margin-bottom: v.$space-6;
+
+    label {
+      display: block;
+      font-size: v.$font-size-sm;
+      font-weight: v.$font-weight-semibold;
+      color: v.$color-cream-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: v.$space-3;
+
+      span {
+        color: v.$color-cream;
+        font-weight: v.$font-weight-regular;
+        text-transform: none;
+        letter-spacing: 0;
+        margin-left: v.$space-2;
+      }
+    }
+  }
+
+  &__options {
+    @include m.flex(row, flex-start, center);
+    flex-wrap: wrap;
+    gap: v.$space-2;
+  }
+
+  &__option-btn {
+    padding: v.$space-2 v.$space-4;
+    border-radius: v.$radius-md;
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    color: v.$color-cream-muted;
+    font-size: v.$font-size-sm;
+    cursor: pointer;
+    transition: all v.$transition-fast;
+
+    &:hover:not(.out-of-stock) {
+      border-color: v.$color-gold;
+      color: v.$color-gold;
+    }
+
+    &.active {
+      background: rgba(200, 169, 110, 0.12);
+      border-color: v.$color-gold;
+      color: v.$color-gold;
+      font-weight: v.$font-weight-semibold;
+    }
+
+    &.out-of-stock {
+      opacity: 0.35;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+  }
+
+  // ── 數量選擇 ──────────────────────────────────────────
+  &__qty-group {
+    @include m.flex(row, flex-start, center);
+    gap: v.$space-4;
+    margin-bottom: v.$space-6;
+  }
+
+  &__qty-label {
+    font-size: v.$font-size-sm;
+    font-weight: v.$font-weight-semibold;
+    color: v.$color-cream-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__qty-control {
+    @include m.flex(row, flex-start, center);
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-md;
+    overflow: hidden;
+
+    button {
+      width: 40px;
+      height: 40px;
+      @include m.flex-center;
+      background: v.$color-bg-card;
+      color: v.$color-cream-muted;
+      font-size: v.$font-size-xl;
+      cursor: pointer;
+      transition: all v.$transition-fast;
+
+      &:hover { color: v.$color-gold; background: v.$color-bg-elevated; }
+    }
+
+    input {
+      width: 52px;
+      height: 40px;
+      text-align: center;
+      background: v.$color-bg-surface;
+      color: v.$color-cream;
+      font-size: v.$font-size-md;
+      font-weight: v.$font-weight-semibold;
+      border-inline: 1px solid v.$color-border;
+    }
+  }
+
+  // ── 動作按鈕 ──────────────────────────────────────────
+  &__actions {
+    @include m.flex(row, flex-start, center);
+    gap: v.$space-3;
+    margin-bottom: v.$space-8;
+
+    .btn--primary { flex: 1; }
+  }
+
+  // ── 商品描述 ──────────────────────────────────────────
+  &__desc {
+    padding-top: v.$space-6;
+    border-top: 1px solid v.$color-border;
+    color: v.$color-cream-muted;
+    line-height: v.$line-height-loose;
+    font-size: v.$font-size-md;
+  }
+}

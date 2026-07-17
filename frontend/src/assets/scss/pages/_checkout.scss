@@ -1,0 +1,248 @@
+// ============================================================
+// pages/_checkout.scss
+// 結帳流程：步驟條、表單、訂單摘要
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.checkout {
+  @include m.container;
+  padding-block: v.$space-12;
+
+  &__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$space-8;
+    align-items: start;
+
+    @include m.lg {
+      grid-template-columns: 1fr 380px;
+    }
+  }
+
+  // ── 步驟進度條 ────────────────────────────────────────
+  &__steps {
+    @include m.flex(row, center, center);
+    gap: 0;
+    margin-bottom: v.$space-10;
+    overflow-x: auto;
+    padding-bottom: v.$space-2;
+  }
+
+  &__step {
+    @include m.flex(row, flex-start, center);
+    gap: v.$space-2;
+    flex-shrink: 0;
+
+    &-num {
+      width: 32px;
+      height: 32px;
+      border-radius: v.$radius-full;
+      background: v.$color-bg-card;
+      border: 1px solid v.$color-border;
+      @include m.flex-center;
+      font-size: v.$font-size-sm;
+      font-weight: v.$font-weight-bold;
+      color: v.$color-cream-faint;
+      transition: all v.$transition-base;
+    }
+
+    &-label {
+      font-size: v.$font-size-sm;
+      color: v.$color-cream-faint;
+      white-space: nowrap;
+      transition: color v.$transition-base;
+    }
+
+    &-line {
+      width: 48px;
+      height: 1px;
+      background: v.$color-border;
+      margin-inline: v.$space-2;
+      transition: background v.$transition-base;
+
+      @include m.mobile { width: 24px; }
+    }
+
+    &.active {
+      .checkout__step-num {
+        background: v.$color-gold;
+        border-color: v.$color-gold;
+        color: v.$color-bg-dark;
+      }
+      .checkout__step-label { color: v.$color-gold; font-weight: v.$font-weight-semibold; }
+    }
+
+    &.done {
+      .checkout__step-num {
+        background: rgba(200, 169, 110, 0.15);
+        border-color: v.$color-gold;
+        color: v.$color-gold;
+      }
+      .checkout__step-line { background: v.$color-gold; }
+    }
+  }
+
+  // ── 表單區塊 ──────────────────────────────────────────
+  &__form-section {
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-xl;
+    padding: v.$space-8;
+    margin-bottom: v.$space-6;
+
+    h3 {
+      font-family: v.$font-heading;
+      font-size: v.$font-size-xl;
+      color: v.$color-cream;
+      margin-bottom: v.$space-6;
+      padding-bottom: v.$space-4;
+      border-bottom: 1px solid v.$color-border;
+    }
+  }
+
+  // ── 表單元素 ──────────────────────────────────────────
+  &__form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$space-4;
+    margin-bottom: v.$space-4;
+
+    @include m.md { grid-template-columns: 1fr 1fr; }
+
+    &--full { grid-template-columns: 1fr !important; }
+  }
+
+  &__field {
+    @include m.flex(column, flex-start, flex-start);
+    gap: v.$space-2;
+
+    label {
+      font-size: v.$font-size-sm;
+      font-weight: v.$font-weight-medium;
+      color: v.$color-cream-muted;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: v.$space-3 v.$space-4;
+      background: v.$color-bg-surface;
+      border: 1px solid v.$color-border;
+      border-radius: v.$radius-md;
+      color: v.$color-cream;
+      font-size: v.$font-size-md;
+      transition: border-color v.$transition-fast, box-shadow v.$transition-fast;
+
+      &:focus {
+        border-color: v.$color-gold;
+        box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.12);
+      }
+
+      &::placeholder { color: v.$color-cream-faint; }
+    }
+
+    select {
+      option { background: v.$color-bg-surface; }
+    }
+
+    &--error {
+      input { border-color: v.$color-error; }
+
+      .error-msg {
+        font-size: v.$font-size-xs;
+        color: v.$color-error;
+      }
+    }
+  }
+
+  // ── 訂單摘要 ──────────────────────────────────────────
+  &__summary {
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-xl;
+    padding: v.$space-6;
+    position: sticky;
+    top: 90px;
+  }
+
+  &__summary-title {
+    font-family: v.$font-heading;
+    font-size: v.$font-size-xl;
+    color: v.$color-cream;
+    margin-bottom: v.$space-6;
+    padding-bottom: v.$space-4;
+    border-bottom: 1px solid v.$color-border;
+  }
+
+  &__summary-items {
+    @include m.flex(column, flex-start, stretch);
+    gap: v.$space-4;
+    margin-bottom: v.$space-6;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  &__summary-item {
+    @include m.flex(row, flex-start, center);
+    gap: v.$space-3;
+
+    img {
+      width: 56px;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      border-radius: v.$radius-sm;
+      flex-shrink: 0;
+    }
+
+    &-info { flex: 1; min-width: 0; }
+    &-name { font-size: v.$font-size-sm; color: v.$color-cream; @include m.truncate(2); }
+    &-meta { font-size: v.$font-size-xs; color: v.$color-cream-faint; margin-top: 2px; }
+    &-price { font-weight: v.$font-weight-semibold; color: v.$color-gold; white-space: nowrap; }
+  }
+
+  &__summary-rows {
+    @include m.flex(column, flex-start, stretch);
+    gap: v.$space-3;
+    padding-block: v.$space-4;
+    border-block: 1px solid v.$color-border;
+    margin-bottom: v.$space-4;
+  }
+
+  &__summary-row {
+    @include m.flex-between;
+    font-size: v.$font-size-sm;
+    color: v.$color-cream-muted;
+
+    &--total {
+      font-family: v.$font-heading;
+      font-size: v.$font-size-xl;
+      color: v.$color-cream;
+      padding-top: v.$space-4;
+
+      span:last-child { color: v.$color-gold; }
+    }
+
+    &--discount { color: v.$color-success; }
+  }
+
+  &__coupon {
+    @include m.flex(row, flex-start, center);
+    gap: v.$space-2;
+    margin-bottom: v.$space-6;
+
+    input {
+      flex: 1;
+      padding: v.$space-3 v.$space-4;
+      background: v.$color-bg-surface;
+      border: 1px solid v.$color-border;
+      border-radius: v.$radius-md;
+      color: v.$color-cream;
+      font-size: v.$font-size-sm;
+      transition: border-color v.$transition-fast;
+
+      &:focus { border-color: v.$color-gold; }
+      &::placeholder { color: v.$color-cream-faint; }
+    }
+  }
+}

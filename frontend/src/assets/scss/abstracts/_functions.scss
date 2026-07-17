@@ -1,0 +1,27 @@
+// ============================================================
+// abstracts/_functions.scss
+// 自動計算 rem、顏色運算
+// ============================================================
+@use 'variables' as v;
+
+/// px → rem 轉換
+/// @param {Number} $px - pixel 值（不含單位）
+/// @return {String} rem 值
+@function rem($px) {
+  @return math.div($px, 16) * 1rem;
+}
+
+/// 加深顏色（不依賴 darken，相容新版 Sass）
+@function shade($color, $amount) {
+  @return mix(black, $color, $amount);
+}
+
+/// 加亮顏色
+@function tint($color, $amount) {
+  @return mix(white, $color, $amount);
+}
+
+/// 透明度快捷
+@function alpha($color, $opacity) {
+  @return rgba($color, $opacity);
+}

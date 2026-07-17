@@ -1,0 +1,268 @@
+// ============================================================
+// pages/_home.scss
+// 首頁：Hero、特色分類、精選商品、品牌故事
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+// ── Hero ─────────────────────────────────────────────────
+.hero {
+  position: relative;
+  min-height: 92dvh;
+  @include m.flex-center;
+  overflow: hidden;
+  background: v.$color-bg-dark;
+
+  // 背景粒子紋理
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(200, 169, 110, 0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(168, 50, 50, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  &__bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.18;
+  }
+
+  &__content {
+    position: relative;
+    z-index: v.$z-base;
+    @include m.container;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$space-12;
+    align-items: center;
+
+    @include m.lg {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__text {
+    @include m.fade-in(0.7s);
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: v.$space-3;
+    font-size: v.$font-size-sm;
+    font-weight: v.$font-weight-semibold;
+    color: v.$color-gold;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: v.$space-6;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: v.$color-gold;
+    }
+  }
+
+  &__title {
+    font-size: clamp(v.$font-size-3xl, 5vw, v.$font-size-5xl);
+    line-height: 1.1;
+    margin-bottom: v.$space-6;
+    color: v.$color-cream;
+
+    em {
+      font-style: normal;
+      color: v.$color-gold;
+      display: block;
+    }
+  }
+
+  &__desc {
+    font-size: v.$font-size-lg;
+    color: v.$color-cream-muted;
+    line-height: v.$line-height-loose;
+    max-width: 480px;
+    margin-bottom: v.$space-10;
+  }
+
+  &__cta {
+    @include m.flex(row, flex-start, center);
+    gap: v.$space-4;
+    flex-wrap: wrap;
+  }
+
+  &__image-wrap {
+    position: relative;
+    @include m.fade-in(0.7s, 0.2s);
+
+    @include m.mobile { display: none; }
+
+    img {
+      width: 100%;
+      max-height: 70dvh;
+      object-fit: cover;
+      border-radius: v.$radius-xl;
+      box-shadow: v.$shadow-lg;
+    }
+
+    // 裝飾框
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -12px;
+      border: 1px solid v.$color-border;
+      border-radius: calc(v.$radius-xl + 12px);
+      pointer-events: none;
+    }
+
+    // 金色角落裝飾
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      right: -16px;
+      width: 80px;
+      height: 80px;
+      border-bottom: 2px solid v.$color-gold;
+      border-right: 2px solid v.$color-gold;
+      border-radius: 0 0 v.$radius-lg 0;
+    }
+  }
+
+  // 底部滾動提示
+  &__scroll-hint {
+    position: absolute;
+    bottom: v.$space-8;
+    left: 50%;
+    transform: translateX(-50%);
+    @include m.flex-center;
+    flex-direction: column;
+    gap: v.$space-2;
+    color: v.$color-cream-faint;
+    font-size: v.$font-size-xs;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: bounce 2s ease infinite;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(8px); }
+}
+
+// ── 分類展示 ─────────────────────────────────────────────
+.home-categories {
+  @include m.section;
+  background: v.$color-bg-surface;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: v.$space-4;
+
+    @include m.md {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__card {
+    position: relative;
+    aspect-ratio: 2 / 3;
+    border-radius: v.$radius-lg;
+    overflow: hidden;
+    cursor: pointer;
+    @include m.img-hover-zoom;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(18, 13, 7, 0.8) 0%, transparent 50%);
+    }
+  }
+
+  &__card-text {
+    position: absolute;
+    bottom: v.$space-4;
+    left: v.$space-4;
+    z-index: v.$z-base;
+
+    h3 {
+      font-family: v.$font-heading;
+      font-size: v.$font-size-xl;
+      color: v.$color-cream;
+      margin-bottom: v.$space-1;
+    }
+
+    span {
+      font-size: v.$font-size-sm;
+      color: v.$color-gold;
+    }
+  }
+}
+
+// ── 精選商品 ─────────────────────────────────────────────
+.home-featured {
+  @include m.section;
+}
+
+// ── 品牌故事 ─────────────────────────────────────────────
+.home-story {
+  @include m.section;
+  background: v.$color-bg-surface;
+
+  &__inner {
+    @include m.container;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$space-12;
+    align-items: center;
+
+    @include m.lg { grid-template-columns: 1fr 1fr; }
+  }
+
+  &__img {
+    border-radius: v.$radius-xl;
+    overflow: hidden;
+    @include m.img-hover-zoom;
+    aspect-ratio: 4 / 3;
+  }
+
+  &__text {
+    .section-title { text-align: left; }
+    .section-subtitle { text-align: left; margin-inline: 0; }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: v.$space-6;
+    margin-top: v.$space-8;
+    padding-top: v.$space-8;
+    border-top: 1px solid v.$color-border;
+  }
+
+  &__stat {
+    text-align: center;
+
+    strong {
+      display: block;
+      font-family: v.$font-heading;
+      font-size: v.$font-size-3xl;
+      color: v.$color-gold;
+    }
+
+    span {
+      font-size: v.$font-size-sm;
+      color: v.$color-cream-faint;
+    }
+  }
+}

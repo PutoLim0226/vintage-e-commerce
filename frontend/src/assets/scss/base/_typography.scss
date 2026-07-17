@@ -1,0 +1,120 @@
+// ============================================================
+// base/_typography.scss
+// 標題、段落、連結全域設定
+// ============================================================
+@use '../abstracts/variables' as v;
+
+// ── 標題（Playfair Display）─────────────────────────────
+h1, h2, h3, h4, h5, h6 {
+  font-family: v.$font-heading;
+  font-weight: v.$font-weight-bold;
+  line-height: v.$line-height-tight;
+  color: v.$color-cream;
+  letter-spacing: 0.02em;
+}
+
+h1 { font-size: v.$font-size-4xl; }
+h2 { font-size: v.$font-size-3xl; }
+h3 { font-size: v.$font-size-2xl; }
+h4 { font-size: v.$font-size-xl; }
+h5 { font-size: v.$font-size-lg; }
+h6 { font-size: v.$font-size-md; }
+
+// ── 段落 ─────────────────────────────────────────────────
+p {
+  line-height: v.$line-height-loose;
+  color: v.$color-cream-muted;
+
+  & + p {
+    margin-top: v.$space-4;
+  }
+}
+
+// ── 連結 ─────────────────────────────────────────────────
+a {
+  color: v.$color-gold;
+  transition: color v.$transition-fast;
+
+  &:hover {
+    color: v.$color-gold-light;
+  }
+}
+
+// ── 強調 ─────────────────────────────────────────────────
+strong, b { font-weight: v.$font-weight-bold; color: v.$color-cream; }
+em, i      { font-style: italic; }
+small      { font-size: v.$font-size-sm; color: v.$color-cream-muted; }
+
+// ── 通用 section 標題模式 ─────────────────────────────────
+.section-title {
+  font-family: v.$font-heading;
+  font-size: v.$font-size-3xl;
+  color: v.$color-cream;
+  text-align: center;
+  margin-bottom: v.$space-4;
+
+  span {
+    color: v.$color-gold;
+  }
+}
+
+.section-subtitle {
+  font-size: v.$font-size-lg;
+  color: v.$color-cream-muted;
+  text-align: center;
+  max-width: 560px;
+  margin-inline: auto;
+  margin-bottom: v.$space-12;
+  line-height: v.$line-height-loose;
+}
+
+// ── 價格文字 ──────────────────────────────────────────────
+.price {
+  font-family: v.$font-heading;
+  font-weight: v.$font-weight-bold;
+  color: v.$color-gold;
+  font-size: v.$font-size-xl;
+
+  &--compare {
+    font-size: v.$font-size-sm;
+    color: v.$color-cream-faint;
+    text-decoration: line-through;
+    font-family: v.$font-body;
+    font-weight: v.$font-weight-regular;
+    margin-left: v.$space-2;
+  }
+
+  &--large {
+    font-size: v.$font-size-3xl;
+  }
+}
+
+// ── badge / tag ───────────────────────────────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: v.$space-1 v.$space-3;
+  border-radius: v.$radius-full;
+  font-size: v.$font-size-xs;
+  font-weight: v.$font-weight-semibold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  &--gold {
+    background: rgba(200, 169, 110, 0.15);
+    color: v.$color-gold;
+    border: 1px solid rgba(200, 169, 110, 0.3);
+  }
+
+  &--sale {
+    background: rgba(168, 50, 50, 0.2);
+    color: #e88;
+    border: 1px solid rgba(168, 50, 50, 0.35);
+  }
+
+  &--new {
+    background: rgba(76, 175, 114, 0.15);
+    color: v.$color-success;
+    border: 1px solid rgba(76, 175, 114, 0.3);
+  }
+}

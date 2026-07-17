@@ -1,0 +1,36 @@
+// ============================================================
+// main.scss — 🚀 唯一全域入口（僅包含 @use 順序）
+//
+// 7-1 模組化架構：
+//   abstracts  → 工具層（無輸出 CSS）
+//   base       → 全域重置
+//   components → 可複用元件
+//   layout     → 頁面骨架
+//   pages      → 各頁面專屬
+// ============================================================
+// Note: Google Fonts 在 index.html <head> 中載入，避免 Sass @import 衝突
+
+@use 'sass:math';
+
+// ── 1. Abstracts（純工具，無 CSS 輸出）──────────────────
+@use 'abstracts/variables' as v;
+@use 'abstracts/mixins'    as m;
+
+// ── 2. Base ──────────────────────────────────────────────
+@use 'base/reset';
+@use 'base/typography';
+
+// ── 3. Components ─────────────────────────────────────────
+@use 'components/button';
+@use 'components/product-card';
+@use 'components/modal';
+
+// ── 4. Layout ────────────────────────────────────────────
+@use 'layout/grid-system';
+@use 'layout/header';
+@use 'layout/footer';
+
+// ── 5. Pages ─────────────────────────────────────────────
+@use 'pages/home';
+@use 'pages/product-detail';
+@use 'pages/checkout';

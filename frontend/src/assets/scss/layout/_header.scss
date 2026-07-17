@@ -1,0 +1,209 @@
+// ============================================================
+// layout/_header.scss
+// 導航列、搜尋框、購物車圖示
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: v.$z-sticky;
+  background: rgba(18, 13, 7, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid v.$color-border;
+  transition: background v.$transition-base;
+
+  &__inner {
+    @include m.container;
+    @include m.flex-between;
+    height: 72px;
+    gap: v.$space-6;
+  }
+
+  // ── 品牌 Logo ────────────────────────────────────────
+  &__logo {
+    font-family: v.$font-heading;
+    font-size: v.$font-size-2xl;
+    font-weight: v.$font-weight-bold;
+    color: v.$color-cream;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    transition: color v.$transition-fast;
+
+    span { color: v.$color-gold; }
+
+    &:hover { color: v.$color-gold; }
+  }
+
+  // ── 主導航 ────────────────────────────────────────────
+  &__nav {
+    display: none;
+
+    @include m.lg {
+      display: flex;
+      align-items: center;
+      gap: v.$space-8;
+    }
+  }
+
+  &__nav-link {
+    font-size: v.$font-size-sm;
+    font-weight: v.$font-weight-medium;
+    color: v.$color-cream-muted;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    transition: all v.$transition-fast;
+
+    &:hover,
+    &.active {
+      color: v.$color-cream;
+      border-bottom-color: v.$color-gold;
+    }
+  }
+
+  // ── 右側動作區 ────────────────────────────────────────
+  &__actions {
+    @include m.flex(row, flex-end, center);
+    gap: v.$space-2;
+    flex-shrink: 0;
+  }
+
+  &__icon-btn {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: v.$radius-md;
+    @include m.flex-center;
+    color: v.$color-cream-muted;
+    font-size: v.$font-size-xl;
+    transition: all v.$transition-fast;
+    border: 1px solid transparent;
+    cursor: pointer;
+
+    &:hover {
+      color: v.$color-cream;
+      background: v.$color-bg-card;
+      border-color: v.$color-border;
+    }
+  }
+
+  // 購物車數量徽章
+  &__cart-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: v.$radius-full;
+    background: v.$color-gold;
+    color: v.$color-bg-dark;
+    font-size: 10px;
+    font-weight: v.$font-weight-bold;
+    @include m.flex-center;
+    padding-inline: 4px;
+  }
+
+  // ── 搜尋框 ────────────────────────────────────────────
+  &__search {
+    display: none;
+
+    @include m.lg {
+      display: flex;
+      align-items: center;
+      background: v.$color-bg-card;
+      border: 1px solid v.$color-border;
+      border-radius: v.$radius-full;
+      padding: v.$space-2 v.$space-4;
+      gap: v.$space-2;
+      transition: border-color v.$transition-fast, box-shadow v.$transition-fast;
+      min-width: 220px;
+
+      &:focus-within {
+        border-color: v.$color-gold;
+        box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.12);
+      }
+
+      input {
+        background: none;
+        color: v.$color-cream;
+        font-size: v.$font-size-sm;
+        width: 100%;
+
+        &::placeholder { color: v.$color-cream-faint; }
+      }
+
+      svg { color: v.$color-cream-faint; flex-shrink: 0; }
+    }
+  }
+
+  // ── 漢堡選單（手機）─────────────────────────────────
+  &__hamburger {
+    @include m.lg { display: none; }
+    @include m.flex-center;
+    flex-direction: column;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    border-radius: v.$radius-md;
+    border: 1px solid transparent;
+    transition: all v.$transition-fast;
+
+    span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: v.$color-cream-muted;
+      border-radius: v.$radius-full;
+      transition: all v.$transition-fast;
+    }
+
+    &:hover {
+      background: v.$color-bg-card;
+      border-color: v.$color-border;
+
+      span { background: v.$color-cream; }
+    }
+
+    &.open {
+      span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+      span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+      span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    }
+  }
+}
+
+// ── 手機側選單 ────────────────────────────────────────────
+.mobile-menu {
+  @include m.lg { display: none; }
+
+  position: fixed;
+  inset: 0;
+  top: 72px;
+  z-index: v.$z-sticky;
+  background: v.$color-bg-surface;
+  border-top: 1px solid v.$color-border;
+  padding: v.$space-6;
+  animation: slideDown v.$transition-base both;
+
+  &__link {
+    display: block;
+    padding: v.$space-4 0;
+    font-size: v.$font-size-xl;
+    font-family: v.$font-heading;
+    color: v.$color-cream-muted;
+    border-bottom: 1px solid v.$color-border;
+    transition: color v.$transition-fast;
+
+    &:hover { color: v.$color-gold; }
+  }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

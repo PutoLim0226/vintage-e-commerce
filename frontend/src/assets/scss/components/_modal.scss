@@ -1,0 +1,202 @@
+// ============================================================
+// components/_modal.scss
+// 彈窗 + 購物車抽屜
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+// ── 通用遮罩 ─────────────────────────────────────────────
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: v.$z-overlay;
+  animation: overlayIn v.$transition-base both;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// ── 彈窗 ─────────────────────────────────────────────────
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: v.$z-modal;
+  @include m.flex-center;
+  padding: v.$space-6;
+
+  &__box {
+    background: v.$color-bg-surface;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-xl;
+    box-shadow: v.$shadow-lg;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90dvh;
+    overflow-y: auto;
+    animation: modalIn v.$transition-base both;
+    padding: v.$space-8;
+  }
+
+  &__header {
+    @include m.flex-between;
+    margin-bottom: v.$space-6;
+  }
+
+  &__title {
+    font-family: v.$font-heading;
+    font-size: v.$font-size-2xl;
+    color: v.$color-cream;
+  }
+
+  &__close {
+    width: 36px;
+    height: 36px;
+    border-radius: v.$radius-full;
+    @include m.flex-center;
+    color: v.$color-cream-muted;
+    font-size: v.$font-size-xl;
+    transition: all v.$transition-fast;
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    cursor: pointer;
+
+    &:hover {
+      color: v.$color-cream;
+      border-color: v.$color-border-hover;
+    }
+  }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+// ── 購物車抽屜 ────────────────────────────────────────────
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: v.$z-modal;
+  width: min(420px, 100vw);
+  background: v.$color-bg-surface;
+  border-left: 1px solid v.$color-border;
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  animation: drawerIn v.$transition-slow both;
+
+  &__header {
+    @include m.flex-between;
+    padding: v.$space-6;
+    border-bottom: 1px solid v.$color-border;
+  }
+
+  &__title {
+    font-family: v.$font-heading;
+    font-size: v.$font-size-2xl;
+    color: v.$color-cream;
+  }
+
+  &__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: v.$space-4;
+  }
+
+  &__empty {
+    @include m.flex-center;
+    flex-direction: column;
+    gap: v.$space-4;
+    height: 100%;
+    color: v.$color-cream-faint;
+    font-size: v.$font-size-lg;
+    text-align: center;
+  }
+
+  &__footer {
+    padding: v.$space-6;
+    border-top: 1px solid v.$color-border;
+  }
+
+  &__total-row {
+    @include m.flex-between;
+    font-family: v.$font-heading;
+    font-size: v.$font-size-xl;
+    color: v.$color-cream;
+    margin-bottom: v.$space-4;
+
+    span:last-child { color: v.$color-gold; }
+  }
+}
+
+@keyframes drawerIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+// ── 購物車品項 ────────────────────────────────────────────
+.cart-item {
+  @include m.flex(row, flex-start, flex-start);
+  gap: v.$space-4;
+  padding: v.$space-4;
+  border-radius: v.$radius-md;
+  border-bottom: 1px solid v.$color-border;
+
+  &:last-child { border-bottom: none; }
+
+  &__img {
+    width: 80px;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: v.$radius-sm;
+    flex-shrink: 0;
+    background: v.$color-bg-card;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-weight: v.$font-weight-medium;
+    color: v.$color-cream;
+    @include m.truncate(2);
+    margin-bottom: v.$space-1;
+  }
+
+  &__meta {
+    font-size: v.$font-size-sm;
+    color: v.$color-cream-faint;
+    margin-bottom: v.$space-3;
+  }
+
+  &__qty-row {
+    @include m.flex(row, flex-start, center);
+    gap: v.$space-3;
+  }
+
+  &__qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: v.$radius-sm;
+    background: v.$color-bg-elevated;
+    border: 1px solid v.$color-border;
+    color: v.$color-cream;
+    font-size: v.$font-size-lg;
+    @include m.flex-center;
+    transition: all v.$transition-fast;
+    cursor: pointer;
+
+    &:hover { border-color: v.$color-gold; color: v.$color-gold; }
+  }
+
+  &__qty { font-weight: v.$font-weight-medium; min-width: 20px; text-align: center; }
+  &__remove { color: v.$color-cream-faint; cursor: pointer; transition: color v.$transition-fast; &:hover { color: v.$color-error; } }
+}

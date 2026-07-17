@@ -1,0 +1,149 @@
+// ============================================================
+// components/_button.scss
+// 主要 / 次要 / 危險 / 文字 按鈕變化
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: v.$space-2;
+  padding: v.$space-3 v.$space-8;
+  border-radius: v.$radius-md;
+  font-family: v.$font-body;
+  font-size: v.$font-size-sm;
+  font-weight: v.$font-weight-semibold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    background v.$transition-fast,
+    color v.$transition-fast,
+    box-shadow v.$transition-base,
+    transform v.$transition-fast,
+    border-color v.$transition-fast;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  // ── 主要按鈕（金色）─────────────────────────────────
+  &--primary {
+    background: linear-gradient(135deg, v.$color-gold, v.$color-gold-dark);
+    color: v.$color-bg-dark;
+    border: 1px solid v.$color-gold;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, v.$color-gold-light, v.$color-gold);
+      box-shadow: 0 4px 20px rgba(200, 169, 110, 0.4);
+      transform: translateY(-2px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+  }
+
+  // ── 次要按鈕（外框）─────────────────────────────────
+  &--outline {
+    background: transparent;
+    color: v.$color-gold;
+    border: 1px solid v.$color-gold;
+
+    &:hover:not(:disabled) {
+      background: rgba(200, 169, 110, 0.1);
+      box-shadow: 0 0 16px rgba(200, 169, 110, 0.2);
+      transform: translateY(-2px);
+    }
+  }
+
+  // ── 暗色按鈕（次要動作）─────────────────────────────
+  &--ghost {
+    background: v.$color-bg-card;
+    color: v.$color-cream-muted;
+    border: 1px solid v.$color-border;
+
+    &:hover:not(:disabled) {
+      background: v.$color-bg-elevated;
+      color: v.$color-cream;
+      border-color: v.$color-border-hover;
+    }
+  }
+
+  // ── 危險按鈕 ─────────────────────────────────────────
+  &--danger {
+    background: rgba(168, 50, 50, 0.15);
+    color: #e88;
+    border: 1px solid rgba(168, 50, 50, 0.4);
+
+    &:hover:not(:disabled) {
+      background: rgba(168, 50, 50, 0.3);
+      box-shadow: 0 4px 16px rgba(168, 50, 50, 0.25);
+      transform: translateY(-2px);
+    }
+  }
+
+  // ── 文字按鈕 ─────────────────────────────────────────
+  &--text {
+    background: transparent;
+    color: v.$color-gold;
+    border: none;
+    padding-inline: v.$space-2;
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: v.$font-size-md;
+    font-weight: v.$font-weight-medium;
+
+    &:hover:not(:disabled) {
+      color: v.$color-gold-light;
+      text-decoration: underline;
+    }
+  }
+
+  // ── 尺寸 ─────────────────────────────────────────────
+  &--sm {
+    padding: v.$space-2 v.$space-5;
+    font-size: v.$font-size-xs;
+  }
+
+  &--lg {
+    padding: v.$space-4 v.$space-10;
+    font-size: v.$font-size-md;
+  }
+
+  &--full {
+    width: 100%;
+  }
+
+  // ── 加入購物車（特殊）────────────────────────────────
+  &--cart {
+    background: v.$color-bg-elevated;
+    color: v.$color-cream;
+    border: 1px solid v.$color-border;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(200, 169, 110, 0.1));
+      opacity: 0;
+      transition: opacity v.$transition-base;
+    }
+
+    &:hover:not(:disabled) {
+      border-color: v.$color-gold;
+      color: v.$color-gold;
+      transform: translateY(-2px);
+
+      &::before { opacity: 1; }
+    }
+  }
+}

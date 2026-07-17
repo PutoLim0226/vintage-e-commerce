@@ -1,0 +1,124 @@
+// ============================================================
+// layout/_footer.scss
+// 頁尾資訊
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.footer {
+  margin-top: auto;
+  background: v.$color-bg-surface;
+  border-top: 1px solid v.$color-border;
+
+  &__main {
+    @include m.container;
+    padding-block: v.$space-16;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$space-10;
+
+    @include m.md {
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: v.$space-8;
+    }
+  }
+
+  // ── 品牌區 ────────────────────────────────────────────
+  &__brand {
+    @include m.md { grid-column: 1; }
+  }
+
+  &__logo {
+    font-family: v.$font-heading;
+    font-size: v.$font-size-2xl;
+    color: v.$color-cream;
+    margin-bottom: v.$space-4;
+
+    span { color: v.$color-gold; }
+  }
+
+  &__desc {
+    font-size: v.$font-size-sm;
+    color: v.$color-cream-faint;
+    line-height: v.$line-height-loose;
+    max-width: 280px;
+    margin-bottom: v.$space-6;
+  }
+
+  &__social {
+    @include m.flex(row, flex-start, center);
+    gap: v.$space-3;
+  }
+
+  &__social-link {
+    width: 38px;
+    height: 38px;
+    border-radius: v.$radius-md;
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    @include m.flex-center;
+    color: v.$color-cream-muted;
+    font-size: v.$font-size-lg;
+    transition: all v.$transition-fast;
+
+    &:hover {
+      border-color: v.$color-gold;
+      color: v.$color-gold;
+      background: rgba(200, 169, 110, 0.08);
+    }
+  }
+
+  // ── 連結欄 ────────────────────────────────────────────
+  &__col-title {
+    font-size: v.$font-size-xs;
+    font-weight: v.$font-weight-semibold;
+    color: v.$color-cream;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: v.$space-5;
+  }
+
+  &__links {
+    @include m.flex(column, flex-start, flex-start);
+    gap: v.$space-3;
+  }
+
+  &__link {
+    font-size: v.$font-size-sm;
+    color: v.$color-cream-faint;
+    transition: color v.$transition-fast;
+
+    &:hover { color: v.$color-gold; }
+  }
+
+  // ── 底部版權 ──────────────────────────────────────────
+  &__bottom {
+    border-top: 1px solid v.$color-border;
+    padding-block: v.$space-6;
+  }
+
+  &__bottom-inner {
+    @include m.container;
+    @include m.flex-between;
+    flex-wrap: wrap;
+    gap: v.$space-4;
+  }
+
+  &__copy {
+    font-size: v.$font-size-sm;
+    color: v.$color-cream-faint;
+  }
+
+  &__payment-icons {
+    @include m.flex(row, flex-end, center);
+    gap: v.$space-3;
+
+    img {
+      height: 24px;
+      opacity: 0.5;
+      transition: opacity v.$transition-fast;
+
+      &:hover { opacity: 1; }
+    }
+  }
+}

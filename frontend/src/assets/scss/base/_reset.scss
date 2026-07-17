@@ -1,0 +1,98 @@
+// ============================================================
+// base/_reset.scss
+// 自製 CSS Reset — 清除預設樣式
+// ============================================================
+@use '../abstracts/variables' as v;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: v.$font-size-base;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: v.$font-body;
+  font-size: v.$font-size-md;
+  font-weight: v.$font-weight-regular;
+  line-height: v.$line-height-normal;
+  color: v.$color-cream;
+  background-color: v.$color-bg-dark;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+// 全域捲軸樣式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: v.$color-bg-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  background: v.$color-gold-dark;
+  border-radius: v.$radius-full;
+
+  &:hover {
+    background: v.$color-gold;
+  }
+}
+
+// 選取色
+::selection {
+  background: rgba(200, 169, 110, 0.3);
+  color: v.$color-cream;
+}
+
+// #root 充滿視窗
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}

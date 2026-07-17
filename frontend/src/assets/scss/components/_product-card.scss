@@ -1,0 +1,157 @@
+// ============================================================
+// components/_product-card.scss
+// 商品卡片（含 hover 動畫、骨架屏）
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.product-card {
+  position: relative;
+  background: v.$color-bg-card;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-lg;
+  overflow: hidden;
+  transition:
+    transform v.$transition-base,
+    box-shadow v.$transition-base,
+    border-color v.$transition-base;
+  @include m.fade-in(0.4s);
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: v.$shadow-lg;
+    border-color: v.$color-border-hover;
+
+    .product-card__overlay { opacity: 1; }
+    .product-card__actions { transform: translateY(0); opacity: 1; }
+  }
+
+  // ── 圖片區 ──────────────────────────────────────────
+  &__image-wrap {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: v.$color-bg-surface;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform v.$transition-slow;
+    }
+
+    &:hover img {
+      transform: scale(1.06);
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(18, 13, 7, 0.7) 0%,
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity v.$transition-base;
+  }
+
+  // ── 快速動作按鈕 ─────────────────────────────────────
+  &__actions {
+    position: absolute;
+    bottom: v.$space-4;
+    left: v.$space-4;
+    right: v.$space-4;
+    transform: translateY(12px);
+    opacity: 0;
+    transition:
+      transform v.$transition-base,
+      opacity v.$transition-base;
+
+    .btn { width: 100%; }
+  }
+
+  // ── 徽章（New / Sale）────────────────────────────────
+  &__badge {
+    position: absolute;
+    top: v.$space-3;
+    left: v.$space-3;
+    z-index: v.$z-base;
+  }
+
+  // ── 收藏按鈕 ─────────────────────────────────────────
+  &__wishlist {
+    position: absolute;
+    top: v.$space-3;
+    right: v.$space-3;
+    z-index: v.$z-base;
+    width: 36px;
+    height: 36px;
+    border-radius: v.$radius-full;
+    background: rgba(18, 13, 7, 0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid v.$color-border;
+    @include m.flex-center;
+    color: v.$color-cream-muted;
+    font-size: v.$font-size-lg;
+    transition: all v.$transition-fast;
+    cursor: pointer;
+
+    &:hover,
+    &.active {
+      background: rgba(200, 169, 110, 0.15);
+      color: v.$color-gold;
+      border-color: v.$color-gold;
+    }
+  }
+
+  // ── 資訊區 ──────────────────────────────────────────
+  &__info {
+    padding: v.$space-4;
+  }
+
+  &__category {
+    font-size: v.$font-size-xs;
+    color: v.$color-gold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: v.$space-2;
+  }
+
+  &__name {
+    font-family: v.$font-heading;
+    font-size: v.$font-size-lg;
+    font-weight: v.$font-weight-semibold;
+    color: v.$color-cream;
+    margin-bottom: v.$space-3;
+    @include m.truncate(2);
+    line-height: v.$line-height-tight;
+  }
+
+  &__price-row {
+    @include m.flex-between;
+    align-items: center;
+  }
+
+  // ── 骨架屏版本 ────────────────────────────────────────
+  &--skeleton {
+    pointer-events: none;
+
+    .product-card__image-wrap {
+      @include m.shimmer;
+    }
+
+    .product-card__category,
+    .product-card__name,
+    .product-card__price-row {
+      @include m.shimmer;
+      border-radius: v.$radius-sm;
+      color: transparent;
+    }
+
+    .product-card__category { width: 40%; height: 12px; }
+    .product-card__name     { width: 80%; height: 20px; margin-block: v.$space-2; }
+    .product-card__price-row{ width: 50%; height: 20px; }
+  }
+}

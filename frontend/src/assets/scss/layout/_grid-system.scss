@@ -1,0 +1,140 @@
+// ============================================================
+// layout/_grid-system.scss
+// 自製響應式網格（Flexbox / CSS Grid）
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+// ── 容器 ─────────────────────────────────────────────────
+.container {
+  @include m.container;
+}
+
+// ── 通用 section 間距 ─────────────────────────────────────
+.section {
+  @include m.section;
+}
+
+// ── 商品網格 ─────────────────────────────────────────────
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: v.$space-4;
+
+  @include m.md {
+    grid-template-columns: repeat(3, 1fr);
+    gap: v.$space-6;
+  }
+
+  @include m.xl {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// ── 2 欄佈局 ─────────────────────────────────────────────
+.layout-2col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: v.$space-8;
+
+  @include m.lg {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+// ── 側邊欄 + 主內容 ───────────────────────────────────────
+.layout-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: v.$space-8;
+  align-items: start;
+
+  @include m.lg {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+// ── 分隔線 ────────────────────────────────────────────────
+.divider {
+  height: 1px;
+  background: v.$color-border;
+  margin-block: v.$space-8;
+
+  &--gold {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      v.$color-gold,
+      transparent
+    );
+  }
+}
+
+// ── 主內容區（Header 下方 / Footer 上方）─────────────────
+.main-content {
+  flex: 1;
+}
+
+// ── 麵包屑 ────────────────────────────────────────────────
+.breadcrumb {
+  @include m.flex(row, flex-start, center);
+  gap: v.$space-2;
+  flex-wrap: wrap;
+  font-size: v.$font-size-sm;
+  color: v.$color-cream-faint;
+  margin-bottom: v.$space-8;
+
+  &__item {
+    &:not(:last-child)::after {
+      content: '/';
+      margin-left: v.$space-2;
+      color: v.$color-cream-faint;
+    }
+
+    &:last-child { color: v.$color-cream-muted; }
+
+    a {
+      color: v.$color-cream-faint;
+      transition: color v.$transition-fast;
+      &:hover { color: v.$color-gold; }
+    }
+  }
+}
+
+// ── 頁碼 ─────────────────────────────────────────────────
+.pagination {
+  @include m.flex-center;
+  gap: v.$space-2;
+  margin-top: v.$space-12;
+
+  &__btn {
+    width: 40px;
+    height: 40px;
+    border-radius: v.$radius-md;
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    color: v.$color-cream-muted;
+    font-size: v.$font-size-sm;
+    @include m.flex-center;
+    transition: all v.$transition-fast;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: v.$color-gold;
+      color: v.$color-gold;
+    }
+
+    &.active {
+      background: v.$color-gold;
+      color: v.$color-bg-dark;
+      border-color: v.$color-gold;
+      font-weight: v.$font-weight-semibold;
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+}

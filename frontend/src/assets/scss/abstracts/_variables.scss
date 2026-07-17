@@ -1,0 +1,114 @@
+// ============================================================
+// abstracts/_variables.scss
+// Design Tokens — 品牌色票、字體、間距
+// ============================================================
+
+// ── Google Fonts（在 main.scss 最頂層 @import）──────────────
+// Playfair Display：標題復古感
+// Inter：內文現代清晰
+
+// ── 調色盤 ─────────────────────────────────────────────────
+// 主色：深墨褐（背景）
+$color-bg-dark:       #120d07;
+$color-bg-surface:    #1e1610;
+$color-bg-card:       #261c12;
+$color-bg-elevated:   #2f2318;
+
+// 暖金色系（品牌主色）
+$color-gold:          #c8a96e;
+$color-gold-light:    #e0c99a;
+$color-gold-dark:     #9b7f4e;
+
+// 奶油色（主要文字）
+$color-cream:         #f5f0e8;
+$color-cream-muted:   #b8a898;
+$color-cream-faint:   #6b5f52;
+
+// 強調色（復古磚紅）
+$color-accent:        #a83232;
+$color-accent-hover:  #c43c3c;
+
+// 邊框 / 分隔線
+$color-border:        rgba(200, 169, 110, 0.15);
+$color-border-hover:  rgba(200, 169, 110, 0.35);
+
+// 功能色
+$color-success:       #4caf72;
+$color-warning:       #e6a817;
+$color-error:         #e05454;
+
+// ── 字體 ──────────────────────────────────────────────────
+$font-heading:        'Playfair Display', Georgia, serif;
+$font-body:           'Inter', system-ui, sans-serif;
+
+$font-size-base:      16px;   // rem 計算基準
+
+$font-size-xs:        0.75rem;   //  12px
+$font-size-sm:        0.875rem;  //  14px
+$font-size-md:        1rem;      //  16px
+$font-size-lg:        1.125rem;  //  18px
+$font-size-xl:        1.25rem;   //  20px
+$font-size-2xl:       1.5rem;    //  24px
+$font-size-3xl:       2rem;      //  32px
+$font-size-4xl:       2.5rem;    //  40px
+$font-size-5xl:       3.5rem;    //  56px
+
+$font-weight-regular: 400;
+$font-weight-medium:  500;
+$font-weight-semibold:600;
+$font-weight-bold:    700;
+
+$line-height-tight:   1.2;
+$line-height-normal:  1.6;
+$line-height-loose:   1.8;
+
+// ── 間距系統（8px grid）──────────────────────────────────
+$space-1:   0.25rem;   //  4px
+$space-2:   0.5rem;    //  8px
+$space-3:   0.75rem;   // 12px
+$space-4:   1rem;      // 16px
+$space-5:   1.25rem;   // 20px
+$space-6:   1.5rem;    // 24px
+$space-8:   2rem;      // 32px
+$space-10:  2.5rem;    // 40px
+$space-12:  3rem;      // 48px
+$space-16:  4rem;      // 64px
+$space-20:  5rem;      // 80px
+$space-24:  6rem;      // 96px
+
+// ── 版型 ──────────────────────────────────────────────────
+$container-max:   1280px;
+$container-gutter: $space-6;
+
+// ── 圓角 ──────────────────────────────────────────────────
+$radius-sm:   4px;
+$radius-md:   8px;
+$radius-lg:   12px;
+$radius-xl:   20px;
+$radius-full: 9999px;
+
+// ── 陰影 ──────────────────────────────────────────────────
+$shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.4);
+$shadow-md:  0 4px 20px rgba(0, 0, 0, 0.55);
+$shadow-lg:  0 8px 40px rgba(0, 0, 0, 0.7);
+$shadow-gold:0 4px 24px rgba(200, 169, 110, 0.2);
+
+// ── 動畫 ──────────────────────────────────────────────────
+$transition-fast:   0.15s ease;
+$transition-base:   0.25s ease;
+$transition-slow:   0.4s ease;
+
+// ── 斷點 ──────────────────────────────────────────────────
+$bp-sm:   480px;
+$bp-md:   768px;
+$bp-lg:   1024px;
+$bp-xl:   1280px;
+$bp-2xl:  1536px;
+
+// ── z-index 層級 ─────────────────────────────────────────
+$z-base:      1;
+$z-dropdown:  100;
+$z-sticky:    200;
+$z-overlay:   300;
+$z-modal:     400;
+$z-toast:     500;
