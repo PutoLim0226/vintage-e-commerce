@@ -6,10 +6,8 @@ import RegisterPage from './RegisterPage'
 import CheckoutPage from './CheckoutPage'
 import ProfilePage from './ProfilePage'
 import OrdersPage from './OrdersPage'
-
-// 頁面骨架：各頁面後續填入真實內容
-const CartPage       = () => <div>CartPage</div>
-const NotFoundPage   = () => <div>404 Not Found</div>
+import CartPage from './CartPage'
+import NotFoundPage from './NotFoundPage'
 
 export {
   HomePage,
