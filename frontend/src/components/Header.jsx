@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 
@@ -7,7 +7,14 @@ export default function Header() {
   const { user, logout } = useAuth()
   const { cart, setIsCartOpen } = useCart()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [searchVal, setSearchVal] = useState('')
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+
+  // 路由變化時，同步 URL search param 到 Header 搜尋框
+  useEffect(() => {
+    setSearchVal(searchParams.get('search') || '')
+  }, [searchParams])
 
   // 計算購物車內所有品項的數量加總
   const cartItemCount = cart.items?.reduce((acc, item) => acc + item.quantity, 0) || 0
@@ -47,12 +54,33 @@ export default function Header() {
               <input
                 type="text"
                 placeholder="搜尋經典..."
+                value={searchVal}
+                onChange={(e) => setSearchVal(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    navigate(`/products?search=${e.target.value}`)
+                    navigate(`/products?search=${encodeURIComponent(searchVal.trim())}`)
+                  }
+                  if (e.key === 'Escape') {
+                    setSearchVal('')
+                    navigate('/products')
                   }
                 }}
+                aria-label="搜尋商品"
               />
+              {searchVal && (
+                <button
+                  type="button"
+                  aria-label="清除搜尋"
+                  onClick={() => { setSearchVal(''); navigate('/products') }}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: 'var(--color-cream-faint)', lineHeight: 1, padding: '0 4px',
+                    display: 'flex', alignItems: 'center'
+                  }}
+                >
+                  ×
+                </button>
+              )}
             </div>
 
             {/* Cart Icon Button */}

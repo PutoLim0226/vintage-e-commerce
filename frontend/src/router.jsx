@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import {
   HomePage,
   ProductListPage,
@@ -13,6 +13,10 @@ import {
 } from './pages'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './components/Layout'
+import AdminLayout from './pages/admin/AdminLayout'
+import AdminDashboardPage from './pages/admin/AdminDashboardPage'
+import AdminProductsPage from './pages/admin/AdminProductsPage'
+import AdminOrdersPage from './pages/admin/AdminOrdersPage'
 
 const router = createBrowserRouter([
   {
@@ -38,6 +42,18 @@ const router = createBrowserRouter([
 
       // ── 404 ───────────────────────────────────────
       { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+
+  // ── Admin（獨立 Layout，不含 Header/Footer）────
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      { index: true,            element: <Navigate to="/admin/dashboard" replace /> },
+      { path: 'dashboard',      element: <AdminDashboardPage /> },
+      { path: 'products',       element: <AdminProductsPage /> },
+      { path: 'orders',         element: <AdminOrdersPage /> },
     ],
   },
 ], {

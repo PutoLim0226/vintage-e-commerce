@@ -10,6 +10,11 @@ export default function ProductListPage() {
   const [loading, setLoading] = useState(true)
   const [searchVal, setSearchVal] = useState(searchParams.get('search') || '')
 
+  // Header 導航過來時同步搜尋框文字
+  useEffect(() => {
+    setSearchVal(searchParams.get('search') || '')
+  }, [searchParams])
+
   // 取得參數
   const currentCategory = searchParams.get('category') || ''
   const currentSort     = searchParams.get('sort') || 'newest'
