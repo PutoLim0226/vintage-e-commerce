@@ -63,10 +63,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 # Supplementary Guidelines for Rule 5: Agent Skill & Token Optimization
 
-## 1. RTK Token Savings
-- **When**: Before every response or task execution.
-- **Action**: Invoke `rtk` to compress prompts/responses.
-- **Fallback**: If `rtk` fails, notify user and manually compress.
+## 1. Mandatory RTK Command Execution
+- **When**: Under all conditions, for ANY command execution or task execution in the terminal.
+- **Action**: Every single terminal command MUST be prefixed with `rtk` (e.g., `rtk npm run build`, `rtk php`, `rtk git`, `rtk npx sass ...`).
+- **Fallback**: If `rtk` fails or is not applicable, notify the user.
 
 ## 2. Q&A Confirmation (Clarification Protocol)
 - **Trigger**: Instructions are ambiguous, contradictory, missing parameters, or out of scope.
@@ -94,7 +94,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
     @media (min-width: 1024px) { width: 33%; }
   }
 - **Compile: After changes, run:**
-npx sass src/assets/scss/main.scss src/assets/css/main.css
+rtk npx sass src/assets/scss/main.scss src/assets/css/main.css
 - **Verify: Check mobile, tablet, desktop viewports before commit.**
 
 ## 5. Automated API Documentation Update

@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from 'react'
+import { createContext, useContext, useReducer, useEffect } from 'react'
 
 const AuthContext = createContext(null)
 
@@ -34,6 +34,23 @@ function authReducer(state, action) {
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
+  useEffect(() => {
+    const handleRefreshed = (e) => {
+      dispatch({ type: 'UPDATE_TOKEN', payload: e.detail })
+    }
+    const handleExpired = () => {
+      dispatch({ type: 'LOGOUT' })
+    }
+
+    window.addEventListener('auth_token_refreshed', handleRefreshed)
+    window.addEventListener('auth_session_expired', handleExpired)
+
+    return () => {
+      window.removeEventListener('auth_token_refreshed', handleRefreshed)
+      window.removeEventListener('auth_session_expired', handleExpired)
+    }
+  }, [])
+
   const login = (data) => dispatch({
     type: 'LOGIN',
     payload: { user: data.user, accessToken: data.access_token, refreshToken: data.refresh_token },
@@ -49,3 +66,4 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthContext)
+
