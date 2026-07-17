@@ -1,10 +1,10 @@
+import HomePage from './HomePage'
+import ProductListPage from './ProductListPage'
+import ProductDetailPage from './ProductDetailPage'
 import LoginPage from './LoginPage'
 import RegisterPage from './RegisterPage'
 
 // 頁面骨架：各頁面後續填入真實內容
-const HomePage       = () => <div>HomePage</div>
-const ProductListPage = () => <div>ProductListPage</div>
-const ProductDetailPage = () => <div>ProductDetailPage</div>
 const CartPage       = () => <div>CartPage</div>
 const CheckoutPage   = () => <div>CheckoutPage</div>
 const ProfilePage    = () => <div>ProfilePage</div>
@@ -23,4 +23,5 @@ export {
   OrdersPage,
   NotFoundPage,
 }
+
 
