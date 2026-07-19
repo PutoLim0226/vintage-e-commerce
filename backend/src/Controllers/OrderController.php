@@ -160,6 +160,12 @@ class OrderController extends BaseController
             // 清空購物車
             $db->prepare('DELETE FROM cart_items WHERE cart_id = ?')->execute([$cart['id']]);
 
+            // 初始化金流記錄為 pending
+            $db->prepare(
+                "INSERT INTO payments (order_id, gateway, method, amount, status)
+                 VALUES (?, 'ecpay', 'credit_card', ?, 'pending')"
+            )->execute([$orderId, $total]);
+
             // 扣除已使用的紅利點數
             if ($pointsDiscount > 0) {
                 $db->prepare('UPDATE users SET points = points - ? WHERE id = ?')

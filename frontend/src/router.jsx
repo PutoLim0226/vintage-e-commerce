@@ -9,6 +9,7 @@ import {
   RegisterPage,
   ProfilePage,
   OrdersPage,
+  PaymentPage,
   NotFoundPage,
 } from './pages'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
           { path: '/checkout',       element: <CheckoutPage /> },
           { path: '/profile',        element: <ProfilePage /> },
           { path: '/profile/orders', element: <OrdersPage /> },
+          { path: '/payment/:order_no', element: <PaymentPage /> },
         ],
       },
 

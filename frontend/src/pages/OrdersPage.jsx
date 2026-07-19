@@ -174,7 +174,16 @@ export default function OrdersPage() {
                         <td style={{ padding: '16px 8px' }}>
                           <span className={`badge ${statusObj.class}`}>{statusObj.text}</span>
                         </td>
-                        <td style={{ padding: '16px 8px', textAlign: 'right' }}>
+                        <td style={{ padding: '16px 8px', textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                          {ord.status === 'pending' && (
+                            <Link
+                              to={`/payment/${ord.order_no}`}
+                              className="btn btn--sm btn--primary"
+                              style={{ padding: '4px 10px', fontSize: '12px' }}
+                            >
+                              付款
+                            </Link>
+                          )}
                           <button
                             type="button"
                             className="btn btn--sm btn--ghost"

@@ -164,13 +164,18 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
-            <Link to="/profile/orders" className="btn btn--primary">
-              查看訂單記錄
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
+            <Link to={`/payment/${createdOrder.order_no}`} className="btn btn--primary" style={{ width: '100%', maxWidth: '280px' }}>
+              💳 立即前往模擬付款 ➔
             </Link>
-            <Link to="/" className="btn btn--outline">
-              返回首頁
-            </Link>
+            <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+              <Link to="/profile/orders" className="btn btn--outline btn--sm">
+                查看訂單記錄
+              </Link>
+              <Link to="/" className="btn btn--outline btn--sm">
+                返回首頁
+              </Link>
+            </div>
           </div>
         </div>
       </main>

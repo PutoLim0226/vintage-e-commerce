@@ -7,6 +7,7 @@ import CheckoutPage from './CheckoutPage'
 import ProfilePage from './ProfilePage'
 import OrdersPage from './OrdersPage'
 import CartPage from './CartPage'
+import PaymentPage from './PaymentPage'
 import NotFoundPage from './NotFoundPage'
 
 export {
@@ -19,6 +20,7 @@ export {
   RegisterPage,
   ProfilePage,
   OrdersPage,
+  PaymentPage,
   NotFoundPage,
 }
 
