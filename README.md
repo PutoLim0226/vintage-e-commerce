@@ -73,3 +73,49 @@ vintage-e-commerce/
 ## 📄 各模組詳細說明
 - **前端詳情與樣式系統**：請參閱 [frontend/README.md](file:///home/puto/project/vintage-e-commerce/frontend/README.md)
 - **後端架構與 API 接口**：請參閱 [backend/README.md](file:///home/puto/project/vintage-e-commerce/backend/README.md)
+
+---
+
+## 📝 更新日誌 (Changelog)
+
+1.0.6 — 2026-07-19
+feat(payment): 實作自製金流模擬 Sandbox 頁面與 Webhook 異步對帳。
+- 新增 `PaymentPage.jsx` 付款頁面，提供磨砂玻璃設計的擬真 3D 信用卡刷卡授權 UI（支援卡號跳格、到期日 MMYY、CVC 翻轉卡片）。
+- 後端 `OrderController@create` 建立訂單時寫入 `payments` 初始 pending 記錄。
+- 前端結帳成功頁面引導跳轉至金流模擬頁，歷史訂單列表若狀態為 `pending` 則動態顯示「付款」按鈕。
+- 付款成功後打後端 `/api/webhook/payment` API 模擬 Webhook 信號，更新支付與訂單狀態（orders.status -> paid）。
+
+1.0.5 — 2026-07-19
+feat(admin): 升級後台商品與多規格 SKU 管理。
+- 前端 `AdminProductsPage.jsx` 重構為可新增商品、編輯商品細部資訊。
+- SKU 規格表格化動態行數編輯器（可增減列，輸入顏色、尺寸、價格、庫存等）。
+- 後端 `AdminProductController.php` 與路由新增 `GET /api/admin/products/{id}`（單一商品加載 SKUs）。
+- 後端 `AdminProductController@update` 實作 Transaction SKU 安全更新機制（對現存 SKU 更新、新規格寫入，並比對被歷史訂單引用的舊規格執行 is_active 下架或無關聯直接安全刪除）。
+
+1.0.4 — 2026-07-19
+feat(points): 實作會員紅利點數 (Points) 結帳折抵。
+- 前端 `CheckoutPage.jsx` 加載最新點數，提供勾選紅利折抵功能（1 點折 1 元，上限為商品總價，不含運費）。
+- 發送 `POST /api/orders` 時傳送 `use_points` 參數。
+- 後端 `OrderController.php` 實作 transaction 扣除折抵紅利點數、更新 `users.points` 並寫入 `point_logs` 紀錄。
+- 前端 `OrdersPage.jsx` 訂單明細彈窗加入「紅利點數折抵」的金額展示。
+
+1.0.3 — 2026-07-19
+feat(reviews): 實作商品評價與星級系統（Reviews）及熱度排序。
+- 後端新增 `product_reviews` 資料表與 `ReviewController.php` API（包含 `POST /api/reviews` 與 `GET /api/products/{slug}/reviews`，用戶名去識別化遮罩如「陳*明」）。
+- 前端 `OrdersPage.jsx` 加入評價 Modal、1-5 星填寫，商品詳情頁展示評價牆與平均星等。
+- 商品排序調整為 `rating DESC, view_count DESC`。詳情頁 API 載入時自動將點擊量 `view_count = view_count + 1`。
+
+1.0.2 — 2026-07-19
+feat(navigation): 修復 Header 搜尋框與 ProductListPage URL 同步及清除按鈕。
+- 解決輸入後按 Enter 沒反應、網址列參數不同步之問題。
+- 新增 `start-dev-tmux.sh` 腳本，避免 tmux kill-window 時中斷開發伺服器。
+
+1.0.1 — 2026-07-18
+feat(coupon): 實作折價券 (Coupon) 前台即時折抵與結帳扣除。
+- 後端新增 `POST /api/coupons/check` 驗證門檻與過期日。
+- 前端 `CheckoutPage.jsx` 即時計算折價券減免並動態刷新總計金額。
+
+1.0.0 — 2026-07-17
+init: 初始版本。
+- 實作會員中心訂單歷史記錄頁面。
+- 整合 GitHub Actions 部署配置，新增 `deploy.yaml` 工作流。
