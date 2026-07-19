@@ -167,6 +167,7 @@ CREATE TABLE `orders` (
     `subtotal`           DECIMAL(10,2) NOT NULL,
     `shipping_fee`       DECIMAL(8,2) NOT NULL DEFAULT 0,
     `discount`           DECIMAL(8,2) NOT NULL DEFAULT 0,
+    `points_discount`    DECIMAL(8,2) NOT NULL DEFAULT 0,
     `total`              DECIMAL(10,2) NOT NULL,
     `status`             ENUM('pending','paid','processing','shipped','delivered','cancelled','refunded') NOT NULL DEFAULT 'pending',
     -- 收件資訊（快照，不依賴 user_addresses）

@@ -95,8 +95,21 @@ class OrderController extends BaseController
             }
         }
 
+        // 紅利點數折抵
+        $pointsDiscount = 0.0;
+        $usePoints = !empty($body['use_points']);
+        if ($usePoints) {
+            $uStmt = $db->prepare('SELECT points FROM users WHERE id = ? LIMIT 1');
+            $uStmt->execute([$auth['sub']]);
+            $userObj = $uStmt->fetch();
+            if ($userObj && $userObj['points'] > 0) {
+                // 1 點折抵 1 元，折抵金額不能超過商品金額扣減折價券後的額度
+                $pointsDiscount = (float)min($userObj['points'], (int)floor($subtotal - $discount));
+            }
+        }
+
         $shippingFee = $this->calcShipping($body['ship_method'] ?? 'home_delivery', $subtotal);
-        $total       = max(0, $subtotal - $discount + $shippingFee);
+        $total       = max(0, $subtotal - $discount - $pointsDiscount + $shippingFee);
 
         // 產生訂單編號
         $orderNo = 'VC-' . date('Ymd') . '-' . str_pad((string)random_int(1, 99999), 5, '0', STR_PAD_LEFT);
@@ -107,14 +120,14 @@ class OrderController extends BaseController
             // 建立訂單
             $orderStmt = $db->prepare(
                 "INSERT INTO orders
-                    (order_no, user_id, coupon_id, subtotal, shipping_fee, discount, total,
+                    (order_no, user_id, coupon_id, subtotal, shipping_fee, discount, points_discount, total,
                      ship_name, ship_phone, ship_zip, ship_city, ship_district, ship_address, ship_method, notes)
-                 VALUES
-                    (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                  VALUES
+                    (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
             );
             $orderStmt->execute([
                 $orderNo, $auth['sub'], $couponId,
-                $subtotal, $shippingFee, $discount, $total,
+                $subtotal, $shippingFee, $discount, $pointsDiscount, $total,
                 $body['ship_name'], $body['ship_phone'],
                 $body['ship_zip'] ?? '',
                 $body['ship_city'], $body['ship_district'], $body['ship_address'],
@@ -146,6 +159,16 @@ class OrderController extends BaseController
 
             // 清空購物車
             $db->prepare('DELETE FROM cart_items WHERE cart_id = ?')->execute([$cart['id']]);
+
+            // 扣除已使用的紅利點數
+            if ($pointsDiscount > 0) {
+                $db->prepare('UPDATE users SET points = points - ? WHERE id = ?')
+                   ->execute([(int)$pointsDiscount, $auth['sub']]);
+
+                $db->prepare(
+                    'INSERT INTO point_logs (user_id, order_id, type, points, note) VALUES (?,?,?,?,?)'
+                )->execute([$auth['sub'], $orderId, 'redeem', -(int)$pointsDiscount, '結帳折抵金額']);
+            }
 
             // 紅利：每 100 元得 1 點
             $earnPoints = (int)floor($total / 100);

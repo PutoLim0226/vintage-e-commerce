@@ -287,6 +287,12 @@ export default function OrdersPage() {
                     <span>- NT$ {Math.round(selectedOrder.discount)}</span>
                   </div>
                 )}
+                {parseFloat(selectedOrder.points_discount) > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-success)' }}>
+                    <span>紅利點數折抵</span>
+                    <span>- NT$ {Math.round(selectedOrder.points_discount)}</span>
+                  </div>
+                )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 'bold', color: 'var(--color-gold)', paddingTop: '8px', borderTop: '1px dashed var(--color-border)' }}>
                   <span>實付總額</span>
                   <span>NT$ {Math.round(selectedOrder.total)}</span>

@@ -26,6 +26,10 @@ export default function CheckoutPage() {
   const [appliedCoupon, setAppliedCoupon] = useState('')
   const [discount, setDiscount] = useState(0)
 
+  // 紅利點數
+  const [userPoints, setUserPoints] = useState(0)
+  const [usePoints, setUsePoints] = useState(false)
+
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
 
@@ -36,6 +40,21 @@ export default function CheckoutPage() {
     }
   }, [cart, navigate, step])
 
+  useEffect(() => {
+    // 獲取會員最新點數
+    const fetchUserPoints = async () => {
+      try {
+        const { data } = await api.get('/api/me')
+        if (data.success) {
+          setUserPoints(parseInt(data.data.points || 0, 10))
+        }
+      } catch (err) {
+        console.error('Failed to load user profile points', err)
+      }
+    }
+    fetchUserPoints()
+  }, [])
+
   // 前端估算運費
   const calcShippingFee = () => {
     if (shipMethod === 'home_delivery') {
@@ -45,7 +64,9 @@ export default function CheckoutPage() {
   }
 
   const shippingFee = calcShippingFee()
-  const orderTotal = Math.max(0, cart.total - discount + shippingFee)
+  // 計算點數折抵金額
+  const pointsDiscount = usePoints ? Math.min(userPoints, Math.floor(cart.total - discount)) : 0
+  const orderTotal = Math.max(0, cart.total - discount - pointsDiscount + shippingFee)
 
   const validate = () => {
     const tempErrors = {}
@@ -102,6 +123,10 @@ export default function CheckoutPage() {
 
       if (appliedCoupon) {
         payload.coupon_code = appliedCoupon
+      }
+
+      if (usePoints) {
+        payload.use_points = true
       }
 
       const { data } = await api.post('/api/orders', payload)
@@ -347,6 +372,23 @@ export default function CheckoutPage() {
             </div>
           )}
 
+          {/* Points Redeeming Checkbox */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', marginBottom: '20px', fontSize: '13px' }}>
+            <input
+              type="checkbox"
+              id="usePointsCheckbox"
+              checked={usePoints}
+              disabled={userPoints <= 0 || loading}
+              onChange={(e) => setUsePoints(e.target.checked)}
+              style={{ width: '16px', height: '16px', cursor: userPoints > 0 ? 'pointer' : 'not-allowed', accentColor: 'var(--color-gold)' }}
+            />
+            <label htmlFor="usePointsCheckbox" style={{ cursor: userPoints > 0 ? 'pointer' : 'not-allowed', color: userPoints > 0 ? 'var(--color-cream)' : 'var(--color-cream-faint)', userSelect: 'none' }}>
+              {userPoints > 0 
+                ? `使用紅利點數折抵 (可用 ${userPoints} 點，折抵 NT$ ${userPoints} 元)` 
+                : '目前無可用紅利點數 (消費 100 元回饋 1 點)'}
+            </label>
+          </div>
+
           {/* Checkout Totals */}
           <div className="checkout__summary-rows">
             <div className="checkout__summary-row">
@@ -361,6 +403,12 @@ export default function CheckoutPage() {
               <div className="checkout__summary-row checkout__summary-row--discount" style={{ color: 'var(--color-gold)' }}>
                 <span>折價券折抵</span>
                 <span>- NT$ {Math.round(discount)}</span>
+              </div>
+            )}
+            {pointsDiscount > 0 && (
+              <div className="checkout__summary-row checkout__summary-row--discount" style={{ color: 'var(--color-gold)' }}>
+                <span>紅利點數折抵</span>
+                <span>- NT$ {Math.round(pointsDiscount)}</span>
               </div>
             )}
             <div className="checkout__summary-row checkout__summary-row--total">
