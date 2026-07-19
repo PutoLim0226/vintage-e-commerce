@@ -70,6 +70,7 @@ class Router
         // ── 管理後台 ─────────────────────────────
         $this->add('GET',  '/api/admin/dashboard',     [AdminDashboardController::class, 'index'],   [AdminMiddleware::class]);
         $this->add('GET',  '/api/admin/products',      [AdminProductController::class, 'index'],     [AdminMiddleware::class]);
+        $this->add('GET',  '/api/admin/products/{id}', [AdminProductController::class, 'show'],      [AdminMiddleware::class]);
         $this->add('POST', '/api/admin/products',      [AdminProductController::class, 'store'],     [AdminMiddleware::class]);
         $this->add('PUT',  '/api/admin/products/{id}', [AdminProductController::class, 'update'],    [AdminMiddleware::class]);
         $this->add('DELETE','/api/admin/products/{id}',[AdminProductController::class, 'destroy'],   [AdminMiddleware::class]);

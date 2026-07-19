@@ -14,14 +14,37 @@ class AdminProductController extends BaseController
     {
         $db = Database::getInstance();
         $stmt = $db->query(
-            "SELECT p.id, p.name, p.slug, p.base_price, p.is_active, p.is_featured,
-                    c.name AS category_name, p.created_at,
+            "SELECT p.id, p.name, p.slug, p.base_price, p.is_active, p.is_featured, p.cover_image_url,
+                    c.name AS category_name, p.created_at, p.category_id,
                     (SELECT SUM(stock) FROM product_skus ps WHERE ps.product_id = p.id) AS total_stock
              FROM products p
              JOIN categories c ON c.id = p.category_id
              ORDER BY p.created_at DESC"
         );
         $this->success($stmt->fetchAll());
+    }
+
+    // GET /api/admin/products/{id}
+    public function show(array $params): void
+    {
+        $db        = Database::getInstance();
+        $productId = (int)($params['id'] ?? 0);
+
+        $stmt = $db->prepare("SELECT * FROM products WHERE id = ? LIMIT 1");
+        $stmt->execute([$productId]);
+        $product = $stmt->fetch();
+
+        if (!$product) {
+            $this->error('找不到該商品', 404);
+            return;
+        }
+
+        // 獲取該商品之 SKUs
+        $skuStmt = $db->prepare("SELECT * FROM product_skus WHERE product_id = ?");
+        $skuStmt->execute([$productId]);
+        $product['skus'] = $skuStmt->fetchAll();
+
+        $this->success($product);
     }
 
     // POST /api/admin/products
@@ -41,8 +64,8 @@ class AdminProductController extends BaseController
         $slug = $this->generateSlug($body['name']);
 
         $db->prepare(
-            'INSERT INTO products (category_id, name, slug, description, base_price, compare_price, is_active, is_featured, meta_title, meta_desc)
-             VALUES (?,?,?,?,?,?,?,?,?,?)'
+            'INSERT INTO products (category_id, name, slug, description, base_price, compare_price, cover_image_url, is_active, is_featured, meta_title, meta_desc)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?)'
         )->execute([
             $body['category_id'],
             $body['name'],
@@ -50,6 +73,7 @@ class AdminProductController extends BaseController
             $body['description'] ?? null,
             $body['base_price'],
             $body['compare_price'] ?? null,
+            $body['cover_image_url'] ?? null,
             isset($body['is_active'])   ? (int)$body['is_active']   : 1,
             isset($body['is_featured']) ? (int)$body['is_featured'] : 0,
             $body['meta_title'] ?? $body['name'],
@@ -84,6 +108,15 @@ class AdminProductController extends BaseController
         $productId = (int)($params['id'] ?? 0);
         $body      = $this->body();
 
+        // 1. 檢查商品是否存在
+        $chk = $db->prepare('SELECT id, slug FROM products WHERE id = ?');
+        $chk->execute([$productId]);
+        $prod = $chk->fetch();
+        if (!$prod) {
+            $this->error('商品不存在', 404);
+            return;
+        }
+
         $allowed = ['category_id','name','description','base_price','compare_price',
                     'cover_image_url','is_active','is_featured','meta_title','meta_desc'];
         $set     = [];
@@ -96,15 +129,86 @@ class AdminProductController extends BaseController
             }
         }
 
-        if (empty($set)) {
-            $this->error('沒有可更新的欄位', 400);
-            return;
+        $db->beginTransaction();
+        try {
+            // 更新商品基本資訊
+            if (!empty($set)) {
+                $bind[] = $productId;
+                $db->prepare('UPDATE products SET ' . implode(', ', $set) . ' WHERE id = ?')->execute($bind);
+            }
+
+            // 2. SKU Upsert 處理
+            if (isset($body['skus']) && is_array($body['skus'])) {
+                $incomingIds = [];
+
+                foreach ($body['skus'] as $sku) {
+                    $skuId = isset($sku['id']) ? (int)$sku['id'] : 0;
+                    if ($skuId > 0) {
+                        // 更新現有 SKU
+                        $db->prepare(
+                            "UPDATE product_skus
+                             SET sku_code = ?, color = ?, size = ?, price = ?, stock = ?, is_active = ?
+                             WHERE id = ? AND product_id = ?"
+                        )->execute([
+                            $sku['sku_code'],
+                            $sku['color'] ?? null,
+                            $sku['size'] ?? null,
+                            $sku['price'],
+                            $sku['stock'],
+                            isset($sku['is_active']) ? (int)$sku['is_active'] : 1,
+                            $skuId,
+                            $productId
+                        ]);
+                        $incomingIds[] = $skuId;
+                    } else {
+                        // 新增 SKU
+                        $newCode = $sku['sku_code'] ?: $prod['slug'] . '-' . ($sku['color'] ?? '') . '-' . ($sku['size'] ?? '') . '-' . substr(uniqid(), -4);
+                        $db->prepare(
+                            "INSERT INTO product_skus (product_id, sku_code, color, size, price, stock, is_active)
+                             VALUES (?,?,?,?,?,?,?)"
+                        )->execute([
+                            $productId,
+                            $newCode,
+                            $sku['color'] ?? null,
+                            $sku['size'] ?? null,
+                            $sku['price'] ?? ($body['base_price'] ?? 0),
+                            $sku['stock'] ?? 0,
+                            isset($sku['is_active']) ? (int)$sku['is_active'] : 1
+                        ]);
+                        $incomingIds[] = (int)$db->lastInsertId();
+                    }
+                }
+
+                // 3. 處理「沒被傳入」的舊 SKU (安全下架或刪除)
+                // 找出目前 DB 裡的所有舊 SKU ID
+                $oldStmt = $db->prepare("SELECT id FROM product_skus WHERE product_id = ?");
+                $oldStmt->execute([$productId]);
+                $oldIds = $oldStmt->fetchAll(\PDO::FETCH_COLUMN);
+
+                $toRemove = array_diff($oldIds, $incomingIds);
+                foreach ($toRemove as $remId) {
+                    // 檢查此 SKU 是否已被歷史訂單引用
+                    $refStmt = $db->prepare("SELECT COUNT(*) FROM order_items WHERE sku_id = ?");
+                    $refStmt->execute([$remId]);
+                    $isReferenced = (int)$refStmt->fetchColumn() > 0;
+
+                    if ($isReferenced) {
+                        // 如果被訂單引用，改為下架狀態 is_active = 0
+                        $db->prepare("UPDATE product_skus SET is_active = 0 WHERE id = ?")->execute([$remId]);
+                    } else {
+                        // 否則，直接安全刪除
+                        $db->prepare("DELETE FROM product_skus WHERE id = ?")->execute([$remId]);
+                    }
+                }
+            }
+
+            $db->commit();
+        } catch (\Throwable $e) {
+            $db->rollBack();
+            throw $e;
         }
 
-        $bind[] = $productId;
-        $db->prepare('UPDATE products SET ' . implode(', ', $set) . ' WHERE id = ?')->execute($bind);
-
-        $this->success(null, '商品已更新');
+        $this->success(null, '商品及規格更新成功');
     }
 
     // DELETE /api/admin/products/{id}
