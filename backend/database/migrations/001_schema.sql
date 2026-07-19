@@ -256,6 +256,24 @@ CREATE TABLE `point_logs` (
 ) ENGINE=InnoDB;
 
 -- ============================================================
+-- 8.5 商品評價系統
+-- ============================================================
+
+CREATE TABLE `product_reviews` (
+    `id`          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `product_id`  BIGINT UNSIGNED NOT NULL,
+    `user_id`     BIGINT UNSIGNED NOT NULL,
+    `order_id`    BIGINT UNSIGNED NOT NULL,
+    `rating`      TINYINT UNSIGNED NOT NULL COMMENT '1-5 星',
+    `comment`     TEXT,
+    `created_at`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY `uq_user_order_product` (`user_id`, `order_id`, `product_id`),
+    FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`)    REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`order_id`)   REFERENCES `orders`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================================================
 -- 9. 數據分析用 View（後台報表）
 -- ============================================================
 

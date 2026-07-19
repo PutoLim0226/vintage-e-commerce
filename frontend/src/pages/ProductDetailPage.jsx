@@ -8,6 +8,7 @@ export default function ProductDetailPage() {
   const { setCart } = useCart()
 
   const [product, setProduct] = useState(null)
+  const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -21,23 +22,30 @@ export default function ProductDetailPage() {
   const [addSuccess, setAddSuccess] = useState(false)
 
   useEffect(() => {
-    const loadProduct = async () => {
+    const loadProductAndReviews = async () => {
       setLoading(true)
       try {
-        const { data } = await api.get(`/api/products/${slug}`)
-        if (data.success) {
-          setProduct(data.data)
-          setActiveImage(data.data.cover_image_url)
+        const [prodRes, revRes] = await Promise.all([
+          api.get(`/api/products/${slug}`),
+          api.get(`/api/products/${slug}/reviews`).catch(() => ({ data: { success: false, data: [] } }))
+        ])
+
+        if (prodRes.data.success) {
+          setProduct(prodRes.data.data)
+          setActiveImage(prodRes.data.data.cover_image_url)
 
           // 預設選取第一個有庫存的 SKU 規格
-          const firstAvailableSku = data.data.skus?.find(s => s.stock > 0 && s.is_active)
+          const firstAvailableSku = prodRes.data.data.skus?.find(s => s.stock > 0 && s.is_active)
           if (firstAvailableSku) {
             setSelectedColor(firstAvailableSku.color || '')
             setSelectedSize(firstAvailableSku.size || '')
-          } else if (data.data.skus?.length > 0) {
-            setSelectedColor(data.data.skus[0].color || '')
-            setSelectedSize(data.data.skus[0].size || '')
+          } else if (prodRes.data.data.skus?.length > 0) {
+            setSelectedColor(prodRes.data.data.skus[0].color || '')
+            setSelectedSize(prodRes.data.data.skus[0].size || '')
           }
+        }
+        if (revRes.data?.success) {
+          setReviews(revRes.data.data)
         }
       } catch (err) {
         setError(err.response?.data?.message || '載入商品失敗')
@@ -45,7 +53,7 @@ export default function ProductDetailPage() {
         setLoading(false)
       }
     }
-    loadProduct()
+    loadProductAndReviews()
   }, [slug])
 
   if (loading) {
@@ -158,6 +166,15 @@ export default function ProductDetailPage() {
         <div className="product-detail__info">
           <span className="product-detail__category">{product.category_name}</span>
           <h1 className="product-detail__name">{product.name}</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: 'var(--color-cream-faint)', marginTop: '8px', marginBottom: '16px' }}>
+            <span style={{ color: 'var(--color-gold)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold' }}>
+              ★ {parseFloat(product.rating || 5).toFixed(1)}
+            </span>
+            <span>•</span>
+            <span>{reviews.length} 則評價</span>
+            <span>•</span>
+            <span>{product.view_count || 0} 次點擊人氣</span>
+          </div>
           
           <div className="product-detail__price-area">
             <span className="price price--large">
@@ -262,6 +279,49 @@ export default function ProductDetailPage() {
               商品細節 & 故事
             </h3>
             <p style={{ whiteSpace: 'pre-line' }}>{product.description || '無詳細說明'}</p>
+          </div>
+
+          {/* Customer Reviews Section */}
+          <div style={{ marginTop: '48px', borderTop: '1px solid var(--color-border)', paddingTop: '32px' }}>
+            <h3 style={{ fontSize: '20px', color: 'var(--color-cream)', marginBottom: '24px', fontFamily: 'var(--font-heading)' }}>
+              顧客真實回饋 ({reviews.length})
+            </h3>
+            {reviews.length === 0 ? (
+              <p style={{ color: 'var(--color-cream-faint)', fontSize: '14px', fontStyle: 'italic' }}>
+                目前尚無評價，歡迎購入後留下您的刻痕。
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {reviews.map((rev) => (
+                  <div
+                    key={rev.id}
+                    style={{
+                      background: 'var(--color-bg-card)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '12px',
+                      padding: '20px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 'bold', color: 'var(--color-cream)' }}>
+                          {rev.user_name}
+                        </span>
+                        <span style={{ color: 'var(--color-gold)', fontSize: '14px' }}>
+                          {'★'.repeat(rev.rating)}{'☆'.repeat(5 - rev.rating)}
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '12px', color: 'var(--color-cream-faint)' }}>
+                        {new Date(rev.created_at).toLocaleDateString('zh-TW')}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '14px', color: 'var(--color-cream-muted)', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                      {rev.comment || '僅留下星等評分，未填寫文字描述。'}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

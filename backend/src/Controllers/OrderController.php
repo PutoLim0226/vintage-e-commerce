@@ -182,7 +182,15 @@ class OrderController extends BaseController
             return;
         }
 
-        $itemStmt = $db->prepare('SELECT * FROM order_items WHERE order_id = ?');
+        $itemStmt = $db->prepare(
+            "SELECT oi.*, ps.product_id,
+                    (SELECT COUNT(*) FROM product_reviews pr
+                     WHERE pr.order_id = oi.order_id
+                       AND pr.product_id = ps.product_id) AS has_review
+             FROM order_items oi
+             JOIN product_skus ps ON ps.id = oi.sku_id
+             WHERE oi.order_id = ?"
+        );
         $itemStmt->execute([$order['id']]);
         $order['items'] = $itemStmt->fetchAll();
 

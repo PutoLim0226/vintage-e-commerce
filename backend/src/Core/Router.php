@@ -19,6 +19,7 @@ use Src\Controllers\AdminOrderController;
 use Src\Controllers\AdminDashboardController;
 use Src\Middleware\AuthMiddleware;
 use Src\Middleware\AdminMiddleware;
+use Src\Controllers\ReviewController;
 
 class Router
 {
@@ -41,6 +42,7 @@ class Router
         // 商品（公開）
         $this->add('GET',  '/api/products',            [ProductController::class, 'index']);
         $this->add('GET',  '/api/products/{slug}',     [ProductController::class, 'show']);
+        $this->add('GET',  '/api/products/{slug}/reviews', [ReviewController::class, 'index']);
 
         // 分類（公開）
         $this->add('GET',  '/api/categories',          [CategoryController::class, 'index']);
@@ -63,6 +65,7 @@ class Router
         $this->add('POST', '/api/coupons/check',       [OrderController::class, 'checkCoupon'],[AuthMiddleware::class]);
         $this->add('POST', '/api/orders',              [OrderController::class, 'create'],     [AuthMiddleware::class]);
         $this->add('GET',  '/api/orders/{order_no}',   [OrderController::class, 'show'],       [AuthMiddleware::class]);
+        $this->add('POST', '/api/reviews',              [ReviewController::class, 'store'],     [AuthMiddleware::class]);
 
         // ── 管理後台 ─────────────────────────────
         $this->add('GET',  '/api/admin/dashboard',     [AdminDashboardController::class, 'index'],   [AdminMiddleware::class]);
