@@ -1,5 +1,5 @@
 # 🎨 復古刻痕 - 前端系統 (Frontend SPA)
-> **Version: 1.0.0**
+> **Version: 1.0.1**
 
 本目錄包含「復古刻痕」電商的前端 Single Page Application (SPA)。全站採用 React 18 搭配 Vite 構建，最大特色為**零 UI 庫依賴**，以底層 SCSS 與設計標記 (Design Tokens) 進行排版與精緻的微交互動畫。
 
@@ -50,16 +50,33 @@ rtk npx sass src/assets/scss/main.scss src/assets/css/main.css --style=compresse
 
 ---
 
-## 📦 本地開發
+## 📦 本地開發與背景守護
 
+### 1. 標準背景啟動 (推薦，防斷線)
+使用內建的 Tmux 背景腳本，使服務運行在獨立 session，不受終端視窗關閉影響：
+```bash
+# 啟動前端 (Vite)
+rtk bash start-dev-tmux.sh start
+
+# 停止前端
+rtk bash start-dev-tmux.sh stop
+
+# 重啟前端
+rtk bash start-dev-tmux.sh restart
+
+# 查看輸出日誌與互動
+tmux attach -t vintage-frontend
+# (離開請按 Ctrl+B 接著按 D)
+```
+
+### 2. 一般啟動
 ```bash
 # 安裝前端依賴
 rtk npm install
 
-# 啟動 Vite 開發伺服器 (包含後端 /api 反向代理設定)
+# 前台啟動 Vite 開發伺服器
 rtk npm run dev
 
 # 專案打包
 rtk npm run build
 ```
-*開發伺服器啟動後，將代理 API 請求至 `http://127.0.0.1:8000`，解決跨網域 CORS 問題。*

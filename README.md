@@ -1,5 +1,5 @@
 # 🧥 復古刻痕 - 全端電商平台 (Vintage E-Commerce)
-> **Version: 1.0.0**
+> **Version: 1.0.1**
 
 這是一個從零到完整上線的電商作品，專注於復古服飾零售。**本專案最大的特色在於「零 UI 框架依賴」** — 所有視覺效果皆由底層 SCSS 手刻打造，前端採用 React + Vite，後端使用純 PHP 自製 RESTful API，完整實現電商進銷存、金物流串接與會員行銷系統。
 
@@ -19,39 +19,27 @@
 
 ---
 
-## 🚀 快速啟動與開發指南
+## 🚀 快速啟動與開發指南 (隔離背景服務)
 
-本專案將前後端分離開發，請確保您的開發環境已安裝 **PHP 8.3** 與 **Node.js 20+**。
+本專案提供基於 **Tmux** 的背景隔離啟動腳本，即使關閉當前終端機視窗，服務也將持續在獨立會話中運行。
 
-### 後端啟動 (Backend)
-1. 進入後端目錄並複製環境變數設定：
-   ```bash
-   cd backend
-   cp .env.example .env
-   ```
-2. 設定資料庫連線資訊與 JWT Secret，並執行資料庫導入：
-   ```bash
-   # 導入 schema.sql 與 seeds.sql
-   rtk mysql -u USER -p DATABASE < backend/database/schema.sql
-   rtk mysql -u USER -p DATABASE < backend/database/seeds.sql
-   ```
-3. 啟動 PHP 開發伺服器：
-   ```bash
-   rtk bash backend/start-dev.sh
-   ```
-   *伺服器將在 `http://127.0.0.1:8000` 運行。*
+### 一鍵背景啟動
+```bash
+# 啟動後端 (127.0.0.1:8000)
+rtk bash backend/start-dev-tmux.sh start
 
-### 前端啟動 (Frontend)
-1. 進入前端目錄並安裝依賴：
-   ```bash
-   cd frontend
-   rtk npm install
-   ```
-2. 啟動前端開發伺服器：
-   ```bash
-   rtk npm run dev
-   ```
-   *前端將在 `http://localhost:5173` 運行。*
+# 啟動前端 (localhost:5173)
+rtk bash frontend/start-dev-tmux.sh start
+```
+
+### 服務控制指令
+- **查看狀態**：`bash backend/start-dev-tmux.sh status` 或 `bash frontend/start-dev-tmux.sh status`
+- **重啟服務**：`bash backend/start-dev-tmux.sh restart`
+- **停止服務**：`bash backend/start-dev-tmux.sh stop`
+- **進入服務視窗 (查看輸出 log)**：
+  - 後端：`tmux attach -t vintage-backend`
+  - 前端：`tmux attach -t vintage-frontend`
+  *提示：進入後若想退回原終端，按 `Ctrl + B` 接著按 `D` 即可。*
 
 ---
 

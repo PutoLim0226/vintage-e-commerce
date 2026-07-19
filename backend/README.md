@@ -1,5 +1,5 @@
 # ⚙️ 復古刻痕 - 後端 API 系統 (Backend API)
-> **Version: 1.0.0**
+> **Version: 1.0.1**
 
 本目錄為「復古刻痕」電商的後端 API 系統。採用 **無框架 PHP 8.3** 開發，自製物件導向的 MVC 設計、RESTful 路由分發器與中間件 (Middleware) 機制，確保最高運作效率。
 
@@ -60,18 +60,34 @@
 
 ---
 
-## 🚀 啟動方式
+## 🚀 啟動方式與背景守護
 
-1. 安裝 Composer 依賴：
-   ```bash
-   composer install
-   ```
-2. 匯入資料庫：
-   ```bash
-   rtk mysql -u root -pPutolim@0226 vintage_ec < database/schema.sql
-   rtk mysql -u root -pPutolim@0226 vintage_ec < database/seeds.sql
-   ```
-3. 執行啟動指令：
-   ```bash
-   rtk bash start-dev.sh
-   ```
+### 1. 標準背景啟動 (推薦，防斷線)
+使用內建的 Tmux 背景腳本，使後端服務運行在獨立 session，不受終端視窗關閉影響：
+```bash
+# 啟動後端
+rtk bash start-dev-tmux.sh start
+
+# 停止後端
+rtk bash start-dev-tmux.sh stop
+
+# 重啟後端
+rtk bash start-dev-tmux.sh restart
+
+# 查看輸出日誌與互動
+tmux attach -t vintage-backend
+# (離開請按 Ctrl+B 接著按 D)
+```
+
+### 2. 一般啟動
+```bash
+# 安裝 Composer 依賴
+composer install
+
+# 匯入資料庫
+rtk mysql -u root -pPutolim@0226 vintage_ec < database/schema.sql
+rtk mysql -u root -pPutolim@0226 vintage_ec < database/seeds.sql
+
+# 前台啟動開發伺服器
+rtk php -S 127.0.0.1:8000 -t public/ public/index.php
+```
