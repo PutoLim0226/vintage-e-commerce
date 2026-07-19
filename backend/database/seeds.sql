@@ -164,6 +164,9 @@ INSERT INTO coupons (code, type, value, min_order, usage_limit, expires_at, is_a
 ('VIP15',      'percent', 15,  3000, 100,  DATE_ADD(NOW(), INTERVAL 3 MONTH), 1),
 ('FREESHIP',   'fixed',   60,  800,  1000, DATE_ADD(NOW(), INTERVAL 1 YEAR),  1);
 
+-- 統一初始化商品點擊數與評分
+UPDATE products SET view_count = FLOOR(RAND()*500)+50, rating = ROUND(4.0 + (RAND()*1.0), 2);
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 SELECT CONCAT('✅ Seed OK → Products: ', (SELECT COUNT(*) FROM products),

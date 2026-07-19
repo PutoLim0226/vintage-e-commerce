@@ -24,6 +24,7 @@ export default function CheckoutPage() {
   // 折價券代碼
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState('')
+  const [discount, setDiscount] = useState(0)
 
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
@@ -44,7 +45,7 @@ export default function CheckoutPage() {
   }
 
   const shippingFee = calcShippingFee()
-  const orderTotal = cart.total + shippingFee
+  const orderTotal = Math.max(0, cart.total - discount + shippingFee)
 
   const validate = () => {
     const tempErrors = {}
@@ -57,11 +58,27 @@ export default function CheckoutPage() {
     return Object.keys(tempErrors).length === 0
   }
 
-  const handleApplyCoupon = (e) => {
+  const handleApplyCoupon = async (e) => {
     e.preventDefault()
-    if (couponCode.trim()) {
-      setAppliedCoupon(couponCode.trim())
-      alert(`已記下折價券「${couponCode.trim()}」，將在提交訂單時由系統進行折扣試算`)
+    if (!couponCode.trim()) return
+
+    setLoading(true)
+    try {
+      const { data } = await api.post('/api/coupons/check', {
+        coupon_code: couponCode.trim(),
+        subtotal: cart.total
+      })
+      if (data.success) {
+        setAppliedCoupon(data.data.code)
+        setDiscount(parseFloat(data.data.discount || 0))
+        alert(`成功套用折價券「${data.data.code}」，已折抵 NT$ ${Math.round(data.data.discount)}`)
+      }
+    } catch (err) {
+      setAppliedCoupon('')
+      setDiscount(0)
+      alert(err.response?.data?.message || '折價券無效或未達消費門檻')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -341,9 +358,9 @@ export default function CheckoutPage() {
               <span>NT$ {Math.round(shippingFee)}</span>
             </div>
             {appliedCoupon && (
-              <div className="checkout__summary-row checkout__summary-row--discount">
+              <div className="checkout__summary-row checkout__summary-row--discount" style={{ color: 'var(--color-gold)' }}>
                 <span>折價券折抵</span>
-                <span>由系統結帳計算</span>
+                <span>- NT$ {Math.round(discount)}</span>
               </div>
             )}
             <div className="checkout__summary-row checkout__summary-row--total">

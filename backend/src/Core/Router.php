@@ -59,7 +59,8 @@ class Router
         $this->add('GET',  '/api/me/addresses',        [UserController::class, 'addresses'],   [AuthMiddleware::class]);
         $this->add('POST', '/api/me/addresses',        [UserController::class, 'addAddress'],  [AuthMiddleware::class]);
 
-        // 訂單
+        // 訂單 & 折價券
+        $this->add('POST', '/api/coupons/check',       [OrderController::class, 'checkCoupon'],[AuthMiddleware::class]);
         $this->add('POST', '/api/orders',              [OrderController::class, 'create'],     [AuthMiddleware::class]);
         $this->add('GET',  '/api/orders/{order_no}',   [OrderController::class, 'show'],       [AuthMiddleware::class]);
 

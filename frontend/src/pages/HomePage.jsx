@@ -130,7 +130,13 @@ export default function HomePage() {
                       </div>
                     </div>
                     <div className="product-card__info">
-                      <span className="product-card__category">{prod.category_name}</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span className="product-card__category">{prod.category_name}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--color-cream-faint)' }}>
+                          <span style={{ color: 'var(--color-gold)' }}>★ {parseFloat(prod.rating || 5).toFixed(1)}</span>
+                          <span>({prod.view_count || 0})</span>
+                        </div>
+                      </div>
                       <h3 className="product-card__name">
                         <Link to={`/products/${prod.slug}`}>{prod.name}</Link>
                       </h3>

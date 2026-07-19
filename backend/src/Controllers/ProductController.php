@@ -45,7 +45,8 @@ class ProductController extends BaseController
         $orderSQL = match($sort) {
             'price_asc'  => 'p.base_price ASC',
             'price_desc' => 'p.base_price DESC',
-            default      => 'p.created_at DESC',
+            // 預設排序：優先顯示評分好且點擊多的商品
+            default      => 'p.rating DESC, p.view_count DESC, p.created_at DESC',
         };
 
         // 計算總數
@@ -60,7 +61,7 @@ class ProductController extends BaseController
         // 查詢商品
         $stmt = $db->prepare(
             "SELECT p.id, p.name, p.slug, p.base_price, p.compare_price,
-                    p.cover_image_url, p.is_featured,
+                    p.cover_image_url, p.is_featured, p.rating, p.view_count,
                     c.name AS category_name, c.slug AS category_slug
              FROM products p
              JOIN categories c ON c.id = p.category_id
@@ -87,6 +88,10 @@ class ProductController extends BaseController
     {
         $db   = Database::getInstance();
         $slug = $params['slug'] ?? '';
+
+        // 點擊數自動 + 1
+        $db->prepare('UPDATE products SET view_count = view_count + 1 WHERE slug = ? AND is_active = 1')
+           ->execute([$slug]);
 
         $stmt = $db->prepare(
             "SELECT p.*, c.name AS category_name, c.slug AS category_slug

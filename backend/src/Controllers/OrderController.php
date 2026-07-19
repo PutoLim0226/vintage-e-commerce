@@ -218,6 +218,55 @@ class OrderController extends BaseController
         echo 'OK';
     }
 
+    // POST /api/coupons/check (需登入)
+    public function checkCoupon(array $params): void
+    {
+        $db   = Database::getInstance();
+        $body = $this->body();
+
+        $couponCode = $body['coupon_code'] ?? '';
+        $subtotal   = (float)($body['subtotal'] ?? 0.0);
+
+        if (empty($couponCode)) {
+            $this->error('請輸入折價券代碼', 422);
+            return;
+        }
+
+        $cpStmt = $db->prepare(
+            "SELECT * FROM coupons
+             WHERE code = ? AND is_active = 1
+               AND (starts_at IS NULL OR starts_at <= NOW())
+               AND (expires_at IS NULL OR expires_at >= NOW())
+               AND (usage_limit IS NULL OR used_count < usage_limit)
+             LIMIT 1"
+        );
+        $cpStmt->execute([$couponCode]);
+        $coupon = $cpStmt->fetch();
+
+        if (!$coupon) {
+            $this->error('折價券無效、不存在或已過期', 400);
+            return;
+        }
+
+        if ($subtotal < (float)$coupon['min_order']) {
+            $this->error("未達該折價券最低消費門檻 (NT$ " . (int)$coupon['min_order'] . ")", 400);
+            return;
+        }
+
+        $discount = $coupon['type'] === 'fixed'
+            ? (float)$coupon['value']
+            : min($subtotal * $coupon['value'] / 100, (float)($coupon['max_discount'] ?? PHP_FLOAT_MAX));
+
+        $this->success([
+            'coupon_id'   => $coupon['id'],
+            'code'        => $coupon['code'],
+            'type'        => $coupon['type'],
+            'value'       => (float)$coupon['value'],
+            'discount'    => $discount,
+            'min_order'   => (float)$coupon['min_order'],
+        ], '折價券驗證成功');
+    }
+
     // ── 運費計算 ────────────────────────────────────────────
 
     private function calcShipping(string $method, float $subtotal): float

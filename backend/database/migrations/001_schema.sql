@@ -85,6 +85,8 @@ CREATE TABLE `products` (
     `is_featured`     TINYINT(1) NOT NULL DEFAULT 0,
     `meta_title`      VARCHAR(255),
     `meta_desc`       VARCHAR(500),
+    `view_count`      INT UNSIGNED NOT NULL DEFAULT 0,
+    `rating`          DECIMAL(3,2) NOT NULL DEFAULT 5.00,
     `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`)
