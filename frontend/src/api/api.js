@@ -1,8 +1,9 @@
 import axios from 'axios'
 
 // 開發：Vite proxy 轉發 /api/* → http://127.0.0.1:8000
-// 正式：VITE_API_URL 環境變數（或留空用相對路徑）
-const API_BASE_URL = import.meta.env.VITE_API_URL || ''
+// 正式：VITE_API_URL 環境變數。如果在 github.io 且未設置環境變數，fallback 至本地的 http://localhost:8000 進行測試
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (window.location.hostname.includes('github.io') ? 'http://localhost:8000' : '')
 
 const api = axios.create({
   baseURL: API_BASE_URL,

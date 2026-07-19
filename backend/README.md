@@ -1,5 +1,5 @@
 # ⚙️ 復古刻痕 - 後端 API 系統 (Backend API)
-> **Version: 1.0.6**
+> **Version: 1.0.7**
 
 本目錄為「復古刻痕」電商的後端 API 系統。採用 **無框架 PHP 8.3** 開發，自製物件導向的 MVC 設計、RESTful 路由分發器與中間件 (Middleware) 機制，確保最高運作效率。
 
@@ -95,6 +95,10 @@ rtk php -S 127.0.0.1:8000 -t public/ public/index.php
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.0.7 — 2026-07-19
+fix(cors): 修復部署在 GitHub Pages 時 API 連線位址錯誤與對應的跨域問題。
+- 後端 `App.php` 中設定 `handleCors()` 的 `Access-Control-Allow-Origin` 白名單，將 `https://putolim0226.github.io` 與 `X-Cart-Token` 等自訂 Header 寫入。
 
 1.0.6 — 2026-07-19
 feat(payment): 實作自製金流模擬 Sandbox 頁面與 Webhook 異步對帳。

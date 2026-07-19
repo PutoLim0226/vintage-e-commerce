@@ -1,5 +1,5 @@
 # 🧥 復古刻痕 - 全端電商平台 (Vintage E-Commerce)
-> **Version: 1.0.6**
+> **Version: 1.0.7**
 
 這是一個從零到完整上線的電商作品，專注於復古服飾零售。**本專案最大的特色在於「零 UI 框架依賴」** — 所有視覺效果皆由底層 SCSS 手刻打造，前端採用 React + Vite，後端使用純 PHP 自製 RESTful API，完整實現電商進銷存、金物流串接與會員行銷系統。
 
@@ -77,6 +77,11 @@ vintage-e-commerce/
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.0.7 — 2026-07-19
+fix(cors): 修復部署在 GitHub Pages 時跨域請求 (CORS) 拒絕及 API 位址錯誤。
+- 後端 `App.php` 中設定 `handleCors()` 的 `Access-Control-Allow-Origin` 白名單，將 `https://putolim0226.github.io` 與 `X-Cart-Token` 等自訂 Header 寫入。
+- 前端 `api.js` 改進 `API_BASE_URL` 宣告，在檢測到 GitHub Pages (`github.io`) 託管環境時自動 fallback 串接到本地 `http://localhost:8000` 連線，確保前台運作順暢。
 
 1.0.6 — 2026-07-19
 feat(payment): 實作自製金流模擬 Sandbox 頁面與 Webhook 異步對帳。

@@ -1,5 +1,5 @@
 # 🎨 復古刻痕 - 前端系統 (Frontend SPA)
-> **Version: 1.0.6**
+> **Version: 1.0.7**
 
 本目錄包含「復古刻痕」電商的前端 Single Page Application (SPA)。全站採用 React 18 搭配 Vite 構建，最大特色為**零 UI 庫依賴**，以底層 SCSS 與設計標記 (Design Tokens) 進行排版與精緻的微交互動畫。
 
@@ -84,6 +84,10 @@ rtk npm run build
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.0.7 — 2026-07-19
+fix(cors): 修復部署在 GitHub Pages 時 API 連線位址錯誤與對應的跨域問題。
+- 前端 `api.js` 改進 `API_BASE_URL` 宣告，在檢測到由 GitHub Pages (`github.io`) 託管環境運行時，自動 fallback 到本地後端 `http://localhost:8000` 進行數據請求與跨域通訊。
 
 1.0.6 — 2026-07-19
 feat(payment): 實作自製金流模擬 Sandbox 頁面與 Webhook 異步對帳。
