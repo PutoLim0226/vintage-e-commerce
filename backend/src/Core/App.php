@@ -61,15 +61,12 @@ class App
 
     private function handleCors(): void
     {
-        $origin  = $_SERVER['HTTP_ORIGIN'] ?? '';
-        $allowedOrigins = [
-            'http://localhost:5173',
-            'http://127.0.0.1:5173',
-            'https://putolim0226.github.io'
-        ];
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
-        if (in_array($origin, $allowedOrigins)) {
+        if (!empty($origin)) {
             header("Access-Control-Allow-Origin: $origin");
+        } else {
+            header("Access-Control-Allow-Origin: *");
         }
 
         header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');

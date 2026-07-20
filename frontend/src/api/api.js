@@ -1,9 +1,26 @@
 import axios from 'axios'
 
-// 開發：Vite proxy 轉發 /api/* → http://127.0.0.1:8000
-// 正式：VITE_API_URL 環境變數。如果在 github.io 且未設置環境變數，fallback 至本地的 http://localhost:8000 進行測試
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  (window.location.hostname.includes('github.io') ? 'http://localhost:8000' : '')
+// 靈活 API 位址優先順序：
+// 1. localStorage 'VINTAGE_API_URL' (可於 Console 手動覆蓋 Tailscale 網址)
+// 2. VITE_API_URL 環境變數
+// 3. window.VINTAGE_CONFIG?.API_URL
+// 4. Fallback (在 github.io 且無設定時預設連至 http://localhost:8000)
+const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined' && localStorage.getItem('VINTAGE_API_URL')) {
+    return localStorage.getItem('VINTAGE_API_URL')
+  }
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL
+  }
+  if (typeof window !== 'undefined' && window.VINTAGE_CONFIG?.API_URL) {
+    return window.VINTAGE_CONFIG.API_URL
+  }
+  return typeof window !== 'undefined' && window.location.hostname.includes('github.io')
+    ? 'http://localhost:8000'
+    : ''
+}
+
+const API_BASE_URL = getApiBaseUrl()
 
 const api = axios.create({
   baseURL: API_BASE_URL,

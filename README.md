@@ -1,5 +1,5 @@
 # 🧥 復古刻痕 - 全端電商平台 (Vintage E-Commerce)
-> **Version: 1.0.7**
+> **Version: 1.0.8**
 
 這是一個從零到完整上線的電商作品，專注於復古服飾零售。**本專案最大的特色在於「零 UI 框架依賴」** — 所有視覺效果皆由底層 SCSS 手刻打造，前端採用 React + Vite，後端使用純 PHP 自製 RESTful API，完整實現電商進銷存、金物流串接與會員行銷系統。
 
@@ -77,6 +77,11 @@ vintage-e-commerce/
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.0.8 — 2026-07-20
+feat(tailscale): 支援 Tailscale 內網 IP / 域名動態連線與無感跨域配置。
+- 後端 `App.php` 的 CORS 設定升級為動態回傳傳入的 `HTTP_ORIGIN`，全面適配 Tailscale IP (100.x.x.x)、MagicDNS 網域以及公開網頁連線。
+- 前端 `api.js` 改進 API URL 解析順序，優先支援 `localStorage.getItem('VINTAGE_API_URL')` 與環境變數，方便自由切換 Tailscale 伺服器網址。
 
 1.0.7 — 2026-07-19
 fix(cors): 修復部署在 GitHub Pages 時跨域請求 (CORS) 拒絕及 API 位址錯誤。

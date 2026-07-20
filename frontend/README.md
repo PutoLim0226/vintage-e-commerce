@@ -1,5 +1,5 @@
 # 🎨 復古刻痕 - 前端系統 (Frontend SPA)
-> **Version: 1.0.7**
+> **Version: 1.0.8**
 
 本目錄包含「復古刻痕」電商的前端 Single Page Application (SPA)。全站採用 React 18 搭配 Vite 構建，最大特色為**零 UI 庫依賴**，以底層 SCSS 與設計標記 (Design Tokens) 進行排版與精緻的微交互動畫。
 
@@ -84,6 +84,10 @@ rtk npm run build
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.0.8 — 2026-07-20
+feat(tailscale): 支援動態指定 API URL 與 localStorage 覆蓋。
+- 前端 `api.js` 改進 API URL 解析順序，優先支援 `localStorage.getItem('VINTAGE_API_URL')` 與環境變數，方便自由切換 Tailscale 伺服器網址。
 
 1.0.7 — 2026-07-19
 fix(cors): 修復部署在 GitHub Pages 時 API 連線位址錯誤與對應的跨域問題。
