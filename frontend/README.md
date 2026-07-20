@@ -1,5 +1,5 @@
 # 🎨 復古刻痕 - 前端系統 (Frontend SPA)
-> **Version: 1.0.8**
+> **Version: 1.0.9**
 
 本目錄包含「復古刻痕」電商的前端 Single Page Application (SPA)。全站採用 React 18 搭配 Vite 構建，最大特色為**零 UI 庫依賴**，以底層 SCSS 與設計標記 (Design Tokens) 進行排版與精緻的微交互動畫。
 
@@ -84,6 +84,10 @@ rtk npm run build
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.0.9 — 2026-07-20
+style(favicon): 替換預設圖示，客製化復古黃金衣架品牌 SVG Favicon。
+- 設計並套用全站 `favicon.svg`，融合黑金典雅徽章與復古衣架 monogram 標誌。
 
 1.0.8 — 2026-07-20
 feat(tailscale): 支援動態指定 API URL 與 localStorage 覆蓋。

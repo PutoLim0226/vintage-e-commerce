@@ -1,5 +1,5 @@
 # 🧥 復古刻痕 - 全端電商平台 (Vintage E-Commerce)
-> **Version: 1.0.8**
+> **Version: 1.0.9**
 
 這是一個從零到完整上線的電商作品，專注於復古服飾零售。**本專案最大的特色在於「零 UI 框架依賴」** — 所有視覺效果皆由底層 SCSS 手刻打造，前端採用 React + Vite，後端使用純 PHP 自製 RESTful API，完整實現電商進銷存、金物流串接與會員行銷系統。
 
@@ -77,6 +77,11 @@ vintage-e-commerce/
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.0.9 — 2026-07-20
+style(favicon): 替換預設圖示，客製化復古黃金衣架品牌 SVG Favicon。
+- 設計並套用全站 `favicon.svg`，融合黑金典雅徽章與復古衣架 monogram 標誌。
+- `index.html` 補齊 `apple-touch-icon` 及 `#19120c` 復古網址列 `theme-color` meta 標籤。
 
 1.0.8 — 2026-07-20
 feat(tailscale): 支援 Tailscale 內網 IP / 域名動態連線與無感跨域配置。
