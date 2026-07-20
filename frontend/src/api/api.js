@@ -131,6 +131,18 @@ api.interceptors.response.use(
       }
     }
 
+    if (!error.response) {
+      // 網路斷連或拒絕連線 (ERR_CONNECTION_REFUSED)
+      window.dispatchEvent(
+        new CustomEvent('api_connection_error', {
+          detail: {
+            url: originalRequest?.url,
+            baseUrl: API_BASE_URL
+          }
+        })
+      )
+    }
+
     return Promise.reject(error)
   }
 )

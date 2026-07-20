@@ -24,8 +24,22 @@ export default function Header() {
     navigate('/')
   }
 
+  const [connError, setConnError] = useState(false)
+
+  useEffect(() => {
+    const handleConnErr = () => setConnError(true)
+    window.addEventListener('api_connection_error', handleConnErr)
+    return () => window.removeEventListener('api_connection_error', handleConnErr)
+  }, [])
+
   return (
     <>
+      {connError && (
+        <div style={{ background: 'rgba(198,160,87,0.15)', borderBottom: '1px solid var(--color-gold)', color: 'var(--color-gold)', padding: '8px 16px', fontSize: '13px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', zIndex: 9999, position: 'relative' }}>
+          <span>⚠️ 提示：無法連線至 API 後端 (ERR_CONNECTION_REFUSED)。若為線上展示，請確認本機 PHP 伺服器已啟動，或設定全域 API 網址。</span>
+          <button type="button" onClick={() => setConnError(false)} style={{ background: 'none', border: 'none', color: 'var(--color-gold)', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' }}>✕</button>
+        </div>
+      )}
       <header className="header">
         <div className="header__inner">
           {/* Logo */}

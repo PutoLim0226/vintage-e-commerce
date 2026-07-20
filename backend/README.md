@@ -1,5 +1,5 @@
 # ⚙️ 復古刻痕 - 後端 API 系統 (Backend API)
-> **Version: 1.0.9**
+> **Version: 1.1.0**
 
 本目錄為「復古刻痕」電商的後端 API 系統。採用 **無框架 PHP 8.3** 開發，自製物件導向的 MVC 設計、RESTful 路由分發器與中間件 (Middleware) 機制，確保最高運作效率。
 
@@ -95,6 +95,9 @@ rtk php -S 127.0.0.1:8000 -t public/ public/index.php
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.1.0 — 2026-07-20
+ux(notice): 前端增加 API 連線防呆全域提示 Banner。
 
 1.0.9 — 2026-07-20
 style(favicon): 前端替換預設圖示，套用復古黑金徽章 Favicon。
