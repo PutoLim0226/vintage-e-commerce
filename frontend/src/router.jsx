@@ -59,7 +59,7 @@ const router = createBrowserRouter([
     ],
   },
 ], {
-  basename: import.meta.env.DEV ? '/' : '/vintage-e-commerce',
+  basename: import.meta.env.VITE_ROUTER_BASENAME || '/',
 })
 
 export default router
