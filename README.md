@@ -1,5 +1,5 @@
 # 🧥 復古刻痕 - 全端電商平台 (Vintage E-Commerce)
-> **Version: 1.1.0**
+> **Version: 1.1.1**
 
 這是一個從零到完整上線的電商作品，專注於復古服飾零售。**本專案最大的特色在於「零 UI 框架依賴」** — 所有視覺效果皆由底層 SCSS 手刻打造，前端採用 React + Vite，後端使用純 PHP 自製 RESTful API，完整實現電商進銷存、金物流串接與會員行銷系統。
 
@@ -77,6 +77,11 @@ vintage-e-commerce/
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.1.1 — 2026-07-20
+ops(deploy): 新增伺服器一鍵自動部署腳本 `deploy-server.sh`。
+- 自動初始化 Nginx 獨立站台、PHP 8.3-FPM、MySQL 資料庫匯入與權限管理。
+- 支援靜態前端自動編譯與 `/api` RESTful 反向代理路徑映射。
 
 1.1.0 — 2026-07-20
 ux(notice): 增加 API 連線防呆全域提示 Banner，優化 GitHub Pages 獨立運行體驗。

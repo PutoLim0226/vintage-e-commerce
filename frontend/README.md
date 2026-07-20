@@ -1,5 +1,5 @@
 # 🎨 復古刻痕 - 前端系統 (Frontend SPA)
-> **Version: 1.1.0**
+> **Version: 1.1.1**
 
 本目錄包含「復古刻痕」電商的前端 Single Page Application (SPA)。全站採用 React 18 搭配 Vite 構建，最大特色為**零 UI 庫依賴**，以底層 SCSS 與設計標記 (Design Tokens) 進行排版與精緻的微交互動畫。
 
@@ -84,6 +84,9 @@ rtk npm run build
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.1.1 — 2026-07-20
+ops(deploy): 新增伺服器一鍵自動部署腳本 `deploy-server.sh`。
 
 1.1.0 — 2026-07-20
 ux(notice): 增加 API 連線防呆全域提示 Banner。
