@@ -56,7 +56,6 @@ class CartController extends BaseController
         }
 
         // 確認 SKU 存在且有庫存
-        $sku = $db->prepare('SELECT stock FROM product_skus WHERE id = ? AND is_active = 1')->execute([$skuId]);
         $sku = $db->prepare('SELECT stock FROM product_skus WHERE id = ? AND is_active = 1 LIMIT 1');
         $sku->execute([$skuId]);
         $skuRow = $sku->fetch();
@@ -123,7 +122,7 @@ class CartController extends BaseController
 
     /**
      * 解析或建立購物車 ID
-     * 優先使用 JWT（會員），否則用 X-Cart-Token header（訪客）
+     * 優先使用 JWT（會員），若之前用 session_key (X-Cart-Token) 建立了購物車，自動關聯至該會員 user_id
      */
     private function resolveCartId(\PDO $db, bool $createIfMissing): ?int
     {
@@ -137,6 +136,18 @@ class CartController extends BaseController
             $row = $stmt->fetch();
 
             if ($row) return (int)$row['id'];
+
+            // 自動將 session_key 購物車關聯至會員 user_id
+            if ($sessionKey) {
+                $sessionCart = $db->prepare('SELECT id FROM carts WHERE session_key = ? LIMIT 1');
+                $sessionCart->execute([$sessionKey]);
+                $sRow = $sessionCart->fetch();
+                if ($sRow) {
+                    $db->prepare('UPDATE carts SET user_id = ? WHERE id = ?')->execute([$auth['sub'], $sRow['id']]);
+                    return (int)$sRow['id'];
+                }
+            }
+
             if (!$createIfMissing) return null;
 
             $db->prepare('INSERT INTO carts (user_id) VALUES (?)')->execute([$auth['sub']]);

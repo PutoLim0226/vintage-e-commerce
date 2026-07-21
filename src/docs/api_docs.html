@@ -2,40 +2,76 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>復古刻痕 Vintage E-Commerce - RESTful API 文件</title>
+  <title>復古刻痕 Vintage E-Commerce - 互動式 API 文件 (v1.3.0)</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; padding: 20px; background: #1a1612; color: #e8e0d5; }
-    h1, h2, h3 { color: #d4af37; border-bottom: 1px solid #3d3429; padding-bottom: 8px; }
-    .endpoint { background: #241e19; border-left: 4px solid #d4af37; padding: 12px 16px; margin-bottom: 20px; border-radius: 4px; }
-    .method { display: inline-block; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; margin-right: 10px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; padding: 20px; background: #120d07; color: #f5f0e8; max-width: 1200px; margin: 0 auto; }
+    h1, h2, h3 { color: #c8a96e; border-bottom: 1px solid rgba(200, 169, 110, 0.2); padding-bottom: 8px; }
+    .console-card { background: #1e1610; border: 1px solid rgba(200, 169, 110, 0.3); border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .endpoint { background: #1e1610; border-left: 4px solid #c8a96e; padding: 16px; margin-bottom: 20px; border-radius: 6px; border: 1px solid rgba(200, 169, 110, 0.15); }
+    .method { display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; margin-right: 10px; }
     .get { background: #2e7d32; color: #fff; }
     .post { background: #1565c0; color: #fff; }
     .put { background: #f57c00; color: #fff; }
     .patch { background: #8e24aa; color: #fff; }
     .delete { background: #c62828; color: #fff; }
-    .path { font-family: monospace; font-size: 1.1rem; color: #f3e5ab; }
-    pre { background: #120e0b; padding: 10px; border-radius: 4px; overflow-x: auto; color: #a5d6a7; }
+    .path { font-family: monospace; font-size: 1.1rem; color: #e0c99a; }
+    pre { background: #0e0a05; padding: 12px; border-radius: 6px; overflow-x: auto; color: #a5d6a7; font-family: monospace; }
+    input, select, textarea, button { background: #120d07; color: #f5f0e8; border: 1px solid rgba(200, 169, 110, 0.3); padding: 8px 12px; border-radius: 4px; font-size: 14px; outline: none; }
+    button { background: #c8a96e; color: #120d07; font-weight: bold; cursor: pointer; transition: opacity 0.2s; }
+    button:hover { opacity: 0.9; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 12px; color: #b8a898; margin-bottom: 4px; }
   </style>
 </head>
 <body>
-  <h1>復古刻痕 Vintage E-Commerce API 文件 (v1.2.0)</h1>
+  <h1>🧥 復古刻痕 Vintage E-Commerce - RESTful API 文件 (v1.3.0)</h1>
+  <p style="color: #b8a898;">純 PHP 8.3 RESTful API + React 全端系統之互動測試控制台與端點規格書</p>
+
+  <!-- 即時 Try-it-out 控制台 -->
+  <div class="console-card">
+    <h3 style="margin-top:0;">⚡ Try-It-Out 線上即時 API 測試控制台</h3>
+    <div style="display: grid; grid-template-columns: 100px 1fr 140px; gap: 10px;" class="form-group">
+      <div>
+        <label>Method</label>
+        <select id="reqMethod" style="width:100%;">
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="PATCH">PATCH</option>
+          <option value="DELETE">DELETE</option>
+        </select>
+      </div>
+      <div>
+        <label>Endpoint Path (API 相對路徑)</label>
+        <input type="text" id="reqPath" value="/api/products" style="width:100%;" />
+      </div>
+      <div style="align-self: end;">
+        <button id="sendBtn" style="width:100%; height:38px;">送出請求</button>
+      </div>
+    </div>
+
+    <div className="form-group" style="margin-bottom: 12px;">
+      <label>JWT Bearer Token (選填)</label>
+      <input type="text" id="reqToken" placeholder="輸入 Bearer Token..." style="width:100%; font-family:monospace;" />
+    </div>
+
+    <div className="form-group">
+      <label>Request Body (JSON 格式)</label>
+      <textarea id="reqBody" rows="3" style="width:100%; font-family:monospace;" placeholder='{"email":"admin@vintage.com","password":"..."}'></textarea>
+    </div>
+
+    <div style="margin-top: 16px;">
+      <label>Response 狀態與回應內容：</label>
+      <div id="respStatus" style="font-weight:bold; margin-bottom:4px; color:#c8a96e;">尚未發送請求</div>
+      <pre id="respOutput">// 點擊「送出請求」於此處展示即時 JSON 回應</pre>
+    </div>
+  </div>
 
   <h2>管理員後台 API 模組 (Admin Endpoints)</h2>
 
   <div class="endpoint">
     <span class="method get">GET</span> <span class="path">/api/admin/dashboard?period={7d|30d|1y}</span>
     <p>取得管理員營收指標、近階段營收與訂單趨勢、熱銷 Top 5 商品與低庫存 (stock &le; 5) 警示列表。</p>
-    <h4>Response (200 OK)</h4>
-    <pre>{
-  "success": true,
-  "data": {
-    "kpi": { "total_revenue": 158000, "total_orders": 42, "avg_order_value": 3761.9, "total_users": 128 },
-    "period": "7d",
-    "trend": [ { "date": "2026-07-21", "order_count": 5, "revenue": 18500 } ],
-    "top_products": [ { "id": 1, "name": "美式復古皮革飛行夾克", "total_sold": 18, "total_revenue": 75600 } ],
-    "low_stock_skus": [ { "sku_code": "JKT-LEA-BRN-M", "stock": 2, "product_name": "美式復古皮革飛行夾克" } ]
-  }
-}</pre>
   </div>
 
   <div class="endpoint">
@@ -44,19 +80,8 @@
   </div>
 
   <div class="endpoint">
-    <span class="method get">GET</span> <span class="path">/api/admin/orders/{id}</span>
-    <p>取得單一訂單詳細資料（包含商品細項、收件資訊、點數折抵、折價券與物流號碼）。</p>
-  </div>
-
-  <div class="endpoint">
     <span class="method put">PUT</span> <span class="path">/api/admin/orders/{id}</span>
     <p>更新訂單狀態及填寫物流資訊。若更新為 cancelled (已取消)，自動開啟 DB Transaction 還原 SKU 庫存與退還會員紅利點數。</p>
-    <h4>Request Body</h4>
-    <pre>{
-  "status": "shipped",
-  "shipping_carrier": "black_cat",
-  "tracking_number": "BC-88991234"
-}</pre>
   </div>
 
   <div class="endpoint">
@@ -73,5 +98,42 @@
     <span class="method put">PUT</span> <span class="path">/api/admin/coupons/{id}/toggle</span>
     <p>一鍵啟用或停用指定折價券。</p>
   </div>
+
+  <script>
+    document.getElementById('sendBtn').addEventListener('click', async () => {
+      const method = document.getElementById('reqMethod').value;
+      const path = document.getElementById('reqPath').value.trim();
+      const token = document.getElementById('reqToken').value.trim();
+      const bodyText = document.getElementById('reqBody').value.trim();
+      const statusDiv = document.getElementById('respStatus');
+      const outputPre = document.getElementById('respOutput');
+
+      statusDiv.textContent = '發送請求中...';
+      outputPre.textContent = 'Loading...';
+
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const options = { method, headers };
+      if (['POST', 'PUT', 'PATCH'].includes(method) && bodyText) {
+        options.body = bodyText;
+      }
+
+      const startTime = performance.now();
+      try {
+        const res = await fetch(path, options);
+        const duration = (performance.now() - startTime).toFixed(1);
+        statusDiv.textContent = `Status: ${res.status} ${res.statusText} (${duration} ms)`;
+        statusDiv.style.color = res.ok ? '#4caf72' : '#e05454';
+
+        const json = await res.json();
+        outputPre.textContent = JSON.stringify(json, null, 2);
+      } catch (err) {
+        statusDiv.textContent = `Error: ${err.message}`;
+        statusDiv.style.color = '#e05454';
+        outputPre.textContent = err.stack || err;
+      }
+    });
+  </script>
 </body>
 </html>

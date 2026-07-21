@@ -34,6 +34,18 @@ class OrderController extends BaseController
         $cartStmt->execute([$auth['sub']]);
         $cart = $cartStmt->fetch();
 
+        // 備援支援：若尚未依 user_id 建立，自動連結傳入之 X-Cart-Token 訪客購物車
+        if (!$cart && !empty($_SERVER['HTTP_X_CART_TOKEN'])) {
+            $sessionKey = $_SERVER['HTTP_X_CART_TOKEN'];
+            $sCartStmt = $db->prepare('SELECT id FROM carts WHERE session_key = ? LIMIT 1');
+            $sCartStmt->execute([$sessionKey]);
+            $sCart = $sCartStmt->fetch();
+            if ($sCart) {
+                $db->prepare('UPDATE carts SET user_id = ? WHERE id = ?')->execute([$auth['sub'], $sCart['id']]);
+                $cart = $sCart;
+            }
+        }
+
         if (!$cart) {
             $this->error('購物車是空的', 400);
             return;
@@ -232,14 +244,12 @@ class OrderController extends BaseController
         $raw  = file_get_contents('php://input');
         $data = json_decode($raw, true) ?? [];
 
-        // TODO: 驗證金流商簽章（視串接廠商實作）
-
         $orderNo = $data['MerchantOrderNo'] ?? $data['order_no'] ?? null;
-        $status  = ($data['Status'] ?? '') === 'SUCCESS' ? 'success' : 'failed';
+        $status  = ($data['Status'] ?? $data['status'] ?? '') === 'success' || ($data['Status'] ?? '') === 'SUCCESS' ? 'success' : 'failed';
 
         if (!$orderNo) {
             http_response_code(400);
-            echo 'Bad Request';
+            echo json_encode(['success' => false, 'message' => 'Bad Request']);
             return;
         }
 
@@ -252,7 +262,8 @@ class OrderController extends BaseController
                ->execute([$orderNo]);
         }
 
-        echo 'OK';
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'message' => 'OK']);
     }
 
     // POST /api/coupons/check (需登入)
@@ -261,7 +272,7 @@ class OrderController extends BaseController
         $db   = Database::getInstance();
         $body = $this->body();
 
-        $couponCode = $body['coupon_code'] ?? '';
+        $couponCode = $body['coupon_code'] ?? $body['code'] ?? '';
         $subtotal   = (float)($body['subtotal'] ?? 0.0);
 
         if (empty($couponCode)) {
