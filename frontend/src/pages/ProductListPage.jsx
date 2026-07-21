@@ -137,6 +137,26 @@ export default function ProductListPage() {
                 >
                   {cat.name}
                 </button>
+                {cat.children && cat.children.length > 0 && (
+                  <ul style={{ paddingLeft: '14px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {cat.children.map(sub => (
+                      <li key={sub.id}>
+                        <button
+                          className={`btn--text ${currentCategory === sub.slug ? 'active' : ''}`}
+                          onClick={() => handleCategorySelect(sub.slug)}
+                          style={{
+                            color: currentCategory === sub.slug ? 'var(--color-gold)' : 'var(--color-cream-faint)',
+                            fontSize: '13px',
+                            fontWeight: currentCategory === sub.slug ? 'bold' : 'normal',
+                            textAlign: 'left',
+                          }}
+                        >
+                          └ {sub.name}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>

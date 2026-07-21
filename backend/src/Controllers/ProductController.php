@@ -30,7 +30,8 @@ class ProductController extends BaseController
         $bind   = [];
 
         if ($categorySlug) {
-            $where[] = 'c.slug = ?';
+            $where[] = '(c.slug = ? OR c.parent_id = (SELECT id FROM categories WHERE slug = ? LIMIT 1))';
+            $bind[]  = $categorySlug;
             $bind[]  = $categorySlug;
         }
 

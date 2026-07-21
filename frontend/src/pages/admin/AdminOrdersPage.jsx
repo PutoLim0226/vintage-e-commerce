@@ -190,7 +190,15 @@ export default function AdminOrdersPage() {
                       <td>
                         <button
                           className="btn btn--secondary"
-                          style={{ fontSize: '12px', padding: '4px 10px' }}
+                          style={{
+                            fontSize: '12px',
+                            padding: '6px 12px',
+                            color: '#f3e5ab',
+                            backgroundColor: 'rgba(200, 169, 110, 0.25)',
+                            borderColor: '#c8a96e',
+                            fontWeight: '600',
+                            whiteSpace: 'nowrap',
+                          }}
                           onClick={() => openOrderDetail(order.id)}
                         >
                           檢視 / 履約出貨
