@@ -167,6 +167,13 @@ class CartController extends BaseController
             return (int)$db->lastInsertId();
         }
 
-        return null;
+        if (!$createIfMissing) return null;
+
+        // 若無 JWT 且無 X-Cart-Token Header，自動產生訪客 session_key 建立購物車防呆
+        $newSessionKey = 'guest_' . bin2hex(random_bytes(16));
+        $db->prepare('INSERT INTO carts (session_key) VALUES (?)')->execute([$newSessionKey]);
+        $newCartId = (int)$db->lastInsertId();
+        header('X-Cart-Token: ' . $newSessionKey);
+        return $newCartId;
     }
 }

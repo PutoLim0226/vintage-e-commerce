@@ -37,11 +37,13 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    // 購物車訪客 Token 機制
-    const cartToken = localStorage.getItem('cart_token')
-    if (cartToken) {
-      config.headers['X-Cart-Token'] = cartToken
+    // 購物車訪客 Token 機制 (無 Token 時自動生成)
+    let cartToken = localStorage.getItem('cart_token')
+    if (!cartToken) {
+      cartToken = 'cart_' + Math.random().toString(36).substring(2) + Date.now().toString(36)
+      localStorage.setItem('cart_token', cartToken)
     }
+    config.headers['X-Cart-Token'] = cartToken
     return config
   },
   (error) => Promise.reject(error)
