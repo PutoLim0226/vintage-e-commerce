@@ -6,7 +6,6 @@ export default function AdminLayout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
-  // 確認是 admin 角色（role === 'admin'），否則踢回首頁
   useEffect(() => {
     if (user && user.role !== 'admin') {
       navigate('/')
@@ -19,82 +18,56 @@ export default function AdminLayout() {
   }
 
   const navItems = [
-    { to: '/admin/dashboard', label: '總覽', icon: '◈' },
-    { to: '/admin/products',  label: '商品管理', icon: '◎' },
-    { to: '/admin/orders',    label: '訂單管理', icon: '◷' },
+    { to: '/admin/dashboard', label: '營收儀表板', icon: '📊' },
+    { to: '/admin/orders',    label: '訂單管理',   icon: '📦' },
+    { to: '/admin/products',  label: '商品與SKU',  icon: '🧥' },
+    { to: '/admin/coupons',   label: '折價券管理', icon: '🎟️' },
   ]
 
   return (
-    <div style={{ display: 'flex', minHeight: '100dvh', background: 'var(--color-bg-dark)' }}>
+    <div className="admin-layout">
       {/* Sidebar */}
-      <aside style={{
-        width: '220px',
-        flexShrink: 0,
-        borderRight: '1px solid var(--color-border)',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '32px 0',
-        background: 'var(--color-bg-card)',
-      }}>
-        {/* Logo */}
-        <div style={{ padding: '0 24px 32px', borderBottom: '1px solid var(--color-border)' }}>
-          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '20px', color: 'var(--color-gold)' }}>
-            後台管理
-          </span>
-          <div style={{ fontSize: '12px', color: 'var(--color-cream-faint)', marginTop: '4px' }}>
-            復古刻痕 Admin
-          </div>
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar-header">
+          <div className="brand-title">復古刻痕 Admin</div>
+          <span className="admin-badge">最高權限管理員</span>
         </div>
 
-        {/* Nav */}
-        <nav style={{ flex: 1, padding: '20px 12px' }}>
-          {navItems.map(item => (
+        <nav className="admin-nav">
+          {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
-              style={({ isActive }) => ({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '10px 12px',
-                borderRadius: '8px',
-                marginBottom: '4px',
-                fontSize: '14px',
-                textDecoration: 'none',
-                color: isActive ? 'var(--color-gold)' : 'var(--color-cream-muted)',
-                background: isActive ? 'rgba(198,160,87,0.1)' : 'transparent',
-                transition: 'all 0.2s',
-              })}
+              className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`}
             >
-              <span style={{ fontSize: '18px' }}>{item.icon}</span>
-              {item.label}
+              <span className="nav-icon">{item.icon}</span>
+              <span>{item.label}</span>
             </NavLink>
           ))}
         </nav>
 
-        {/* Footer */}
-        <div style={{ padding: '0 24px 0', borderTop: '1px solid var(--color-border)', paddingTop: '20px' }}>
-          <div style={{ fontSize: '13px', color: 'var(--color-cream-faint)', marginBottom: '10px' }}>
-            {user?.name}
+        <div className="admin-sidebar-footer">
+          <div style={{ fontSize: '13px', color: 'var(--color-cream-faint)', marginBottom: '8px' }}>
+            管理者: {user?.name || 'Admin'}
           </div>
-          <button
-            type="button"
-            onClick={handleLogout}
-            style={{
-              background: 'none', border: '1px solid var(--color-border)', borderRadius: '6px',
-              color: 'var(--color-cream-muted)', fontSize: '13px', padding: '6px 14px',
-              cursor: 'pointer', width: '100%', textAlign: 'center', transition: 'all 0.2s',
-            }}
-            onMouseEnter={e => { e.target.style.borderColor = 'var(--color-gold)'; e.target.style.color = 'var(--color-gold)' }}
-            onMouseLeave={e => { e.target.style.borderColor = 'var(--color-border)'; e.target.style.color = 'var(--color-cream-muted)' }}
-          >
-            登出
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <a href="/" className="back-to-store">
+              ← 返回商城首頁
+            </a>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="btn btn--ghost"
+              style={{ fontSize: '12px', padding: '4px 8px', width: '100%', textAlign: 'center' }}
+            >
+              登出系統
+            </button>
+          </div>
         </div>
       </aside>
 
-      {/* Main */}
-      <main style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
+      {/* Main viewport */}
+      <main className="admin-main">
         <Outlet />
       </main>
     </div>

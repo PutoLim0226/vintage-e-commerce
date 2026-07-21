@@ -1,5 +1,5 @@
 # ⚙️ 復古刻痕 - 後端 API 系統 (Backend API)
-> **Version: 1.1.2**
+> **Version: 1.2.0**
 
 本目錄為「復古刻痕」電商的後端 API 系統。採用 **無框架 PHP 8.3** 開發，自製物件導向的 MVC 設計、RESTful 路由分發器與中間件 (Middleware) 機制，確保最高運作效率。
 
@@ -50,13 +50,19 @@
 - `GET` `/api/orders/history` : 獲取會員歷史訂單
 
 ### 🛡 管理員專屬 API (需 Role: admin)
-- `GET` `/api/admin/dashboard` : 獲取後台營收/訂單統計資料
+- `GET` `/api/admin/dashboard` : 獲取後台營收/訂單統計資料、趨勢圖陣列與低庫存警示
 - `GET` `/api/admin/products` : 後台商品總覽
 - `POST` `/api/admin/products` : 新增商品
 - `PUT` `/api/admin/products/{id}` : 修改商品與上下架狀態
 - `DELETE` `/api/admin/products/{id}` : 刪除商品
-- `GET` `/api/admin/orders` : 後台所有訂單清單
-- `PATCH` `/api/admin/orders/{id}` : 修改訂單狀態
+- `GET` `/api/admin/orders` : 後台所有訂單清單（支援狀態篩選與關鍵字搜尋）
+- `GET` `/api/admin/orders/{id}` : 獲取單一訂單細節與發貨記錄
+- `PUT` `/api/admin/orders/{id}` : 修改訂單狀態與物流單號（訂單取消自動 DB Transaction 退還庫存與紅利點數）
+- `GET` `/api/admin/coupons` : 後台折價券總覽
+- `POST` `/api/admin/coupons` : 新增折價券
+- `PUT` `/api/admin/coupons/{id}` : 編輯折價券
+- `PUT` `/api/admin/coupons/{id}/toggle` : 一鍵切換折價券啟用狀態
+- `DELETE` `/api/admin/coupons/{id}` : 刪除折價券
 
 ---
 
@@ -96,6 +102,12 @@ rtk php -S 127.0.0.1:8000 -t public/ public/index.php
 
 ## 📝 更新日誌 (Changelog)
 
+1.2.0 — 2026-07-21
+feat(admin): 後台 API 系統完整化。
+- 升級 `AdminDashboardController.php` 支援動態區間趨勢與庫存預警。
+- 升級 `AdminOrderController.php` 支援搜尋與訂單取消 DB Transaction 自動還原庫存與紅利點數。
+- 新增 `AdminCouponController.php` 提供折價券 CRUD API。
+
 1.1.1 — 2026-07-20
 ops(deploy): 新增伺服器一鍵自動部署腳本 `deploy-server.sh`。
 
@@ -107,40 +119,27 @@ style(favicon): 前端替換預設圖示，套用復古黑金徽章 Favicon。
 
 1.0.8 — 2026-07-20
 feat(tailscale): 全面適配 Tailscale IP / 網域跨域對應。
-- 後端 `App.php` 的 CORS 設定升級為動態回傳傳入的 `HTTP_ORIGIN`，全面適配 Tailscale IP (100.x.x.x)、MagicDNS 網域以及公開網頁連線。
 
 1.0.7 — 2026-07-19
 fix(cors): 修復部署在 GitHub Pages 時 API 連線位址錯誤與對應的跨域問題。
-- 後端 `App.php` 中設定 `handleCors()` 的 `Access-Control-Allow-Origin` 白名單，將 `https://putolim0226.github.io` 與 `X-Cart-Token` 等自訂 Header 寫入。
 
 1.0.6 — 2026-07-19
 feat(payment): 實作自製金流模擬 Sandbox 頁面與 Webhook 異步對帳。
-- 後端 `OrderController@create` 建立訂單時寫入 `payments` 初始 pending 記錄。
-- 付款成功後打後端 `/api/webhook/payment` API 模擬 Webhook 信號，更新支付與訂單狀態（orders.status -> paid）。
 
 1.0.5 — 2026-07-19
 feat(admin): 升級後台商品與多規格 SKU 管理。
-- 後端 `AdminProductController.php` 與路由新增 `GET /api/admin/products/{id}`（單一商品加載 SKUs）。
-- 後端 `AdminProductController@update` 實作 Transaction SKU 安全更新機制（對現存 SKU 更新、新規格寫入，並比對被歷史訂單引用的舊規格執行 is_active 下架或無關聯直接安全刪除）。
 
 1.0.4 — 2026-07-19
 feat(points): 實作會員紅利點數 (Points) 結帳折抵。
-- 後端 `OrderController.php` 實作 transaction 扣除折抵紅利點數、更新 `users.points` 並寫入 `point_logs` 紀錄。
 
 1.0.3 — 2026-07-19
 feat(reviews): 實作商品評價與星級系統（Reviews）及熱度排序。
-- 後端新增 `product_reviews` 資料表與 `ReviewController.php` API（包含 `POST /api/reviews` 與 `GET /api/products/{slug}/reviews`，用戶名去識別化遮罩如「陳*明」）。
-- 商品排序調整為 `rating DESC, view_count DESC`。詳情頁 API 載入時自動將點擊量 `view_count = view_count + 1`。
 
 1.0.2 — 2026-07-19
 feat(navigation): 修復 Header 搜尋框與 ProductListPage URL 同步及清除按鈕。
-- 新增 `start-dev-tmux.sh` 腳本，避免 tmux kill-window 時中斷開發伺服器。
 
 1.0.1 — 2026-07-18
 feat(coupon): 實作折價券 (Coupon) 前台即時折抵與結帳扣除。
-- 後端新增 `POST /api/coupons/check` 驗證門檻與過期日。
 
 1.0.0 — 2026-07-17
 init: 初始版本。
-- 實作會員中心訂單歷史記錄頁面。
-- 整合 GitHub Actions 部署配置，新增 `deploy.yaml` 工作流。

@@ -17,6 +17,7 @@ use Src\Controllers\UserController;
 use Src\Controllers\AdminProductController;
 use Src\Controllers\AdminOrderController;
 use Src\Controllers\AdminDashboardController;
+use Src\Controllers\AdminCouponController;
 use Src\Middleware\AuthMiddleware;
 use Src\Middleware\AdminMiddleware;
 use Src\Controllers\ReviewController;
@@ -68,14 +69,28 @@ class Router
         $this->add('POST', '/api/reviews',              [ReviewController::class, 'store'],     [AuthMiddleware::class]);
 
         // ── 管理後台 ─────────────────────────────
+        // 儀表板
         $this->add('GET',  '/api/admin/dashboard',     [AdminDashboardController::class, 'index'],   [AdminMiddleware::class]);
+
+        // 商品與 SKU 管理
         $this->add('GET',  '/api/admin/products',      [AdminProductController::class, 'index'],     [AdminMiddleware::class]);
         $this->add('GET',  '/api/admin/products/{id}', [AdminProductController::class, 'show'],      [AdminMiddleware::class]);
         $this->add('POST', '/api/admin/products',      [AdminProductController::class, 'store'],     [AdminMiddleware::class]);
         $this->add('PUT',  '/api/admin/products/{id}', [AdminProductController::class, 'update'],    [AdminMiddleware::class]);
         $this->add('DELETE','/api/admin/products/{id}',[AdminProductController::class, 'destroy'],   [AdminMiddleware::class]);
+
+        // 訂單管理
         $this->add('GET',  '/api/admin/orders',        [AdminOrderController::class, 'index'],       [AdminMiddleware::class]);
+        $this->add('GET',  '/api/admin/orders/{id}',   [AdminOrderController::class, 'show'],        [AdminMiddleware::class]);
         $this->add('PATCH','/api/admin/orders/{id}',   [AdminOrderController::class, 'updateStatus'],[AdminMiddleware::class]);
+        $this->add('PUT',  '/api/admin/orders/{id}',   [AdminOrderController::class, 'updateStatus'],[AdminMiddleware::class]);
+
+        // 折價券管理
+        $this->add('GET',  '/api/admin/coupons',       [AdminCouponController::class, 'index'],      [AdminMiddleware::class]);
+        $this->add('POST', '/api/admin/coupons',       [AdminCouponController::class, 'store'],      [AdminMiddleware::class]);
+        $this->add('PUT',  '/api/admin/coupons/{id}',  [AdminCouponController::class, 'update'],     [AdminMiddleware::class]);
+        $this->add('PUT',  '/api/admin/coupons/{id}/toggle', [AdminCouponController::class, 'toggle'], [AdminMiddleware::class]);
+        $this->add('DELETE','/api/admin/coupons/{id}', [AdminCouponController::class, 'destroy'],    [AdminMiddleware::class]);
 
         // Payment Webhook（金流商回呼，無需驗證）
         $this->add('POST', '/api/webhook/payment',     [OrderController::class, 'paymentWebhook']);

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>復古刻痕 Vintage E-Commerce - RESTful API 文件</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; padding: 20px; background: #1a1612; color: #e8e0d5; }
+    h1, h2, h3 { color: #d4af37; border-bottom: 1px solid #3d3429; padding-bottom: 8px; }
+    .endpoint { background: #241e19; border-left: 4px solid #d4af37; padding: 12px 16px; margin-bottom: 20px; border-radius: 4px; }
+    .method { display: inline-block; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; margin-right: 10px; }
+    .get { background: #2e7d32; color: #fff; }
+    .post { background: #1565c0; color: #fff; }
+    .put { background: #f57c00; color: #fff; }
+    .patch { background: #8e24aa; color: #fff; }
+    .delete { background: #c62828; color: #fff; }
+    .path { font-family: monospace; font-size: 1.1rem; color: #f3e5ab; }
+    pre { background: #120e0b; padding: 10px; border-radius: 4px; overflow-x: auto; color: #a5d6a7; }
+  </style>
+</head>
+<body>
+  <h1>復古刻痕 Vintage E-Commerce API 文件 (v1.2.0)</h1>
+
+  <h2>管理員後台 API 模組 (Admin Endpoints)</h2>
+
+  <div class="endpoint">
+    <span class="method get">GET</span> <span class="path">/api/admin/dashboard?period={7d|30d|1y}</span>
+    <p>取得管理員營收指標、近階段營收與訂單趨勢、熱銷 Top 5 商品與低庫存 (stock &le; 5) 警示列表。</p>
+    <h4>Response (200 OK)</h4>
+    <pre>{
+  "success": true,
+  "data": {
+    "kpi": { "total_revenue": 158000, "total_orders": 42, "avg_order_value": 3761.9, "total_users": 128 },
+    "period": "7d",
+    "trend": [ { "date": "2026-07-21", "order_count": 5, "revenue": 18500 } ],
+    "top_products": [ { "id": 1, "name": "美式復古皮革飛行夾克", "total_sold": 18, "total_revenue": 75600 } ],
+    "low_stock_skus": [ { "sku_code": "JKT-LEA-BRN-M", "stock": 2, "product_name": "美式復古皮革飛行夾克" } ]
+  }
+}</pre>
+  </div>
+
+  <div class="endpoint">
+    <span class="method get">GET</span> <span class="path">/api/admin/orders?page=1&amp;status={status}&amp;keyword={query}</span>
+    <p>分頁取得全站訂單列表，支援依訂單狀態篩選及關鍵字（訂單號、姓名、Email）搜尋。</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method get">GET</span> <span class="path">/api/admin/orders/{id}</span>
+    <p>取得單一訂單詳細資料（包含商品細項、收件資訊、點數折抵、折價券與物流號碼）。</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method put">PUT</span> <span class="path">/api/admin/orders/{id}</span>
+    <p>更新訂單狀態及填寫物流資訊。若更新為 cancelled (已取消)，自動開啟 DB Transaction 還原 SKU 庫存與退還會員紅利點數。</p>
+    <h4>Request Body</h4>
+    <pre>{
+  "status": "shipped",
+  "shipping_carrier": "black_cat",
+  "tracking_number": "BC-88991234"
+}</pre>
+  </div>
+
+  <div class="endpoint">
+    <span class="method get">GET</span> <span class="path">/api/admin/coupons</span>
+    <p>取得全站折價券列表與使用統計。</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method post">POST</span> <span class="path">/api/admin/coupons</span>
+    <p>建立新折價券（設定折扣類型、滿額門檻、有效期限與發行上限）。</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method put">PUT</span> <span class="path">/api/admin/coupons/{id}/toggle</span>
+    <p>一鍵啟用或停用指定折價券。</p>
+  </div>
+</body>
+</html>

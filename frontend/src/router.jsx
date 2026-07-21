@@ -18,6 +18,7 @@ import AdminLayout from './pages/admin/AdminLayout'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 import AdminProductsPage from './pages/admin/AdminProductsPage'
 import AdminOrdersPage from './pages/admin/AdminOrdersPage'
+import AdminCouponsPage from './pages/admin/AdminCouponsPage'
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
       { path: 'dashboard',      element: <AdminDashboardPage /> },
       { path: 'products',       element: <AdminProductsPage /> },
       { path: 'orders',         element: <AdminOrdersPage /> },
+      { path: 'coupons',        element: <AdminCouponsPage /> },
     ],
   },
 ], {
@@ -63,5 +65,3 @@ const router = createBrowserRouter([
 })
 
 export default router
-
-

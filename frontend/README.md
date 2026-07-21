@@ -1,5 +1,5 @@
 # 🎨 復古刻痕 - 前端系統 (Frontend SPA)
-> **Version: 1.1.2**
+> **Version: 1.2.0**
 
 本目錄包含「復古刻痕」電商的前端 Single Page Application (SPA)。全站採用 React 18 搭配 Vite 構建，最大特色為**零 UI 庫依賴**，以底層 SCSS 與設計標記 (Design Tokens) 進行排版與精緻的微交互動畫。
 
@@ -26,7 +26,7 @@
 - **`base/`**：自製 CSS Reset 與排版字體定義。
 - **`components/`**：按鈕 (`_button.scss`)、卡片 (`_product-card.scss`)、抽屜 (`_modal.scss`) 等高重用性元件。
 - **`layout/`**：網格系統、Header 與 Footer 佈局。
-- **`pages/`**：首頁、商品詳情、結帳與後台管理專屬樣式。
+- **`pages/`**：首頁、商品詳情、結帳與後台管理專屬樣式 (`_admin.scss`)。
 
 ### 樣式編譯命令
 ```bash
@@ -43,10 +43,11 @@ rtk npx sass src/assets/scss/main.scss src/assets/css/main.css --style=compresse
 4. **購物車頁面 (`CartPage.jsx`)**：數量增減控制、移除品項、即時計算金額小計與免運額度提示。
 5. **結帳與訂單 (`CheckoutPage.jsx` & `OrdersPage.jsx`)**：折價券套用、寄送資訊表單、歷史訂單追蹤與付款狀態。
 6. **後台管理 (`/admin/*`)**：
-   - 獨立的 Layout 佈局與管理員角色守衛 (Admin Guard)。
-   - 總覽儀表板：營收、訂單、商品統計。
-   - 商品管理：支持商品列表、即時上/下架狀態切換。
-   - 訂單管理：快速篩選與狀態（待確認、備貨中、已出貨等）修改。
+   - 獨立的 `AdminLayout` 佈局與管理員角色守衛 (Admin Guard)。
+   - **總覽儀表板 (`AdminDashboardPage.jsx`)**：純 SVG 渲染動態營收趨勢圖、KPI指標與低庫存警示。
+   - **商品與 SKU 管理 (`AdminProductsPage.jsx`)**：支持商品列表、SKU表格動態編輯與即時上/下架狀態切換。
+   - **訂單與履約管理 (`AdminOrdersPage.jsx`)**：快速關鍵字搜尋與狀態篩選、彈窗明細與物流追蹤單號填寫（支援訂單取消庫存與點數自動退還）。
+   - **折價券促銷管理 (`AdminCouponsPage.jsx`)**：折價券列表、一鍵啟停開關與新增/編輯彈窗。
 
 ---
 
@@ -85,56 +86,43 @@ rtk npm run build
 
 ## 📝 更新日誌 (Changelog)
 
+1.2.0 — 2026-07-21
+feat(admin): 後台管理系統完整化 (營收統計儀表板, 訂單履約與出貨管理, 折價券管理系統)。
+- 前端新增 `AdminLayout.jsx` 統一子路由外框、`AdminDashboardPage.jsx` (含動態 SVG 圖表、KPI指標與低庫存警示)、`AdminOrdersPage.jsx` (含搜尋篩選、彈窗履約出貨與物流單號填寫)、`AdminCouponsPage.jsx` (含一鍵開關、新增編輯折價券)。
+- 手刻 SCSS 7-1 擴充 `_admin.scss` 支援質感儀表板、Toggle Switch、狀態 Badges。
+
 1.1.1 — 2026-07-20
 ops(deploy): 新增伺服器一鍵自動部署腳本 `deploy-server.sh`。
 
 1.1.0 — 2026-07-20
 ux(notice): 增加 API 連線防呆全域提示 Banner。
-- 前端 `api.js` 在遭遇 `ERR_CONNECTION_REFUSED` 網路中斷時廣播全域 `api_connection_error` 事件。
-- `Header.jsx` 增加優雅的頂部黃金提示條，指引使用者啟動本地伺服器或設定全域遠端 API URL。
 
 1.0.9 — 2026-07-20
 style(favicon): 替換預設圖示，客製化復古黃金衣架品牌 SVG Favicon。
-- 設計並套用全站 `favicon.svg`，融合黑金典雅徽章與復古衣架 monogram 標誌。
 
 1.0.8 — 2026-07-20
 feat(tailscale): 支援動態指定 API URL 與 localStorage 覆蓋。
-- 前端 `api.js` 改進 API URL 解析順序，優先支援 `localStorage.getItem('VINTAGE_API_URL')` 與環境變數，方便自由切換 Tailscale 伺服器網址。
 
 1.0.7 — 2026-07-19
 fix(cors): 修復部署在 GitHub Pages 時 API 連線位址錯誤與對應的跨域問題。
-- 前端 `api.js` 改進 `API_BASE_URL` 宣告，在檢測到由 GitHub Pages (`github.io`) 託管環境運行時，自動 fallback 到本地後端 `http://localhost:8000` 進行數據請求與跨域通訊。
 
 1.0.6 — 2026-07-19
 feat(payment): 實作自製金流模擬 Sandbox 頁面與 Webhook 異步對帳。
-- 新增 `PaymentPage.jsx` 付款頁面，提供磨砂玻璃設計的擬真 3D 信用卡刷卡授權 UI（支援卡號跳格、到期日 MMYY、CVC 翻轉卡片）。
-- 前端結帳成功頁面引導跳轉至金流模擬頁，歷史訂單列表若狀態為 `pending` 則動態顯示「付款」按鈕。
 
 1.0.5 — 2026-07-19
 feat(admin): 升級後台商品與多規格 SKU 管理。
-- 前端 `AdminProductsPage.jsx` 重構為可新增商品、編輯商品細部資訊。
-- SKU 規格表格化動態行數編輯器（可增減列，輸入顏色、尺寸、價格、庫存等）。
 
 1.0.4 — 2026-07-19
 feat(points): 實作會員紅利點數 (Points) 結帳折抵。
-- 前端 `CheckoutPage.jsx` 加載最新點數，提供勾選紅利折抵功能（1 點折 1 元，上限為商品總價，不含運費）。
-- 發送 `POST /api/orders` 時傳送 `use_points` 參數。
-- 前端 `OrdersPage.jsx` 訂單明細彈窗加入「紅利點數折抵」的金額展示。
 
 1.0.3 — 2026-07-19
 feat(reviews): 實作商品評價與星級系統（Reviews）及熱度排序。
-- 前端 `OrdersPage.jsx` 加入評價 Modal、1-5 星填寫，商品詳情頁展示評價牆與平均星等。
 
 1.0.2 — 2026-07-19
 feat(navigation): 修復 Header 搜尋框與 ProductListPage URL 同步及清除按鈕。
-- 解決輸入後按 Enter 沒反應、網址列參數不同步之問題。
-- 新增 `start-dev-tmux.sh` 腳本，避免 tmux kill-window 時中斷開發伺服器。
 
 1.0.1 — 2026-07-18
 feat(coupon): 實作折價券 (Coupon) 前台即時折抵與結帳扣除。
-- 前端 `CheckoutPage.jsx` 即時計算折價券減免並動態刷新總計金額。
 
 1.0.0 — 2026-07-17
 init: 初始版本。
-- 實作會員中心訂單歷史記錄頁面。
-- 整合 GitHub Actions 部署配置，新增 `deploy.yaml` 工作流。

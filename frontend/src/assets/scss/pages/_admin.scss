@@ -1,0 +1,427 @@
+// ============================================================
+// pages/_admin.scss
+// 🏛️ 管理員後台系統 專屬樣式 (Dashboard, Orders, Coupons, Layout)
+// ============================================================
+
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: v.$color-bg-dark;
+  color: v.$color-cream;
+
+  // 側邊導覽欄 Sidebar
+  .admin-sidebar {
+    width: 260px;
+    background: v.$color-bg-surface;
+    border-right: 1px solid v.$color-border;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: v.$z-sticky;
+    transition: transform v.$transition-base;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      position: relative;
+    }
+
+    .admin-sidebar-header {
+      padding: v.$space-6;
+      border-bottom: 1px solid v.$color-border;
+
+      .brand-title {
+        font-family: v.$font-heading;
+        font-size: v.$font-size-xl;
+        color: v.$color-gold;
+        margin-bottom: v.$space-1;
+      }
+
+      .admin-badge {
+        display: inline-block;
+        font-size: v.$font-size-xs;
+        background: rgba(200, 169, 110, 0.15);
+        color: v.$color-gold-light;
+        padding: 2px 8px;
+        border-radius: v.$radius-sm;
+      }
+    }
+
+    .admin-nav {
+      flex: 1;
+      padding: v.$space-4 0;
+
+      .admin-nav-item {
+        display: flex;
+        align-items: center;
+        gap: v.$space-3;
+        padding: v.$space-3 v.$space-6;
+        color: v.$color-cream-muted;
+        text-decoration: none;
+        font-weight: v.$font-weight-medium;
+        transition: all v.$transition-fast;
+        border-left: 3px solid transparent;
+
+        &:hover {
+          color: v.$color-cream;
+          background: rgba(200, 169, 110, 0.05);
+        }
+
+        &.active {
+          color: v.$color-gold;
+          background: rgba(200, 169, 110, 0.1);
+          border-left-color: v.$color-gold;
+        }
+
+        .nav-icon {
+          font-size: 1.2rem;
+        }
+      }
+    }
+
+    .admin-sidebar-footer {
+      padding: v.$space-4 v.$space-6;
+      border-top: 1px solid v.$color-border;
+
+      .back-to-store {
+        display: inline-flex;
+        align-items: center;
+        gap: v.$space-2;
+        color: v.$color-cream-muted;
+        text-decoration: none;
+        font-size: v.$font-size-sm;
+        transition: color v.$transition-fast;
+
+        &:hover {
+          color: v.$color-gold-light;
+        }
+      }
+    }
+  }
+
+  // 主要內容區域 Content Area
+  .admin-main {
+    flex: 1;
+    margin-left: 260px;
+    padding: v.$space-8;
+    background: v.$color-bg-dark;
+
+    @media (max-width: 768px) {
+      margin-left: 0;
+      padding: v.$space-4;
+    }
+  }
+}
+
+// 通用後台頁面標題
+.admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: v.$space-8;
+  flex-wrap: wrap;
+  gap: v.$space-4;
+
+  .page-title {
+    font-family: v.$font-heading;
+    font-size: v.$font-size-3xl;
+    color: v.$color-gold;
+    margin: 0;
+  }
+
+  .subtitle {
+    color: v.$color-cream-muted;
+    font-size: v.$font-size-sm;
+    margin-top: v.$space-1;
+  }
+}
+
+// ── 營收儀表板 Dashboard ──────────────────────────────────
+.admin-dashboard {
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: v.$space-6;
+    margin-bottom: v.$space-8;
+
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .kpi-card {
+      background: v.$color-bg-card;
+      border: 1px solid v.$color-border;
+      border-radius: v.$radius-lg;
+      padding: v.$space-6;
+      position: relative;
+      overflow: hidden;
+      box-shadow: v.$shadow-sm;
+
+      .kpi-title {
+        font-size: v.$font-size-sm;
+        color: v.$color-cream-muted;
+        margin-bottom: v.$space-2;
+      }
+
+      .kpi-value {
+        font-size: v.$font-size-3xl;
+        font-weight: v.$font-weight-bold;
+        color: v.$color-gold-light;
+        font-family: v.$font-heading;
+      }
+
+      .kpi-subtext {
+        font-size: v.$font-size-xs;
+        color: v.$color-cream-faint;
+        margin-top: v.$space-2;
+      }
+    }
+  }
+
+  .dashboard-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$space-8;
+    margin-bottom: v.$space-8;
+
+    @media (min-width: 1024px) {
+      grid-template-columns: 2fr 1fr;
+    }
+
+    .chart-card {
+      background: v.$color-bg-card;
+      border: 1px solid v.$color-border;
+      border-radius: v.$radius-lg;
+      padding: v.$space-6;
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: v.$space-6;
+
+        .chart-title {
+          font-size: v.$font-size-lg;
+          color: v.$color-gold;
+          margin: 0;
+        }
+
+        .period-selector {
+          display: flex;
+          gap: v.$space-2;
+
+          .period-btn {
+            background: transparent;
+            border: 1px solid v.$color-border;
+            color: v.$color-cream-muted;
+            padding: 4px 12px;
+            border-radius: v.$radius-sm;
+            cursor: pointer;
+            font-size: v.$font-size-xs;
+
+            &.active {
+              background: v.$color-gold;
+              color: v.$color-bg-dark;
+              border-color: v.$color-gold;
+            }
+          }
+        }
+      }
+
+      // 純 SVG 趨勢圖容器
+      .svg-chart-container {
+        width: 100%;
+        height: 260px;
+
+        svg {
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+
+          .chart-line {
+            fill: none;
+            stroke: v.$color-gold;
+            stroke-width: 3;
+            stroke-linecap: round;
+          }
+
+          .chart-area {
+            fill: url(#goldGradient);
+            opacity: 0.2;
+          }
+
+          .chart-dot {
+            fill: v.$color-gold-light;
+            stroke: v.$color-bg-dark;
+            stroke-width: 2;
+            cursor: pointer;
+            transition: r v.$transition-fast;
+
+            &:hover {
+              r: 6;
+            }
+          }
+
+          .chart-axis-text {
+            fill: v.$color-cream-faint;
+            font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ── 訂單頁與通用表格 Table & Badges ─────────────────────
+.admin-table-card {
+  background: v.$color-bg-card;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-lg;
+  padding: v.$space-6;
+  overflow: hidden;
+
+  .table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: v.$space-4;
+    margin-bottom: v.$space-6;
+    flex-wrap: wrap;
+
+    .filter-tabs {
+      display: flex;
+      gap: v.$space-2;
+      flex-wrap: wrap;
+
+      .tab-btn {
+        background: transparent;
+        border: 1px solid v.$color-border;
+        color: v.$color-cream-muted;
+        padding: v.$space-2 v.$space-4;
+        border-radius: v.$radius-md;
+        cursor: pointer;
+        font-size: v.$font-size-sm;
+
+        &.active {
+          background: v.$color-gold;
+          color: v.$color-bg-dark;
+          border-color: v.$color-gold;
+        }
+      }
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: v.$color-bg-surface;
+      border: 1px solid v.$color-border;
+      border-radius: v.$radius-md;
+      padding: 0 v.$space-3;
+
+      input {
+        background: transparent;
+        border: none;
+        color: v.$color-cream;
+        padding: v.$space-2 v.$space-3;
+        outline: none;
+        font-size: v.$font-size-sm;
+      }
+    }
+  }
+
+  .admin-table-wrapper {
+    overflow-x: auto;
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: v.$font-size-sm;
+
+      th {
+        padding: v.$space-4;
+        background: v.$color-bg-surface;
+        color: v.$color-gold;
+        font-weight: v.$font-weight-semibold;
+        border-bottom: 1px solid v.$color-border;
+      }
+
+      td {
+        padding: v.$space-4;
+        border-bottom: 1px solid v.$color-border;
+        color: v.$color-cream;
+      }
+
+      tr:hover td {
+        background: rgba(200, 169, 110, 0.03);
+      }
+    }
+  }
+}
+
+// 訂單狀態 徽章 (Status Badges)
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: v.$radius-full;
+  font-size: v.$font-size-xs;
+  font-weight: v.$font-weight-semibold;
+
+  &.badge-pending   { background: rgba(230, 168, 23, 0.15); color: v.$color-warning; }
+  &.badge-paid      { background: rgba(76, 175, 114, 0.15); color: v.$color-success; }
+  &.badge-processing{ background: rgba(200, 169, 110, 0.2); color: v.$color-gold-light; }
+  &.badge-shipped   { background: rgba(33, 150, 243, 0.15); color: #64b5f6; }
+  &.badge-completed { background: rgba(76, 175, 114, 0.25); color: #81c784; }
+  &.badge-cancelled { background: rgba(224, 84, 84, 0.15);  color: v.$color-error; }
+}
+
+// 折價券 Toggle Switch
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .slider {
+      background-color: v.$color-gold;
+
+      &:before {
+        transform: translateX(20px);
+        background-color: v.$color-bg-dark;
+      }
+    }
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: v.$color-bg-surface;
+    border: 1px solid v.$color-border;
+    transition: .3s;
+    border-radius: 24px;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: 16px; width: 16px;
+      left: 3px; bottom: 3px;
+      background-color: v.$color-cream-muted;
+      transition: .3s;
+      border-radius: 50%;
+    }
+  }
+}
