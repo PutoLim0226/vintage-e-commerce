@@ -242,6 +242,9 @@ export default function ProductListPage() {
                   color: !currentCategory ? 'var(--color-gold)' : 'var(--color-cream-muted)',
                   fontWeight: !currentCategory ? 'bold' : 'normal',
                   textAlign: 'left',
+                  borderLeft: !currentCategory ? '3px solid var(--color-gold)' : '3px solid transparent',
+                  paddingLeft: !currentCategory ? '10px' : '4px',
+                  transition: 'all 0.2s'
                 }}
               >
                 全部商品
@@ -256,6 +259,9 @@ export default function ProductListPage() {
                     color: currentCategory === cat.slug ? 'var(--color-gold)' : 'var(--color-cream-muted)',
                     fontWeight: currentCategory === cat.slug ? 'bold' : 'normal',
                     textAlign: 'left',
+                    borderLeft: currentCategory === cat.slug ? '3px solid var(--color-gold)' : '3px solid transparent',
+                    paddingLeft: currentCategory === cat.slug ? '10px' : '4px',
+                    transition: 'all 0.2s'
                   }}
                 >
                   {cat.name}
@@ -272,6 +278,9 @@ export default function ProductListPage() {
                             fontSize: '13px',
                             fontWeight: currentCategory === sub.slug ? 'bold' : 'normal',
                             textAlign: 'left',
+                            borderLeft: currentCategory === sub.slug ? '3px solid var(--color-gold)' : '3px solid transparent',
+                            paddingLeft: currentCategory === sub.slug ? '10px' : '4px',
+                            transition: 'all 0.2s'
                           }}
                         >
                           └ {sub.name}
@@ -344,12 +353,17 @@ export default function ProductListPage() {
                         borderRadius: '20px',
                         background: isActive ? 'var(--color-gold)' : 'var(--color-bg-card)',
                         border: '1px solid ' + (isActive ? 'var(--color-gold)' : 'var(--color-border)'),
-                        color: isActive ? 'var(--color-bg)' : 'var(--color-cream)',
+                        color: isActive ? 'var(--color-bg-dark)' : 'var(--color-cream)',
                         fontSize: '12px',
                         cursor: 'pointer',
-                        transition: 'all 0.2s'
+                        transition: 'all 0.2s',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        boxShadow: isActive ? '0 2px 8px rgba(200, 169, 110, 0.4)' : 'none'
                       }}
                     >
+                      {isActive && <span style={{ fontWeight: 'bold' }}>✓</span>}
                       {color}
                     </button>
                   )
@@ -377,12 +391,17 @@ export default function ProductListPage() {
                         borderRadius: '4px',
                         background: isActive ? 'var(--color-gold)' : 'var(--color-bg-card)',
                         border: '1px solid ' + (isActive ? 'var(--color-gold)' : 'var(--color-border)'),
-                        color: isActive ? 'var(--color-bg)' : 'var(--color-cream)',
+                        color: isActive ? 'var(--color-bg-dark)' : 'var(--color-cream)',
                         fontSize: '12px',
                         cursor: 'pointer',
-                        transition: 'all 0.2s'
+                        transition: 'all 0.2s',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        boxShadow: isActive ? '0 2px 8px rgba(200, 169, 110, 0.4)' : 'none'
                       }}
                     >
+                      {isActive && <span style={{ fontWeight: 'bold' }}>✓</span>}
                       {size}
                     </button>
                   )
