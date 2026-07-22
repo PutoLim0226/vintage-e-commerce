@@ -23,6 +23,9 @@ export default function ProductListPage() {
   // 願望清單 State
   const [wishlistIds, setWishlistIds] = useState([])
 
+  // 行動裝置篩選狀態
+  const [showMobileFilters, setShowMobileFilters] = useState(false)
+
   // Header 導航過來時同步搜尋框文字與篩選欄
   useEffect(() => {
     setSearchVal(searchParams.get('search') || '')
@@ -227,9 +230,28 @@ export default function ProductListPage() {
         <span className="breadcrumb__item">所有單品</span>
       </div>
 
+      {/* 行動裝置專用篩選展開按鈕 */}
+      <button
+        type="button"
+        className="btn btn--outline mobile-filter-toggle"
+        onClick={() => setShowMobileFilters(!showMobileFilters)}
+        style={{
+          width: '100%',
+          marginBottom: '24px',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          padding: '12px 16px',
+          fontWeight: 'bold',
+          letterSpacing: '0.05em'
+        }}
+      >
+        {showMobileFilters ? '關閉篩選條件 ✕' : '🔍 篩選與分類商品...'}
+      </button>
+
       <div className="layout-sidebar">
         {/* ── Sidebar Filter ── */}
-        <aside className="checkout__form-section" style={{ padding: '24px' }}>
+        <aside className={`checkout__form-section product-filter-sidebar ${showMobileFilters ? 'expanded' : ''}`} style={{ padding: '24px' }}>
           <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
             商品分類
           </h3>

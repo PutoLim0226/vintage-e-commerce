@@ -138,3 +138,28 @@
     }
   }
 }
+
+// ── 行動裝置篩選折疊 ───────────────────────────────────────
+.mobile-filter-toggle {
+  display: none !important;
+
+  @media (max-width: 1023px) {
+    display: inline-flex !important;
+  }
+}
+
+.product-filter-sidebar {
+  @media (max-width: 1023px) {
+    display: none;
+
+    &.expanded {
+      display: block;
+      animation: filterSlideDown 0.3s ease-out both;
+    }
+  }
+}
+
+@keyframes filterSlideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
