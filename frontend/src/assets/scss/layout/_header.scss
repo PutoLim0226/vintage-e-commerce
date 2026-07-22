@@ -142,8 +142,8 @@
 
   // ── 漢堡選單（手機）─────────────────────────────────
   &__hamburger {
-    @include m.lg { display: none; }
     @include m.flex-center;
+    @include m.lg { display: none; }
     flex-direction: column;
     gap: 5px;
     width: 44px;

@@ -1003,15 +1003,17 @@ small {
     flex-shrink: 0;
   }
 }
+.header__hamburger {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 @media (min-width: 1024px) {
   .header__hamburger {
     display: none;
   }
 }
 .header__hamburger {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
   gap: 5px;
   width: 44px;
