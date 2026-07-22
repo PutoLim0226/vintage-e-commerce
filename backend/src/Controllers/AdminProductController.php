@@ -117,6 +117,15 @@ class AdminProductController extends BaseController
             return;
         }
 
+        // 獲取更新前的價格與庫存狀態
+        $oldProdStmt = $db->prepare('SELECT base_price FROM products WHERE id = ?');
+        $oldProdStmt->execute([$productId]);
+        $oldPrice = (float)$oldProdStmt->fetchColumn();
+
+        $oldStockStmt = $db->prepare('SELECT SUM(stock) FROM product_skus WHERE product_id = ? AND is_active = 1');
+        $oldStockStmt->execute([$productId]);
+        $oldStock = (int)$oldStockStmt->fetchColumn();
+
         $allowed = ['category_id','name','description','base_price','compare_price',
                     'cover_image_url','is_active','is_featured','meta_title','meta_desc'];
         $set     = [];
@@ -203,6 +212,23 @@ class AdminProductController extends BaseController
             }
 
             $db->commit();
+
+            // 查詢更新後的狀態
+            $newPrice = isset($body['base_price']) ? (float)$body['base_price'] : $oldPrice;
+
+            $newStockStmt = $db->prepare('SELECT SUM(stock) FROM product_skus WHERE product_id = ? AND is_active = 1');
+            $newStockStmt->execute([$productId]);
+            $newStock = (int)$newStockStmt->fetchColumn();
+
+            // 觸發降價通知：新價格低於舊價格
+            if ($newPrice < $oldPrice) {
+                \Src\Services\NotificationService::triggerPriceDropAlert($productId, $oldPrice, $newPrice);
+            }
+
+            // 觸發補貨通知：舊庫存為 0，且新庫存大於 0
+            if ($oldStock === 0 && $newStock > 0) {
+                \Src\Services\NotificationService::triggerRestockAlert($productId);
+            }
         } catch (\Throwable $e) {
             $db->rollBack();
             throw $e;

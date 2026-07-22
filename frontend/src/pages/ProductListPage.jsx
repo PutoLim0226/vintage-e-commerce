@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import api from '../api/api'
 
 export default function ProductListPage() {
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
@@ -10,9 +13,23 @@ export default function ProductListPage() {
   const [loading, setLoading] = useState(true)
   const [searchVal, setSearchVal] = useState(searchParams.get('search') || '')
 
-  // Header 導航過來時同步搜尋框文字
+  // 複合篩選 State
+  const [filterMetadata, setFilterMetadata] = useState({ colors: [], sizes: [], min_price: 0, max_price: 5000 })
+  const [selectedColors, setSelectedColors] = useState(searchParams.get('colors') ? searchParams.get('colors').split(',') : [])
+  const [selectedSizes, setSelectedSizes] = useState(searchParams.get('sizes') ? searchParams.get('sizes').split(',') : [])
+  const [minPrice, setMinPrice] = useState(searchParams.get('min_price') || '')
+  const [maxPrice, setMaxPrice] = useState(searchParams.get('max_price') || '')
+
+  // 願望清單 State
+  const [wishlistIds, setWishlistIds] = useState([])
+
+  // Header 導航過來時同步搜尋框文字與篩選欄
   useEffect(() => {
     setSearchVal(searchParams.get('search') || '')
+    setSelectedColors(searchParams.get('colors') ? searchParams.get('colors').split(',') : [])
+    setSelectedSizes(searchParams.get('sizes') ? searchParams.get('sizes').split(',') : [])
+    setMinPrice(searchParams.get('min_price') || '')
+    setMaxPrice(searchParams.get('max_price') || '')
   }, [searchParams])
 
   // 取得參數
@@ -21,17 +38,40 @@ export default function ProductListPage() {
   const currentPage     = parseInt(searchParams.get('page') || '1', 10)
 
   useEffect(() => {
-    // 載入分類清單
-    const loadCategories = async () => {
+    // 載入分類清單與篩選元數據
+    const loadInitData = async () => {
       try {
-        const { data } = await api.get('/api/categories')
-        if (data.success) setCategories(data.data)
+        const [catRes, metaRes] = await Promise.all([
+          api.get('/api/categories'),
+          api.get('/api/products/filter-metadata')
+        ])
+        if (catRes.data.success) setCategories(catRes.data.data)
+        if (metaRes.data.success) setFilterMetadata(metaRes.data.data)
       } catch (err) {
         console.error(err)
       }
     }
-    loadCategories()
+    loadInitData()
   }, [])
+
+  // 載入會員願望清單
+  useEffect(() => {
+    if (!user) {
+      setWishlistIds([])
+      return
+    }
+    const fetchWishlist = async () => {
+      try {
+        const { data } = await api.get('/api/wishlist')
+        if (data.success) {
+          setWishlistIds(data.data.map(p => p.id))
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    fetchWishlist()
+  }, [user])
 
   useEffect(() => {
     // 載入商品
@@ -46,6 +86,19 @@ export default function ProductListPage() {
         if (currentCategory) params.category = currentCategory
         const search = searchParams.get('search')
         if (search) params.search = search
+
+        // 帶入複合篩選參數
+        const colorsParam = searchParams.get('colors')
+        if (colorsParam) params.colors = colorsParam
+
+        const sizesParam = searchParams.get('sizes')
+        if (sizesParam) params.sizes = sizesParam
+
+        const minPriceParam = searchParams.get('min_price')
+        if (minPriceParam) params.min_price = minPriceParam
+
+        const maxPriceParam = searchParams.get('max_price')
+        if (maxPriceParam) params.max_price = maxPriceParam
 
         const { data } = await api.get('/api/products', { params })
         if (data.success) {
@@ -94,6 +147,76 @@ export default function ProductListPage() {
       nextParams.delete('search')
     }
     nextParams.set('page', '1')
+    setSearchParams(nextParams)
+  }
+
+  const applyFilters = (newColors, newSizes, newMin, newMax) => {
+    const nextParams = new URLSearchParams(searchParams)
+    
+    if (newColors && newColors.length > 0) nextParams.set('colors', newColors.join(','))
+    else nextParams.delete('colors')
+
+    if (newSizes && newSizes.length > 0) nextParams.set('sizes', newSizes.join(','))
+    else nextParams.delete('sizes')
+
+    if (newMin !== undefined && newMin !== '') nextParams.set('min_price', newMin)
+    else nextParams.delete('min_price')
+
+    if (newMax !== undefined && newMax !== '') nextParams.set('max_price', newMax)
+    else nextParams.delete('max_price')
+
+    nextParams.set('page', '1')
+    setSearchParams(nextParams)
+  }
+
+  const handleColorToggle = (color) => {
+    const next = selectedColors.includes(color) 
+      ? selectedColors.filter(c => c !== color) 
+      : [...selectedColors, color]
+    setSelectedColors(next)
+    applyFilters(next, selectedSizes, minPrice, maxPrice)
+  }
+
+  const handleSizeToggle = (size) => {
+    const next = selectedSizes.includes(size) 
+      ? selectedSizes.filter(s => s !== size) 
+      : [...selectedSizes, size]
+    setSelectedSizes(next)
+    applyFilters(selectedColors, next, minPrice, maxPrice)
+  }
+
+  const handlePriceApply = (e) => {
+    e.preventDefault()
+    applyFilters(selectedColors, selectedSizes, minPrice, maxPrice)
+  }
+
+  const toggleWishlist = async (productId) => {
+    if (!user) {
+      navigate('/login')
+      return
+    }
+    try {
+      const { data } = await api.post('/api/wishlist/toggle', { product_id: productId })
+      if (data.success) {
+        if (wishlistIds.includes(productId)) {
+          setWishlistIds(wishlistIds.filter(id => id !== productId))
+        } else {
+          setWishlistIds([...wishlistIds, productId])
+        }
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const clearAllFilters = () => {
+    const nextParams = new URLSearchParams()
+    const search = searchParams.get('search')
+    if (search) nextParams.set('search', search)
+    const cat = searchParams.get('category')
+    if (cat) nextParams.set('category', cat)
+    const sort = searchParams.get('sort')
+    if (sort) nextParams.set('sort', sort)
     setSearchParams(nextParams)
   }
 
@@ -175,6 +298,110 @@ export default function ProductListPage() {
               <option value="price_desc">價格：由高到低</option>
             </select>
           </div>
+          {/* 複合篩選：價格區間 */}
+          <h3 style={{ fontSize: '18px', marginTop: '32px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
+            價格區間
+          </h3>
+          <form onSubmit={handlePriceApply} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input
+                type="number"
+                placeholder="最低"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+                style={{ padding: '8px', width: '100%', background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', color: 'var(--color-cream)', borderRadius: '4px' }}
+              />
+              <span style={{ color: 'var(--color-cream-faint)' }}>~</span>
+              <input
+                type="number"
+                placeholder="最高"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+                style={{ padding: '8px', width: '100%', background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', color: 'var(--color-cream)', borderRadius: '4px' }}
+              />
+            </div>
+            <button type="submit" className="btn btn--sm btn--outline" style={{ width: '100%' }}>
+              套用價格
+            </button>
+          </form>
+
+          {/* 複合篩選：顏色 */}
+          {filterMetadata.colors?.length > 0 && (
+            <>
+              <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
+                顏色篩選
+              </h3>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '32px' }}>
+                {filterMetadata.colors.map(color => {
+                  const isActive = selectedColors.includes(color)
+                  return (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => handleColorToggle(color)}
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        background: isActive ? 'var(--color-gold)' : 'var(--color-bg-card)',
+                        border: '1px solid ' + (isActive ? 'var(--color-gold)' : 'var(--color-border)'),
+                        color: isActive ? 'var(--color-bg)' : 'var(--color-cream)',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {color}
+                    </button>
+                  )
+                })}
+              </div>
+            </>
+          )}
+
+          {/* 複合篩選：尺寸 */}
+          {filterMetadata.sizes?.length > 0 && (
+            <>
+              <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
+                尺寸篩選
+              </h3>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '32px' }}>
+                {filterMetadata.sizes.map(size => {
+                  const isActive = selectedSizes.includes(size)
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => handleSizeToggle(size)}
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        background: isActive ? 'var(--color-gold)' : 'var(--color-bg-card)',
+                        border: '1px solid ' + (isActive ? 'var(--color-gold)' : 'var(--color-border)'),
+                        color: isActive ? 'var(--color-bg)' : 'var(--color-cream)',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {size}
+                    </button>
+                  )
+                })}
+              </div>
+            </>
+          )}
+
+          {/* 清除全部篩選 */}
+          {(selectedColors.length > 0 || selectedSizes.length > 0 || minPrice || maxPrice) && (
+            <button
+              type="button"
+              onClick={clearAllFilters}
+              className="btn btn--sm btn--ghost"
+              style={{ width: '100%', color: 'var(--color-gold)', border: '1px solid var(--color-gold)' }}
+            >
+              清除所有篩選
+            </button>
+          )}
         </aside>
 
         {/* ── Main Content Area ── */}
@@ -220,25 +447,55 @@ export default function ProductListPage() {
           ) : (
             <>
               <div className="product-grid">
-                {products.map((prod) => (
-                  <div key={prod.id} className="product-card">
-                    <div className="product-card__image-wrap">
-                      <Link to={`/products/${prod.slug}`}>
-                        <img
-                          src={prod.cover_image_url || 'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&w=400&q=80'}
-                          alt={prod.name}
-                        />
-                      </Link>
-                      <div className="product-card__overlay" />
-                      <div className="product-card__actions">
-                        <Link to={`/products/${prod.slug}`} className="btn btn--primary">
-                          查看規格
+                {products.map((prod) => {
+                  const isSoldOut = parseInt(prod.total_stock || 0) === 0
+                  return (
+                    <div key={prod.id} className="product-card">
+                      <div className="product-card__image-wrap">
+                        <Link to={`/products/${prod.slug}`}>
+                          <img
+                            src={prod.cover_image_url || 'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&w=400&q=80'}
+                            alt={prod.name}
+                            style={isSoldOut ? { filter: 'grayscale(1)' } : {}}
+                          />
                         </Link>
+                        {isSoldOut && (
+                          <div style={{
+                            position: 'absolute', inset: 0, background: 'rgba(18, 13, 7, 0.65)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5
+                          }}>
+                            <span style={{
+                              border: '2px solid var(--color-gold)', color: 'var(--color-gold)',
+                              padding: '6px 16px', fontWeight: 'bold', fontSize: '14px', letterSpacing: '0.15em',
+                              background: 'var(--color-bg)'
+                            }}>
+                              SOLD OUT
+                            </span>
+                          </div>
+                        )}
+                        <div className="product-card__overlay" />
+                        <button
+                          type="button"
+                          className={`product-card__wishlist ${wishlistIds.includes(prod.id) ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            toggleWishlist(prod.id)
+                          }}
+                          aria-label="加入收藏"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlistIds.includes(prod.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                          </svg>
+                        </button>
+                        <div className="product-card__actions">
+                          <Link to={`/products/${prod.slug}`} className="btn btn--primary">
+                            {isSoldOut ? '查看補貨狀態' : '查看規格'}
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                    <div className="product-card__info">
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span className="product-card__category">{prod.category_name}</span>
+                      <div className="product-card__info">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span className="product-card__category">{prod.category_name}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--color-cream-faint)' }}>
                           <span style={{ color: 'var(--color-gold)' }}>★ {parseFloat(prod.rating || 5).toFixed(1)}</span>
                           <span>({prod.view_count || 0})</span>
@@ -257,7 +514,8 @@ export default function ProductListPage() {
                       </div>
                     </div>
                   </div>
-                ))}
+                )
+                })}
               </div>
 
               {/* Pagination */}

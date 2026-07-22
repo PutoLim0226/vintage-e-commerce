@@ -68,7 +68,8 @@ async function runAllTests() {
         const firstSlug = prods[0].slug
         const detailRes = await request('GET', `/api/products/${firstSlug}`)
         if (detailRes.data?.data?.skus?.length > 0) {
-          validSkuId = detailRes.data.data.skus[0].id
+          const activeSku = detailRes.data.data.skus.find(s => s.stock > 0 && s.is_active == 1)
+          validSkuId = activeSku ? activeSku.id : detailRes.data.data.skus[0].id
         }
       }
     } else {
@@ -127,6 +128,33 @@ async function runAllTests() {
       logFail('GET /api/me', `Status ${res.status}`)
     }
   } catch (e) { logFail('GET /api/me', e.message) }
+
+  try {
+    const res = await request('GET', '/api/products/filter-metadata')
+    if (res.status === 200 && res.data?.success) {
+      logPass(`GET /api/products/filter-metadata — 成功動態獲取全站顏色、尺寸與價格極值`)
+    } else {
+      logFail('GET /api/products/filter-metadata', `Status ${res.status}`)
+    }
+  } catch (e) { logFail('GET /api/products/filter-metadata', e.message) }
+
+  try {
+    const res = await request('POST', '/api/wishlist/toggle', { product_id: 1 }, testToken)
+    if (res.status === 200 && res.data?.success) {
+      logPass(`POST /api/wishlist/toggle — 成功將商品 ID#1 加入/移出願望清單`)
+    } else {
+      logFail('POST /api/wishlist/toggle', res.data?.message || `Status ${res.status}`)
+    }
+  } catch (e) { logFail('POST /api/wishlist/toggle', e.message) }
+
+  try {
+    const res = await request('GET', '/api/wishlist', null, testToken)
+    if (res.status === 200 && res.data?.success) {
+      logPass(`GET /api/wishlist — 會員願望清單列表查詢成功`)
+    } else {
+      logFail('GET /api/wishlist', `Status ${res.status}`)
+    }
+  } catch (e) { logFail('GET /api/wishlist', e.message) }
 
   try {
     const targetSku = validSkuId || 1

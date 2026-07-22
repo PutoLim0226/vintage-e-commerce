@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>復古刻痕 Vintage E-Commerce - 互動式 API 文件 (v1.3.0)</title>
+  <title>復古刻痕 Vintage E-Commerce - 互動式 API 文件 (v1.4.0)</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; padding: 20px; background: #120d07; color: #f5f0e8; max-width: 1200px; margin: 0 auto; }
     h1, h2, h3 { color: #c8a96e; border-bottom: 1px solid rgba(200, 169, 110, 0.2); padding-bottom: 8px; }
@@ -24,7 +24,7 @@
   </style>
 </head>
 <body>
-  <h1>🧥 復古刻痕 Vintage E-Commerce - RESTful API 文件 (v1.3.0)</h1>
+  <h1>🧥 復古刻痕 Vintage E-Commerce - RESTful API 文件 (v1.4.0)</h1>
   <p style="color: #b8a898;">純 PHP 8.3 RESTful API + React 全端系統之互動測試控制台與端點規格書</p>
 
   <!-- 即時 Try-it-out 控制台 -->
@@ -65,6 +65,33 @@
       <div id="respStatus" style="font-weight:bold; margin-bottom:4px; color:#c8a96e;">尚未發送請求</div>
       <pre id="respOutput">// 點擊「送出請求」於此處展示即時 JSON 回應</pre>
     </div>
+  </div>
+
+  <h2>顧客購物與行銷 API 模組 (Customer &amp; Marketing Endpoints)</h2>
+
+  <div class="endpoint">
+    <span class="method get">GET</span> <span class="path">/api/products/filter-metadata</span>
+    <p>公開端點。動態計算全站有庫存之商品的顏色清單、尺寸清單，以及商品 base_price 的最高/最低值，用於前端複合篩選側邊欄。</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method get">GET</span> <span class="path">/api/wishlist</span>
+    <p>會員專屬。取得該登入會員收藏的所有願望清單商品列表。</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method post">POST</span> <span class="path">/api/wishlist/toggle</span>
+    <p>會員專屬。切換指定商品的收藏狀態（加入/移出願望清單）。參數：<code>{"product_id": 1}</code></p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method post">POST</span> <span class="path">/api/products/{id}/subscribe</span>
+    <p>會員專屬。訂閱商品補貨與降價通知（當庫存從 0 變為大於 0，或者商品 base_price 降價時，系統將自動寫入 Email 隊列並發送 LINE Flex Message）。</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method post">POST</span> <span class="path">/api/me/line-bind</span>
+    <p>會員專屬。連結會員之 LINE 官方帳號使用者識別碼，用於雙管道通知投遞。參數：<code>{"line_user_id": "Uxxx"}</code></p>
   </div>
 
   <h2>管理員後台 API 模組 (Admin Endpoints)</h2>

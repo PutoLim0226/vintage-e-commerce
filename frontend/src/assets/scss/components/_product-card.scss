@@ -98,11 +98,17 @@
     transition: all v.$transition-fast;
     cursor: pointer;
 
-    &:hover,
-    &.active {
+    &:hover {
       background: rgba(200, 169, 110, 0.15);
       color: v.$color-gold;
       border-color: v.$color-gold;
+    }
+
+    &.active {
+      color: #e05454;
+      border-color: #e05454;
+      background: rgba(224, 84, 84, 0.12);
+      animation: wishlistHeartBeat 0.25s ease-out both;
     }
   }
 
@@ -154,4 +160,10 @@
     .product-card__name     { width: 80%; height: 20px; margin-block: v.$space-2; }
     .product-card__price-row{ width: 50%; height: 20px; }
   }
+}
+
+@keyframes wishlistHeartBeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.22); }
+  100% { transform: scale(1); }
 }

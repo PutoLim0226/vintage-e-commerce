@@ -11,6 +11,7 @@ import {
   OrdersPage,
   PaymentPage,
   NotFoundPage,
+  WishlistPage,
 } from './pages'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './components/Layout'
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
           { path: '/profile',        element: <ProfilePage /> },
           { path: '/profile/orders', element: <OrdersPage /> },
           { path: '/payment/:order_no', element: <PaymentPage /> },
+          { path: '/wishlist',       element: <WishlistPage /> },
         ],
       },
 

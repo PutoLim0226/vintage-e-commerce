@@ -1,5 +1,5 @@
 # 🧥 復古刻痕 - 全端電商平台 (Vintage E-Commerce)
-> **Version: 1.3.3**
+> **Version: 1.4.0**
 
 這是一個從零到完整上線的電商作品，專注於復古服飾零售。**本專案最大的特色在於「零 UI 框架依賴」** — 所有視覺效果皆由底層 SCSS 手刻打造，前端採用 React + Vite，後端使用純 PHP 自製 RESTful API，完整實現電商進銷存、金物流串接與會員行銷系統。
 
@@ -17,12 +17,17 @@
 ---
 
 ### 🌟 新增特色亮點
+- **前台顧客購物體驗與行銷擴充 (Customer Experience & Marketing)**：
+  - **商品收藏/願望清單 (Wishlist)**：會員專屬收藏功能，支援列表頁/詳情頁心形按鈕動畫、專屬 `/wishlist` 管理頁面。
+  - **多條件複合篩選 (Colors, Sizes, Min/Max Price)**：動態從商品 SKU 與庫存擷取元數據（全站顏色、尺寸與價格極值），提供價格滑軌與屬性複選，完全實現前端無刷過濾。
+  - **庫存不足/售罄提示與補貨訂閱**：商品列表頁總庫存為 0 時顯示 SOLD OUT 並套用灰階濾鏡；詳情頁無庫存時規格停用，低於 5 件時顯示低庫存警示，並提供「補貨與降價通知我」功能。
+  - **Email + LINE 官方帳號雙管齊下通知**：提供 NotificationService。當後台管理員補貨上架或調整價格降價時，自動把 Email 發信任務寫入郵件隊列（由 `scripts/mail-worker.php` 異步發送），並同步推送 LINE 官方帳號 Flex Message 給已綁定的會員。
 - **後台管理系統完整化 (Admin Backoffice Expansion)**：
   - **營收統計儀表板 (Dashboard)**：純 SVG 渲染無框架動態營收趨勢圖、KPI指標卡片（總營收、客單價、會員數）、熱銷商品 Top 5 與低庫存 (Stock &le; 5) 警示。
   - **訂單與履約出貨管理 (Order Fulfillment)**：支援狀態切換頁籤與多條件關鍵字搜尋、彈窗檢視詳細商品與收件地址、填寫物流承運商與追蹤單號。訂單取消時觸發 DB Transaction 自動還原 SKU 庫存與退還會員紅利點數。
   - **折價券促銷管理 (Coupon Management)**：提供折價券清單、一鍵啟停開關 (Toggle Switch)、新增與編輯彈窗。
 - **系統品質、自動化測試與 DevOps 規範 (Quality & DevOps)**：
-  - **極速 API 測試套件 (`tests/run-api-tests.js`)**：1 秒發動 100% 端點斷言測試，自動涵蓋 Auth、購物車、折價券門檻、訂單建立、Webhook 對帳與 Admin 防護機制。
+  - **極速 API 測試套件 (`tests/run-api-tests.js`)**：1 秒發動 100% 端點斷言測試，自動涵蓋 Auth、購物車、折價券門檻、訂單建立、Webhook 對帳、願望清單、動態屬性篩選與 Admin 防護機制。
   - **E2E 關鍵業務閉環測試 (`tests/run-e2e-tests.js`)**：自動化驗證「註冊 ➔ 選購 ➔ 購物車 ➔ 結帳 ➔ 付款對帳 ➔ 管理員履約出貨」業務閉環。
   - **互動式 API 文件 (Try-It-Out Console)**：`src/docs/api_docs.html` 內嵌原生 JavaScript Fetch 控制台。
   - **自動化 MySQL 備份與維運手冊**：`scripts/backup-db.sh` 支援 30 天歷史備份輪轉清理，附帶 `docs/devops_ops_guide.md` 排錯 SOP 與災難還原指引。

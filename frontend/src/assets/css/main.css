@@ -426,10 +426,16 @@ small {
   transition: all 0.15s ease;
   cursor: pointer;
 }
-.product-card__wishlist:hover, .product-card__wishlist.active {
+.product-card__wishlist:hover {
   background: rgba(200, 169, 110, 0.15);
   color: #c8a96e;
   border-color: #c8a96e;
+}
+.product-card__wishlist.active {
+  color: #e05454;
+  border-color: #e05454;
+  background: rgba(224, 84, 84, 0.12);
+  animation: wishlistHeartBeat 0.25s ease-out both;
 }
 .product-card__info {
   padding: 1rem;
@@ -490,6 +496,17 @@ small {
   height: 20px;
 }
 
+@keyframes wishlistHeartBeat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.22);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 .overlay {
   position: fixed;
   inset: 0;

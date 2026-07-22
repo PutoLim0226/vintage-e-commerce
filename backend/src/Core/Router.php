@@ -21,6 +21,7 @@ use Src\Controllers\AdminCouponController;
 use Src\Middleware\AuthMiddleware;
 use Src\Middleware\AdminMiddleware;
 use Src\Controllers\ReviewController;
+use Src\Controllers\WishlistController;
 
 class Router
 {
@@ -42,6 +43,7 @@ class Router
 
         // 商品（公開）
         $this->add('GET',  '/api/products',            [ProductController::class, 'index']);
+        $this->add('GET',  '/api/products/filter-metadata', [ProductController::class, 'filterMetadata']);
         $this->add('GET',  '/api/products/{slug}',     [ProductController::class, 'show']);
         $this->add('GET',  '/api/products/{slug}/reviews', [ReviewController::class, 'index']);
 
@@ -61,6 +63,12 @@ class Router
         $this->add('GET',  '/api/me/orders',           [UserController::class, 'orders'],      [AuthMiddleware::class]);
         $this->add('GET',  '/api/me/addresses',        [UserController::class, 'addresses'],   [AuthMiddleware::class]);
         $this->add('POST', '/api/me/addresses',        [UserController::class, 'addAddress'],  [AuthMiddleware::class]);
+        $this->add('POST', '/api/me/line-bind',        [UserController::class, 'lineBind'],    [AuthMiddleware::class]);
+
+        // 願望清單 & 補貨訂閱
+        $this->add('GET',  '/api/wishlist',            [WishlistController::class, 'index'],   [AuthMiddleware::class]);
+        $this->add('POST', '/api/wishlist/toggle',     [WishlistController::class, 'toggle'],  [AuthMiddleware::class]);
+        $this->add('POST', '/api/products/{id}/subscribe', [ProductController::class, 'subscribe'], [AuthMiddleware::class]);
 
         // 訂單 & 折價券
         $this->add('POST', '/api/coupons/check',       [OrderController::class, 'checkCoupon'],[AuthMiddleware::class]);

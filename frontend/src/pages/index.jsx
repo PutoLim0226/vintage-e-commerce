@@ -9,6 +9,7 @@ import OrdersPage from './OrdersPage'
 import CartPage from './CartPage'
 import PaymentPage from './PaymentPage'
 import NotFoundPage from './NotFoundPage'
+import WishlistPage from './WishlistPage'
 
 export {
   HomePage,
@@ -22,6 +23,7 @@ export {
   OrdersPage,
   PaymentPage,
   NotFoundPage,
+  WishlistPage,
 }
 
 

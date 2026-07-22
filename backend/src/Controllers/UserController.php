@@ -16,7 +16,7 @@ class UserController extends BaseController
         $auth = $_REQUEST['_auth'];
 
         $stmt = $db->prepare(
-            'SELECT id, name, email, phone, avatar_url, role, level, points, created_at
+            'SELECT id, name, email, phone, avatar_url, role, level, points, line_user_id, created_at
              FROM users WHERE id = ? LIMIT 1'
         );
         $stmt->execute([$auth['sub']]);
@@ -119,5 +119,25 @@ class UserController extends BaseController
         ]);
 
         $this->success(null, '地址已新增', 201);
+    }
+
+    // POST /api/me/line-bind
+    public function lineBind(array $params): void
+    {
+        $db   = Database::getInstance();
+        $auth = $_REQUEST['_auth'];
+        $body = $this->body();
+        $lineUserId = $body['line_user_id'] ?? '';
+
+        if (!$lineUserId) {
+            $this->error('line_user_id 必填', 422);
+            return;
+        }
+
+        // 綁定至該會員
+        $stmt = $db->prepare('UPDATE users SET line_user_id = ? WHERE id = ?');
+        $stmt->execute([$lineUserId, $auth['sub']]);
+
+        $this->success(null, 'LINE 官方帳號綁定成功！');
     }
 }

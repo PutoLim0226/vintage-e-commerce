@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import api from '../api/api'
 
 export default function HomePage() {
+  const { user } = useAuth()
   const [categories, setCategories] = useState([])
   const [featuredProducts, setFeaturedProducts] = useState([])
+  const [wishlistIds, setWishlistIds] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
@@ -25,6 +28,43 @@ export default function HomePage() {
     }
     fetchData()
   }, [])
+
+  useEffect(() => {
+    if (!user) {
+      setWishlistIds([])
+      return
+    }
+    const fetchWishlist = async () => {
+      try {
+        const { data } = await api.get('/api/wishlist')
+        if (data.success) {
+          setWishlistIds(data.data.map(p => p.id))
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    fetchWishlist()
+  }, [user])
+
+  const toggleWishlist = async (productId) => {
+    if (!user) {
+      navigate('/login')
+      return
+    }
+    try {
+      const { data } = await api.post('/api/wishlist/toggle', { product_id: productId })
+      if (data.success) {
+        if (wishlistIds.includes(productId)) {
+          setWishlistIds(wishlistIds.filter(id => id !== productId))
+        } else {
+          setWishlistIds([...wishlistIds, productId])
+        }
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   return (
     <div className="main-content">
@@ -123,6 +163,19 @@ export default function HomePage() {
                         />
                       </Link>
                       <div className="product-card__overlay" />
+                      <button
+                        type="button"
+                        className={`product-card__wishlist ${wishlistIds.includes(prod.id) ? 'active' : ''}`}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          toggleWishlist(prod.id)
+                        }}
+                        aria-label="加入收藏"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlistIds.includes(prod.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                        </svg>
+                      </button>
                       <div className="product-card__actions">
                         <Link to={`/products/${prod.slug}`} className="btn btn--primary">
                           查看規格

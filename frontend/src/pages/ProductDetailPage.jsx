@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import api from '../api/api'
 import { useCart } from '../context/CartContext'
 
 export default function ProductDetailPage() {
   const { slug } = useParams()
   const { setCart } = useCart()
+  const { user } = useAuth()
+  const navigate = useNavigate()
 
   const [product, setProduct] = useState(null)
   const [reviews, setReviews] = useState([])
@@ -20,6 +23,11 @@ export default function ProductDetailPage() {
 
   const [adding, setAdding] = useState(false)
   const [addSuccess, setAddSuccess] = useState(false)
+
+  // 願望清單 & 補貨訂閱狀態
+  const [wishlistIds, setWishlistIds] = useState([])
+  const [subscribed, setSubscribed] = useState(false)
+  const [submittingSub, setSubmittingSub] = useState(false)
 
   useEffect(() => {
     const loadProductAndReviews = async () => {
@@ -55,6 +63,62 @@ export default function ProductDetailPage() {
     }
     loadProductAndReviews()
   }, [slug])
+
+  // 載入會員願望清單
+  useEffect(() => {
+    if (!user) {
+      setWishlistIds([])
+      return
+    }
+    const fetchWishlist = async () => {
+      try {
+        const { data } = await api.get('/api/wishlist')
+        if (data.success) {
+          setWishlistIds(data.data.map(p => p.id))
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    fetchWishlist()
+  }, [user])
+
+  const toggleWishlist = async (productId) => {
+    if (!user) {
+      navigate('/login')
+      return
+    }
+    try {
+      const { data } = await api.post('/api/wishlist/toggle', { product_id: productId })
+      if (data.success) {
+        if (wishlistIds.includes(productId)) {
+          setWishlistIds(wishlistIds.filter(id => id !== productId))
+        } else {
+          setWishlistIds([...wishlistIds, productId])
+        }
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const handleSubscribe = async () => {
+    if (!user) {
+      navigate('/login')
+      return
+    }
+    setSubmittingSub(true)
+    try {
+      const { data } = await api.post(`/api/products/${product.id}/subscribe`)
+      if (data.success) {
+        setSubscribed(true)
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || '補貨訂閱失敗')
+    } finally {
+      setSubmittingSub(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -243,19 +307,43 @@ export default function ProductDetailPage() {
                   <input type="text" readOnly value={quantity} />
                   <button type="button" onClick={() => handleQtyChange('inc')}>+</button>
                 </div>
-                <span style={{ fontSize: '14px', color: 'var(--color-cream-faint)' }}>
-                  剩餘庫存 {currentSku.stock} 件
-                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontSize: '14px', color: 'var(--color-cream-faint)' }}>
+                    剩餘庫存 {currentSku.stock} 件
+                  </span>
+                  {currentSku.stock <= 5 && (
+                    <span style={{ color: '#e05454', fontSize: '13px', fontWeight: 'bold' }}>
+                      ⚠️ 僅剩 {currentSku.stock} 件，欲購從速！
+                    </span>
+                  )}
+                </div>
               </div>
 
-              <div className="product-detail__actions">
+              <div className="product-detail__actions" style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
                 <button
                   type="button"
                   className="btn btn--primary btn--lg"
                   onClick={handleAddToCart}
                   disabled={adding}
+                  style={{ flex: 1 }}
                 >
                   {adding ? '正在加入購物車...' : '加入購物車'}
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn--lg ${wishlistIds.includes(product.id) ? 'btn--primary' : 'btn--outline'}`}
+                  style={{
+                    width: '56px', padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    borderColor: wishlistIds.includes(product.id) ? '#e05454' : '',
+                    backgroundColor: wishlistIds.includes(product.id) ? '#e05454' : '',
+                    color: wishlistIds.includes(product.id) ? '#ffffff' : ''
+                  }}
+                  onClick={() => toggleWishlist(product.id)}
+                  aria-label="加入收藏"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill={wishlistIds.includes(product.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                  </svg>
                 </button>
               </div>
 
@@ -267,9 +355,48 @@ export default function ProductDetailPage() {
             </>
           ) : (
             <div style={{ marginBottom: '32px' }}>
-              <button className="btn btn--ghost btn--lg btn--full" disabled>
-                已售罄 (Out of Stock)
-              </button>
+              <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+                <button className="btn btn--ghost btn--lg" style={{ flex: 1 }} disabled>
+                  已售罄 (Out of Stock)
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn--lg ${wishlistIds.includes(product.id) ? 'btn--primary' : 'btn--outline'}`}
+                  style={{
+                    width: '56px', padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    borderColor: wishlistIds.includes(product.id) ? '#e05454' : '',
+                    backgroundColor: wishlistIds.includes(product.id) ? '#e05454' : '',
+                    color: wishlistIds.includes(product.id) ? '#ffffff' : ''
+                  }}
+                  onClick={() => toggleWishlist(product.id)}
+                  aria-label="加入收藏"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill={wishlistIds.includes(product.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                  </svg>
+                </button>
+              </div>
+
+              {subscribed ? (
+                <div style={{ padding: '12px', background: 'rgba(200, 169, 110, 0.1)', border: '1px solid var(--color-gold)', borderRadius: '6px', color: 'var(--color-gold)', fontSize: '14px', textAlign: 'center' }}>
+                  📬 補貨訂閱成功！商品上架時將第一時間透過 Email 與 LINE 通知您。
+                </div>
+              ) : (
+                <div style={{ padding: '16px', background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '8px' }}>
+                  <p style={{ fontSize: '14px', color: 'var(--color-cream-muted)', marginBottom: '12px' }}>
+                    📬 本單品目前缺貨中，點擊下方按鈕，在商品重新上架時，我們將自動發送 Email 與 LINE 官方帳號通知您！
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn--outline btn--sm"
+                    style={{ width: '100%' }}
+                    onClick={handleSubscribe}
+                    disabled={submittingSub}
+                  >
+                    {submittingSub ? '訂閱中...' : '🔔 補貨與降價通知我'}
+                  </button>
+                </div>
+              )}
             </div>
           )}
 

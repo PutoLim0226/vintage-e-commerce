@@ -164,6 +164,65 @@ export default function ProfilePage() {
               {updating ? '正在更新...' : '儲存變更'}
             </button>
           </form>
+
+          {/* LINE 帳號綁定區塊 */}
+          <div style={{ marginTop: '40px', borderTop: '1px solid var(--color-border)', paddingTop: '32px' }}>
+            <h3 style={{ fontSize: '18px', color: 'var(--color-cream)', marginBottom: '12px' }}>💬 LINE 官方帳號雙管齊下通知</h3>
+            <p style={{ fontSize: '14px', color: 'var(--color-cream-muted)', marginBottom: '20px' }}>
+              綁定 LINE 官方帳號後，除了 Email 通知外，您也能直接在 LINE 收到最新的降價通知與商品補貨通知！
+            </p>
+            {profile?.line_user_id ? (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '12px', padding: '16px',
+                background: 'rgba(76, 175, 80, 0.1)', border: '1px solid rgba(76, 175, 80, 0.3)', borderRadius: '8px'
+              }}>
+                <div style={{
+                  background: '#06c755', color: '#fff', padding: '6px 12px', borderRadius: '4px',
+                  fontWeight: 'bold', fontSize: '12px'
+                }}>
+                  LINE 已綁定
+                </div>
+                <span style={{ fontSize: '14px', color: 'var(--color-success)' }}>
+                  已成功綁定使用者 ID: <strong>{profile.line_user_id}</strong>
+                </span>
+              </div>
+            ) : (
+              <div style={{ padding: '16px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '8px' }}>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const mockLineId = 'U' + Math.random().toString(36).substring(2, 10).toUpperCase()
+                    const confirmBind = window.confirm(`【LINE 綁定模擬】\n即將為您綁定模擬 LINE 使用者 ID:\n${mockLineId}\n\n是否確定要綁定？`)
+                    if (!confirmBind) return
+
+                    setUpdating(true)
+                    try {
+                      const { data } = await api.post('/api/me/line-bind', { line_user_id: mockLineId })
+                      if (data.success) {
+                        setMsg({ type: 'success', text: 'LINE 官方帳號綁定成功！' })
+                        setProfile(prev => ({ ...prev, line_user_id: mockLineId }))
+                      }
+                    } catch (err) {
+                      setMsg({ type: 'error', text: err.response?.data?.message || 'LINE 綁定失敗' })
+                    } finally {
+                      setUpdating(false)
+                    }
+                  }}
+                  className="btn"
+                  style={{
+                    backgroundColor: '#06c755', color: '#ffffff', border: 'none',
+                    fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '8px',
+                    padding: '10px 20px'
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 5.58 2 10.02c0 2.5 1.54 4.7 4.02 6.07C5.39 17.58 4.21 19.34 4 19.66c-.16.27.06.63.36.56 1.13-.25 4.38-1.57 6.13-2.61.5.07.97.11 1.51.11 5.52 0 10-3.58 10-8.02S17.52 2 12 2zm0 14c-.45 0-.89-.03-1.32-.09-.34-.04-.69.06-.94.29-.98.88-2.66 1.83-4.14 2.29.35-.91.95-2.28 1.25-3.32.1-.33.02-.69-.22-.92C5.03 12.8 4 11.5 4 10.02 4 6.69 7.59 4 12 4s8 2.69 8 6.02-3.59 6.02-8 6.02z" />
+                  </svg>
+                  連結 LINE 官方帳號
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </main>
