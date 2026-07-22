@@ -126,25 +126,27 @@ export default function Header() {
             </button>
 
             {/* Member Profile/Login */}
-            {user ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Link to="/profile" className="btn--text" style={{ fontSize: '14px', color: 'var(--color-cream)' }}>
-                  {user.name}
+            <div className="header__member-desktop">
+              {user ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Link to="/profile" className="btn--text" style={{ fontSize: '14px', color: 'var(--color-cream)' }}>
+                    {user.name}
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="btn btn--sm btn--ghost"
+                    style={{ padding: '6px 12px' }}
+                  >
+                    登出
+                  </button>
+                </div>
+              ) : (
+                <Link to="/login" className="btn btn--sm btn--outline">
+                  登入
                 </Link>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="btn btn--sm btn--ghost"
-                  style={{ padding: '6px 12px' }}
-                >
-                  登出
-                </button>
-              </div>
-            ) : (
-              <Link to="/login" className="btn btn--sm btn--outline">
-                登入
-              </Link>
-            )}
+              )}
+            </div>
 
             {/* Mobile Hamburger */}
             <div

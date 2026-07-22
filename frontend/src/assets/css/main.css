@@ -914,7 +914,12 @@ small {
   justify-content: space-between;
   align-items: center;
   height: 72px;
-  gap: 1.5rem;
+  gap: 0.5rem;
+}
+@media (min-width: 1024px) {
+  .header__inner {
+    gap: 1.5rem;
+  }
 }
 .header__logo {
   font-family: "Playfair Display", Georgia, serif;
@@ -963,6 +968,16 @@ small {
   flex-wrap: nowrap;
   gap: 0.5rem;
   flex-shrink: 0;
+}
+.header__member-desktop {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .header__member-desktop {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }
 .header__icon-btn {
   position: relative;

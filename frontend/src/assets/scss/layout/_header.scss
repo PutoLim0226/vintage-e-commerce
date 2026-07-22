@@ -19,7 +19,11 @@
     @include m.container;
     @include m.flex-between;
     height: 72px;
-    gap: v.$space-6;
+    gap: v.$space-2;
+
+    @include m.lg {
+      gap: v.$space-6;
+    }
   }
 
   // ── 品牌 Logo ────────────────────────────────────────
@@ -70,6 +74,16 @@
     @include m.flex(row, flex-end, center);
     gap: v.$space-2;
     flex-shrink: 0;
+  }
+
+  &__member-desktop {
+    display: none;
+
+    @include m.lg {
+      display: flex;
+      align-items: center;
+      gap: v.$space-2;
+    }
   }
 
   &__icon-btn {
