@@ -37,6 +37,8 @@ jobs:
         env:
           # 打包時若有需要特定的後端 API 位置，可在這裡設定環境變數
           VITE_API_URL: 'http://localhost:8000'
+          VITE_BASE_PATH: '/vintage-e-commerce/'
+          VITE_ROUTER_BASENAME: '/vintage-e-commerce/'
 
       - name: SPA Redirect Fix (Create 404.html)
         run: |
