@@ -1,0 +1,185 @@
+// ============================================================
+// pages/_cart.scss
+// 購物車完整頁面樣式與 RWD
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.cart-page {
+  min-height: 80dvh;
+
+  &__title {
+    font-family: v.$font-heading;
+    margin-bottom: v.$space-8;
+    font-size: clamp(28px, 4vw, 40px);
+
+    span {
+      color: v.$color-gold;
+    }
+  }
+
+  &__layout {
+    align-items: start;
+  }
+
+  &__checkout-btn {
+    margin-top: v.$space-3;
+    text-align: center;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 80px 0;
+    color: v.$color-cream-faint;
+
+    svg {
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: v.$color-cream-muted;
+    }
+
+    p {
+      margin-bottom: 32px;
+    }
+  }
+}
+
+.cart-list {
+  &__wrapper {
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-lg;
+    overflow: hidden;
+  }
+
+  &__actions {
+    margin-top: v.$space-4;
+    display: flex;
+    gap: v.$space-3;
+  }
+}
+
+.cart-item-row {
+  display: grid;
+  grid-template-columns: 88px 1fr auto;
+  gap: v.$space-4;
+  padding: v.$space-5;
+  border-bottom: 1px solid v.$color-border;
+  align-items: center;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  // 手機版 RWD 自適應：小於 576px 時調整為雙層結構
+  @media (max-width: 576px) {
+    grid-template-columns: 72px 1fr;
+    gap: v.$space-3;
+    padding: v.$space-4;
+
+    &__price-col {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      padding-top: v.$space-3;
+      margin-top: v.$space-2;
+      text-align: left !important;
+    }
+  }
+
+  &__img {
+    width: 88px;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: v.$radius-sm;
+    display: block;
+
+    @media (max-width: 576px) {
+      width: 72px;
+    }
+  }
+
+  &__info {
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 16px;
+    font-weight: v.$font-weight-semibold;
+    color: v.$color-cream;
+    margin-bottom: 6px;
+
+    a {
+      color: inherit;
+      &:hover { color: v.$color-gold; }
+    }
+  }
+
+  &__meta {
+    font-size: 13px;
+    color: v.$color-cream-faint;
+    margin-bottom: 12px;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__remove-btn {
+    background: none;
+    border: none;
+    color: v.$color-cream-faint;
+    cursor: pointer;
+    font-size: 13px;
+    transition: color v.$transition-fast;
+
+    &:hover {
+      color: v.$color-error;
+    }
+  }
+
+  &__price-col {
+    text-align: right;
+  }
+
+  &__price {
+    font-size: 18px;
+    white-space: nowrap;
+    color: v.$color-gold;
+    font-weight: v.$font-weight-semibold;
+  }
+
+  &__unit-price {
+    font-size: 12px;
+    color: v.$color-cream-faint;
+    margin-top: 2px;
+  }
+}
+
+.cart-summary {
+  &__shipping-status {
+    color: v.$color-cream-faint;
+    font-size: 13px;
+  }
+
+  &__free-hint {
+    padding: 8px 0;
+    font-size: 13px;
+    color: v.$color-gold;
+  }
+
+  &__coupon-note {
+    font-size: 12px;
+    color: v.$color-cream-faint;
+    text-align: center;
+    margin-top: 12px;
+  }
+}

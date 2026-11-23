@@ -1,0 +1,353 @@
+// ============================================================
+// pages/_product-list.scss
+// 商品列表頁面：側邊多重篩選、搜尋條、商品卡片狀態
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.product-list-page {
+  min-height: 90dvh;
+
+  &__mobile-toggle {
+    display: none;
+
+    @media (max-width: 991px) {
+      display: flex;
+      width: 100%;
+      margin-bottom: 24px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  &__search-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+
+    .checkout__field {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    input {
+      padding: 10px 16px;
+    }
+
+    button {
+      padding: 0 24px;
+      flex-shrink: 0;
+    }
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 80px 0;
+    color: v.$color-cream-muted;
+
+    svg {
+      margin-bottom: 16px;
+      color: v.$color-cream-faint;
+    }
+  }
+}
+
+.product-filter-sidebar {
+  padding: 24px;
+  background: v.$color-bg-card;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-xl;
+
+  @media (max-width: 991px) {
+    display: none;
+
+    &.expanded {
+      display: block;
+      margin-bottom: 24px;
+    }
+  }
+
+  &__title {
+    font-size: 18px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid v.$color-border;
+    padding-bottom: 8px;
+    color: v.$color-cream;
+
+    &--spaced {
+      margin-top: 32px;
+    }
+  }
+
+  &__categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+    list-style: none;
+    padding: 0;
+  }
+
+  &__category-btn {
+    color: v.$color-cream-muted;
+    font-weight: normal;
+    text-align: left;
+    border-left: 3px solid transparent;
+    padding-left: 4px;
+    transition: all v.$transition-fast;
+    background: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+
+    &.active {
+      color: v.$color-gold;
+      font-weight: bold;
+      border-left-color: v.$color-gold;
+      padding-left: 10px;
+    }
+
+    &:hover {
+      color: v.$color-gold;
+    }
+  }
+
+  &__subcategories-list {
+    padding-left: 14px;
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    list-style: none;
+  }
+
+  &__subcategory-btn {
+    color: v.$color-cream-faint;
+    font-size: 13px;
+    font-weight: normal;
+    text-align: left;
+    border-left: 3px solid transparent;
+    padding-left: 4px;
+    transition: all v.$transition-fast;
+    background: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    cursor: pointer;
+    font-family: inherit;
+
+    &.active {
+      color: v.$color-gold;
+      font-weight: bold;
+      border-left-color: v.$color-gold;
+      padding-left: 10px;
+    }
+
+    &:hover {
+      color: v.$color-gold;
+    }
+  }
+
+  &__sort-select {
+    padding: 8px 12px;
+    width: 100%;
+    background: v.$color-bg-surface;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-md;
+    color: v.$color-cream;
+    font-size: 14px;
+  }
+
+  &__price-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  &__price-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    input {
+      padding: 8px;
+      width: 100%;
+      background: v.$color-bg-surface;
+      border: 1px solid v.$color-border;
+      color: v.$color-cream;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    span {
+      color: v.$color-cream-faint;
+    }
+  }
+
+  &__price-btn {
+    width: 100%;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  &__tag-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    color: v.$color-cream;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: inherit;
+
+    &--size {
+      border-radius: 4px;
+    }
+
+    &.active {
+      background: v.$color-gold;
+      border-color: v.$color-gold;
+      color: v.$color-bg-dark;
+      box-shadow: 0 2px 8px rgba(200, 169, 110, 0.4);
+      font-weight: bold;
+    }
+
+    &:hover:not(.active) {
+      border-color: v.$color-gold;
+      color: v.$color-gold;
+    }
+  }
+
+  &__clear-btn {
+    width: 100%;
+    color: v.$color-gold !important;
+    border: 1px solid v.$color-gold !important;
+  }
+}
+
+// 商品卡片的附加樣式（如缺貨遮罩）
+.product-card {
+  &__img--grayscale {
+    filter: grayscale(1);
+  }
+
+  &__sold-out-badge {
+    position: absolute;
+    inset: 0;
+    background: rgba(18, 13, 7, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+
+    span {
+      border: 2px solid v.$color-gold;
+      color: v.$color-gold;
+      padding: 6px 16px;
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      background: v.$color-bg-dark;
+    }
+  }
+
+  &__info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__rating-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: v.$color-cream-faint;
+
+    span:first-child {
+      color: v.$color-gold;
+    }
+  }
+}
+
+// ── 收藏清單頁面 ──────────────────────────────────────────
+.wishlist-page {
+  min-height: 90dvh;
+
+  &__toast {
+    background: rgba(200, 169, 110, 0.1);
+    border: 1px solid v.$color-gold;
+    color: v.$color-gold;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 100px 0;
+    color: v.$color-cream-muted;
+
+    svg {
+      margin-bottom: 20px;
+      color: v.$color-cream-faint;
+    }
+
+    p {
+      margin-top: 8px;
+      margin-bottom: 24px;
+    }
+  }
+
+  &__remove-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(18, 13, 7, 0.8);
+    border: 1px solid v.$color-border;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: v.$color-gold;
+    z-index: 10;
+    transition: transform v.$transition-fast, background v.$transition-fast;
+
+    &:hover {
+      transform: scale(1.1);
+      background: rgba(18, 13, 7, 1);
+    }
+  }
+
+  &__price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__view-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

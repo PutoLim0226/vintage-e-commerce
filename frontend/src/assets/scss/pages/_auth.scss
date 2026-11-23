@@ -1,0 +1,101 @@
+// ============================================================
+// pages/_auth.scss
+// 會員登入與註冊頁面樣式
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.auth-page {
+  min-height: 80dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: v.$space-8;
+
+  &__box {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-xl;
+    padding: v.$space-8;
+
+    @media (max-width: 576px) {
+      padding: v.$space-6;
+    }
+
+    &--success {
+      text-align: center;
+
+      h3 {
+        color: v.$color-success;
+        margin-bottom: 16px;
+      }
+    }
+  }
+
+  &__title {
+    text-align: center;
+    font-family: v.$font-heading;
+    font-size: v.$font-size-2xl;
+    color: v.$color-cream;
+    margin-bottom: 4px;
+  }
+
+  &__desc {
+    text-align: center;
+    color: v.$color-cream-muted;
+    margin-bottom: 24px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  &__error-alert {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(224, 84, 84, 0.1);
+    border: 1px solid rgba(224, 84, 84, 0.3);
+    border-radius: 8px;
+
+    .error-msg {
+      font-size: 14px;
+      color: v.$color-error;
+    }
+  }
+
+  &__field {
+    margin-bottom: 16px;
+
+    &--last {
+      margin-bottom: 24px;
+    }
+
+    .error-msg {
+      color: v.$color-error;
+      font-size: 12px;
+      margin-top: 4px;
+      display: block;
+    }
+  }
+
+  &__submit-btn {
+    margin-bottom: 20px;
+  }
+
+  &__footer-hint {
+    text-align: center;
+    font-size: 14px;
+    color: v.$color-cream-muted;
+
+    .btn--text {
+      padding: 0;
+      text-decoration: none;
+      color: v.$color-gold;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

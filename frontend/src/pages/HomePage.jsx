@@ -117,7 +117,7 @@ export default function HomePage() {
           <div className="home-categories__grid">
             {loading
               ? Array(4).fill(0).map((_, i) => (
-                  <div key={i} className="home-categories__card" style={{ background: '#261c12' }} />
+                  <div key={i} className="home-categories__card home-categories__card--skeleton" />
                 ))
               : categories.slice(0, 4).map((cat) => (
                   <div
@@ -189,10 +189,10 @@ export default function HomePage() {
                       </div>
                     </div>
                     <div className="product-card__info">
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div className="product-card__info-header">
                         <span className="product-card__category">{prod.category_name}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--color-cream-faint)' }}>
-                          <span style={{ color: 'var(--color-gold)' }}>★ {parseFloat(prod.rating || 5).toFixed(1)}</span>
+                        <div className="product-card__rating-badge">
+                          <span>★ {parseFloat(prod.rating || 5).toFixed(1)}</span>
                           <span>({prod.view_count || 0})</span>
                         </div>
                       </div>
@@ -212,7 +212,7 @@ export default function HomePage() {
                 ))}
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: '48px' }}>
+          <div className="home-featured__actions">
             <Link to="/products" className="btn btn--outline btn--lg">
               {t('home.view_all_products')}
             </Link>
@@ -230,16 +230,16 @@ export default function HomePage() {
             />
           </div>
           <div className="home-story__text">
-            <h2 className="section-title" style={{ textAlign: 'left' }}>
+            <h2 className="section-title">
               {t('home.story_title_pre')}<span>{t('home.story_title_mid')}</span>
             </h2>
-            <p className="section-subtitle" style={{ textAlign: 'left', marginInline: 0, marginBottom: '24px' }}>
+            <p className="section-subtitle">
               {t('home.story_quote')}
             </p>
-            <p style={{ color: 'var(--color-cream-muted)', marginBottom: '16px' }}>
+            <p className="home-story__desc">
               {t('home.story_p1')}
             </p>
-            <p style={{ color: 'var(--color-cream-muted)' }}>
+            <p className="home-story__desc">
               {t('home.story_p2')}
             </p>
             

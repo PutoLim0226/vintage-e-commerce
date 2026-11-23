@@ -1,0 +1,358 @@
+// ============================================================
+// pages/_orders.scss
+// 會員中心歷史訂單頁面與相關 Modal 樣式
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.orders-page {
+  min-height: 80dvh;
+
+  &__sidebar {
+    padding: v.$space-6;
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-lg;
+
+    &-title {
+      font-size: 18px;
+      margin-bottom: v.$space-4;
+      border-bottom: 1px solid v.$color-border;
+      padding-bottom: v.$space-2;
+      color: v.$color-cream;
+    }
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: v.$space-3;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      .active {
+        color: v.$color-gold;
+        font-weight: bold;
+      }
+    }
+  }
+
+  &__main {
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-lg;
+    padding: v.$space-6;
+
+    h3 {
+      font-size: 20px;
+      color: v.$color-cream;
+      margin-bottom: v.$space-4;
+    }
+  }
+
+  &__loading {
+    color: v.$color-cream-muted;
+    text-align: center;
+    padding-block: v.$space-8;
+  }
+
+  &__empty {
+    text-align: center;
+    padding-block: v.$space-12;
+    color: v.$color-cream-faint;
+
+    p {
+      margin-bottom: v.$space-4;
+    }
+  }
+
+  &__table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    min-width: 500px;
+
+    thead tr {
+      border-bottom: 1px solid v.$color-border;
+      color: v.$color-cream-faint;
+      font-size: 14px;
+    }
+
+    th {
+      padding: 12px 8px;
+      font-weight: 500;
+
+      &--right {
+        text-align: right;
+      }
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 15px;
+      transition: background v.$transition-fast;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+    }
+
+    td {
+      padding: 16px 8px;
+
+      &--no {
+        font-weight: bold;
+        color: v.$color-cream;
+      }
+
+      &--date {
+        color: v.$color-cream-muted;
+      }
+
+      &--total {
+        color: v.$color-gold;
+        font-weight: 600;
+      }
+
+      &--actions {
+        text-align: right;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        align-items: center;
+      }
+    }
+  }
+}
+
+// 訂單詳細彈窗
+.order-detail-modal {
+  &__box {
+    max-width: 640px;
+    width: 92%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  &__meta {
+    margin-bottom: v.$space-5;
+    border-bottom: 1px solid v.$color-border;
+    padding-bottom: v.$space-3;
+
+    &-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: v.$space-2;
+      font-size: 14px;
+
+      span:first-child {
+        color: v.$color-cream-faint;
+      }
+
+      strong {
+        color: v.$color-gold;
+      }
+    }
+  }
+
+  &__section-title {
+    margin-bottom: v.$space-3;
+    font-size: 15px;
+    font-weight: 600;
+    color: v.$color-cream;
+  }
+
+  &__items-list {
+    display: flex;
+    flex-direction: column;
+    gap: v.$space-3;
+    margin-bottom: v.$space-6;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    background: v.$color-bg-surface;
+    padding: 8px 12px;
+    border-radius: v.$radius-sm;
+
+    &-info {
+      min-width: 0;
+    }
+
+    &-name {
+      font-weight: bold;
+      color: v.$color-cream;
+    }
+
+    &-spec {
+      color: v.$color-cream-faint;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    &-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      white-space: nowrap;
+    }
+
+    &-price {
+      color: v.$color-gold;
+    }
+
+    &-reviewed {
+      font-size: 12px;
+      color: v.$color-cream-faint;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  }
+
+  &__delivery-info {
+    background: v.$color-bg-surface;
+    padding: v.$space-4;
+    border-radius: v.$radius-md;
+    font-size: 14px;
+    line-height: 1.8;
+    color: v.$color-cream-muted;
+    margin-bottom: v.$space-6;
+
+    strong {
+      color: v.$color-cream;
+    }
+  }
+
+  &__summary {
+    border-top: 1px solid v.$color-border;
+    padding-top: v.$space-3;
+    display: flex;
+    flex-direction: column;
+    gap: v.$space-2;
+    font-size: 14px;
+
+    &-row {
+      display: flex;
+      justify-content: space-between;
+
+      &--discount {
+        color: v.$color-success;
+      }
+
+      &--total {
+        font-size: 18px;
+        font-weight: bold;
+        color: v.$color-gold;
+        padding-top: v.$space-2;
+        border-top: 1px dashed v.$color-border;
+      }
+    }
+  }
+}
+
+// 評價彈窗
+.order-review-modal {
+  &__overlay {
+    z-index: 1100;
+  }
+
+  &__container {
+    z-index: 1200;
+  }
+
+  &__box {
+    max-width: 440px;
+    width: 92%;
+    padding: v.$space-8;
+  }
+
+  &__header {
+    margin-bottom: v.$space-5;
+
+    h3 {
+      font-size: 18px;
+      color: v.$color-cream;
+    }
+  }
+
+  &__product-hint {
+    margin-bottom: v.$space-4;
+    color: v.$color-cream-muted;
+    font-size: 14px;
+
+    strong {
+      color: v.$color-cream;
+    }
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: v.$space-6;
+
+    label {
+      font-size: 13px;
+      color: v.$color-cream-faint;
+    }
+  }
+
+  &__stars {
+    display: flex;
+    gap: 8px;
+    font-size: 28px;
+  }
+
+  &__star-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s ease, color 0.15s ease;
+    color: rgba(255, 255, 255, 0.15);
+
+    &--active {
+      color: v.$color-gold;
+    }
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  &__textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: v.$color-bg-surface;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-md;
+    color: v.$color-cream;
+    resize: none;
+    font-size: 14px;
+    line-height: 1.6;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: v.$color-gold;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: v.$space-3;
+    justify-content: flex-end;
+  }
+}

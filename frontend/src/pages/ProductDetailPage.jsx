@@ -58,13 +58,13 @@ export default function ProductDetailPage() {
           setReviews(revRes.data.data)
         }
       } catch (err) {
-        setError(err.response?.data?.message || '載入商品失敗')
+        setError(err.response?.data?.message || t('product_detail.load_failed'))
       } finally {
         setLoading(false)
       }
     }
     loadProductAndReviews()
-  }, [slug])
+  }, [slug, t])
 
   // 載入會員願望清單
   useEffect(() => {
@@ -116,7 +116,7 @@ export default function ProductDetailPage() {
         setSubscribed(true)
       }
     } catch (err) {
-      alert(err.response?.data?.message || '補貨訂閱失敗')
+      alert(err.response?.data?.message || t('product_detail.sub_failed'))
     } finally {
       setSubmittingSub(false)
     }
@@ -124,18 +124,18 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="product-detail" style={{ minHeight: '80dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: 'var(--color-cream-muted)' }}>尋找珍貴古著單品中...</p>
+      <div className="product-detail product-detail--loading">
+        <p>{t('product_detail.loading')}</p>
       </div>
     )
   }
 
   if (error || !product) {
     return (
-      <div className="product-detail" style={{ minHeight: '80dvh', textAlign: 'center', paddingBlock: '80px' }}>
-        <h3 style={{ color: 'var(--color-error)' }}>{error || '商品未上架或已被下架'}</h3>
-        <Link to="/products" className="btn btn--outline" style={{ marginTop: '24px' }}>
-          返回商品列表
+      <div className="product-detail product-detail--error">
+        <h3>{error || t('product_detail.not_found')}</h3>
+        <Link to="/products" className="btn btn--outline">
+          {t('product_detail.back_to_list')}
         </Link>
       </div>
     )
@@ -189,7 +189,7 @@ export default function ProductDetailPage() {
         setTimeout(() => setAddSuccess(false), 3000)
       }
     } catch (err) {
-      alert(err.response?.data?.message || '加入購物車失敗，請再試一次')
+      alert(err.response?.data?.message || t('common.error'))
     } finally {
       setAdding(false)
     }
@@ -232,14 +232,14 @@ export default function ProductDetailPage() {
         <div className="product-detail__info">
           <span className="product-detail__category">{product.category_name}</span>
           <h1 className="product-detail__name">{product.name}</h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: 'var(--color-cream-faint)', marginTop: '8px', marginBottom: '16px' }}>
-            <span style={{ color: 'var(--color-gold)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold' }}>
+          <div className="product-detail__meta-bar">
+            <span className="product-detail__meta-bar-rating">
               ★ {parseFloat(product.rating || 5).toFixed(1)}
             </span>
             <span>•</span>
-            <span>{reviews.length} 則評價</span>
+            <span>{t('product_detail.reviews_count', { count: reviews.length })}</span>
             <span>•</span>
-            <span>{product.view_count || 0} 次點擊人氣</span>
+            <span>{t('product_detail.popularity_count', { count: product.view_count || 0 })}</span>
           </div>
           
           <div className="product-detail__price-area">
@@ -309,32 +309,23 @@ export default function ProductDetailPage() {
                   <input type="text" readOnly value={quantity} />
                   <button type="button" onClick={() => handleQtyChange('inc')}>+</button>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <span style={{ fontSize: '14px', color: 'var(--color-cream-faint)' }}>
-                    {t('product_detail.in_stock', { count: currentSku.stock })}
-                  </span>
-                </div>
+                <span>
+                  {t('product_detail.in_stock', { count: currentSku.stock })}
+                </span>
               </div>
 
-              <div className="product-detail__actions" style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+              <div className="product-detail__actions">
                 <button
                   type="button"
                   className="btn btn--primary btn--lg"
                   onClick={handleAddToCart}
                   disabled={adding}
-                  style={{ flex: 1 }}
                 >
                   {adding ? t('common.loading') : t('product_detail.add_to_cart')}
                 </button>
                 <button
                   type="button"
-                  className={`btn btn--lg ${wishlistIds.includes(product.id) ? 'btn--primary' : 'btn--outline'}`}
-                  style={{
-                    width: '56px', padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    borderColor: wishlistIds.includes(product.id) ? '#e05454' : '',
-                    backgroundColor: wishlistIds.includes(product.id) ? '#e05454' : '',
-                    color: wishlistIds.includes(product.id) ? '#ffffff' : ''
-                  }}
+                  className={`btn btn--lg product-detail__wishlist-btn ${wishlistIds.includes(product.id) ? 'product-detail__wishlist-btn--active' : 'btn--outline'}`}
                   onClick={() => toggleWishlist(product.id)}
                   aria-label={t('home.add_wishlist')}
                 >
@@ -345,26 +336,20 @@ export default function ProductDetailPage() {
               </div>
 
               {addSuccess && (
-                <div style={{ padding: '12px', background: 'rgba(76,175,114,0.1)', border: '1px solid rgba(76,175,114,0.3)', borderRadius: '8px', color: 'var(--color-success)', marginBottom: '24px', textAlign: 'center' }}>
+                <div className="product-detail__toast">
                   🎉 {t('product_detail.added_to_cart')}
                 </div>
               )}
             </>
           ) : (
-            <div style={{ marginBottom: '32px' }}>
-              <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-                <button className="btn btn--ghost btn--lg" style={{ flex: 1 }} disabled>
+            <div className="product-detail__stock-box">
+              <div className="product-detail__stock-box-row">
+                <button className="btn btn--ghost btn--lg" disabled>
                   {t('product_detail.out_of_stock')}
                 </button>
                 <button
                   type="button"
-                  className={`btn btn--lg ${wishlistIds.includes(product.id) ? 'btn--primary' : 'btn--outline'}`}
-                  style={{
-                    width: '56px', padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    borderColor: wishlistIds.includes(product.id) ? '#e05454' : '',
-                    backgroundColor: wishlistIds.includes(product.id) ? '#e05454' : '',
-                    color: wishlistIds.includes(product.id) ? '#ffffff' : ''
-                  }}
+                  className={`btn btn--lg product-detail__wishlist-btn ${wishlistIds.includes(product.id) ? 'product-detail__wishlist-btn--active' : 'btn--outline'}`}
                   onClick={() => toggleWishlist(product.id)}
                   aria-label={t('home.add_wishlist')}
                 >
@@ -375,22 +360,21 @@ export default function ProductDetailPage() {
               </div>
 
               {subscribed ? (
-                <div style={{ padding: '12px', background: 'rgba(200, 169, 110, 0.1)', border: '1px solid var(--color-gold)', borderRadius: '6px', color: 'var(--color-gold)', fontSize: '14px', textAlign: 'center' }}>
-                  📬 補貨訂閱成功！商品上架時將第一時間透過 Email 與 LINE 通知您。
+                <div className="product-detail__stock-box-subscribed">
+                  {t('product_detail.sub_success')}
                 </div>
               ) : (
-                <div style={{ padding: '16px', background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '8px' }}>
-                  <p style={{ fontSize: '14px', color: 'var(--color-cream-muted)', marginBottom: '12px' }}>
-                    📬 本單品目前缺貨中，點擊下方按鈕，在商品重新上架時，我們將自動發送 Email 與 LINE 官方帳號通知您！
+                <div className="product-detail__stock-box-subscribe-panel">
+                  <p>
+                    {t('product_detail.sub_hint')}
                   </p>
                   <button
                     type="button"
                     className="btn btn--outline btn--sm"
-                    style={{ width: '100%' }}
                     onClick={handleSubscribe}
                     disabled={submittingSub}
                   >
-                    {submittingSub ? '訂閱中...' : '🔔 補貨與降價通知我'}
+                    {submittingSub ? t('product_detail.submitting') : t('product_detail.sub_btn')}
                   </button>
                 </div>
               )}
@@ -399,48 +383,43 @@ export default function ProductDetailPage() {
 
           {/* Description */}
           <div className="product-detail__desc">
-            <h3 style={{ fontSize: '18px', color: 'var(--color-cream)', marginBottom: '12px', fontFamily: 'var(--font-heading)' }}>
-              商品細節 & 故事
+            <h3>
+              {t('product_detail.desc_title')}
             </h3>
-            <p style={{ whiteSpace: 'pre-line' }}>{product.description || '無詳細說明'}</p>
+            <p>{product.description || t('product_detail.no_desc')}</p>
           </div>
 
           {/* Customer Reviews Section */}
-          <div style={{ marginTop: '48px', borderTop: '1px solid var(--color-border)', paddingTop: '32px' }}>
-            <h3 style={{ fontSize: '20px', color: 'var(--color-cream)', marginBottom: '24px', fontFamily: 'var(--font-heading)' }}>
-              顧客真實回饋 ({reviews.length})
+          <div className="product-detail__reviews">
+            <h3 className="product-detail__reviews-title">
+              {t('product_detail.reviews_title', { count: reviews.length })}
             </h3>
             {reviews.length === 0 ? (
-              <p style={{ color: 'var(--color-cream-faint)', fontSize: '14px', fontStyle: 'italic' }}>
-                目前尚無評價，歡迎購入後留下您的刻痕。
+              <p className="product-detail__reviews-empty">
+                {t('product_detail.no_reviews')}
               </p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div className="product-detail__reviews-list">
                 {reviews.map((rev) => (
                   <div
                     key={rev.id}
-                    style={{
-                      background: 'var(--color-bg-card)',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: '12px',
-                      padding: '20px',
-                    }}
+                    className="product-detail__reviews-item"
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '14px', fontWeight: 'bold', color: 'var(--color-cream)' }}>
+                    <div className="product-detail__reviews-header">
+                      <div className="product-detail__reviews-user">
+                        <span className="product-detail__reviews-user-name">
                           {rev.user_name}
                         </span>
-                        <span style={{ color: 'var(--color-gold)', fontSize: '14px' }}>
+                        <span className="product-detail__reviews-user-stars">
                           {'★'.repeat(rev.rating)}{'☆'.repeat(5 - rev.rating)}
                         </span>
                       </div>
-                      <span style={{ fontSize: '12px', color: 'var(--color-cream-faint)' }}>
-                        {new Date(rev.created_at).toLocaleDateString('zh-TW')}
+                      <span className="product-detail__reviews-date">
+                        {new Date(rev.created_at).toLocaleDateString()}
                       </span>
                     </div>
-                    <p style={{ fontSize: '14px', color: 'var(--color-cream-muted)', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-                      {rev.comment || '僅留下星等評分，未填寫文字描述。'}
+                    <p className="product-detail__reviews-content">
+                      {rev.comment || t('product_detail.default_review')}
                     </p>
                   </div>
                 ))}

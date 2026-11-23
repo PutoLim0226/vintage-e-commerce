@@ -7,13 +7,13 @@ export default function OrdersPage() {
   const { t } = useTranslation()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
-  
+
   // 詳情彈窗狀態
   const [selectedOrder, setSelectedOrder] = useState(null)
-  const [modalLoading, setModalLoading] = useState(false)
+  const [, setModalLoading] = useState(false)
 
   // 評價彈窗狀態
-  const [reviewingItem, setReviewingItem] = useState(null) // 存放當前選中欲評價的商品
+  const [reviewingItem, setReviewingItem] = useState(null)
   const [reviewRating, setReviewRating] = useState(5)
   const [reviewComment, setReviewComment] = useState('')
   const [submittingReview, setSubmittingReview] = useState(false)
@@ -42,7 +42,7 @@ export default function OrdersPage() {
         setSelectedOrder(data.data)
       }
     } catch (err) {
-      alert(err.response?.data?.message || '讀取訂單明細失敗')
+      alert(err.response?.data?.message || t('orders.load_detail_failed'))
     } finally {
       setModalLoading(false)
     }
@@ -61,13 +61,13 @@ export default function OrdersPage() {
         comment: reviewComment
       })
       if (data.success) {
-        alert(data.message || '評價提交成功！')
+        alert(data.message || t('orders.review_success'))
         // 更新當前訂單的 item 狀態為已評價
         setSelectedOrder(prev => {
           if (!prev) return null
           return {
             ...prev,
-            items: prev.items.map(it => 
+            items: prev.items.map(it =>
               it.product_id === reviewingItem.product_id ? { ...it, has_review: 1 } : it
             )
           }
@@ -77,7 +77,7 @@ export default function OrdersPage() {
         setReviewRating(5)
       }
     } catch (err) {
-      alert(err.response?.data?.message || '提交評價失敗，請稍後再試')
+      alert(err.response?.data?.message || t('orders.review_failed'))
     } finally {
       setSubmittingReview(false)
     }
@@ -85,105 +85,104 @@ export default function OrdersPage() {
 
   const getStatusLabel = (status) => {
     switch (status) {
-      case 'pending':   return { text: '待付款', class: 'badge--new' }
-      case 'paid':      return { text: '已付款', class: 'badge--gold' }
-      case 'processing':return { text: '處理中', class: 'badge--gold' }
-      case 'shipped':   return { text: '已出貨', class: 'badge--gold' }
-      case 'delivered': return { text: '已送達', class: 'badge--new' }
-      case 'cancelled': return { text: '已取消', class: 'badge--sale' }
-      case 'refunded':  return { text: '已退款', class: 'badge--sale' }
+      case 'pending':   return { text: t('orders.status_pending'), class: 'badge--new' }
+      case 'paid':      return { text: t('orders.status_paid'), class: 'badge--gold' }
+      case 'processing':return { text: t('orders.status_processing'), class: 'badge--gold' }
+      case 'shipped':   return { text: t('orders.status_shipped'), class: 'badge--gold' }
+      case 'delivered': return { text: t('orders.status_delivered'), class: 'badge--new' }
+      case 'cancelled': return { text: t('orders.status_cancelled'), class: 'badge--sale' }
+      case 'refunded':  return { text: t('orders.status_refunded'), class: 'badge--sale' }
       default:          return { text: status, class: 'badge--ghost' }
     }
   }
 
   const getShipMethodLabel = (method) => {
     switch (method) {
-      case 'home_delivery': return '黑貓宅急便 (宅配)'
-      case 'cvs_711':        return '7-11 超商取貨'
-      case 'cvs_family':     return '全家超商取貨'
+      case 'home_delivery': return t('orders.ship_home')
+      case 'cvs_711':        return t('orders.ship_711')
+      case 'cvs_family':     return t('orders.ship_family')
       default:               return method
     }
   }
 
   return (
-    <main className="container section" style={{ minHeight: '80dvh' }}>
+    <main className="container section orders-page">
       <div className="breadcrumb">
-        <span className="breadcrumb__item"><Link to="/">首頁</Link></span>
-        <span className="breadcrumb__item">會員中心</span>
+        <span className="breadcrumb__item"><Link to="/">{t('product_detail.breadcrumb_home')}</Link></span>
+        <span className="breadcrumb__item">{t('orders.member_center')}</span>
       </div>
 
       <div className="layout-sidebar">
         {/* Sidebar Nav */}
-        <aside className="checkout__form-section" style={{ padding: '24px' }}>
-          <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
-            會員功能
+        <aside className="orders-page__sidebar">
+          <h3 className="orders-page__sidebar-title">
+            {t('orders.member_features')}
           </h3>
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <ul className="orders-page__sidebar-list">
             <li>
               <Link to="/profile" className="btn--text">
-                修改個人資料
+                {t('orders.nav_profile')}
               </Link>
             </li>
             <li>
-              <Link to="/profile/orders" className="btn--text active" style={{ color: 'var(--color-gold)', fontWeight: 'bold' }}>
-                歷史訂單記錄
+              <Link to="/profile/orders" className="btn--text active">
+                {t('orders.nav_orders')}
               </Link>
             </li>
           </ul>
         </aside>
 
         {/* Main Orders List */}
-        <div className="checkout__form-section">
-          <h3>訂單歷史記錄</h3>
+        <div className="orders-page__main">
+          <h3>{t('orders.title')}</h3>
 
           {loading ? (
-            <p style={{ color: 'var(--color-cream-muted)', textAlign: 'center', paddingBlock: '32px' }}>
-              載入訂單紀錄中...
+            <p className="orders-page__loading">
+              {t('orders.loading_orders')}
             </p>
           ) : orders.length === 0 ? (
-            <div style={{ textAlign: 'center', paddingBlock: '48px', color: 'var(--color-cream-faint)' }}>
-              <p>您目前沒有任何訂單記錄</p>
-              <Link to="/products" className="btn btn--outline btn--sm" style={{ marginTop: '16px' }}>
-                前往選購
+            <div className="orders-page__empty">
+              <p>{t('orders.no_orders')}</p>
+              <Link to="/products" className="btn btn--outline btn--sm">
+                {t('orders.go_shopping')}
               </Link>
             </div>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '500px' }}>
+            <div className="orders-page__table-wrap">
+              <table className="orders-page__table">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--color-border)', color: 'var(--color-cream-faint)', fontSize: '14px' }}>
-                    <th style={{ padding: '12px 8px' }}>訂單編號</th>
-                    <th style={{ padding: '12px 8px' }}>下單日期</th>
-                    <th style={{ padding: '12px 8px' }}>總金額</th>
-                    <th style={{ padding: '12px 8px' }}>狀態</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'right' }}>操作</th>
+                  <tr>
+                    <th>{t('orders.col_order_no')}</th>
+                    <th>{t('orders.col_order_date')}</th>
+                    <th>{t('orders.col_total')}</th>
+                    <th>{t('orders.col_status')}</th>
+                    <th className="orders-page__table th--right">{t('orders.col_action')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {orders.map((ord) => {
                     const statusObj = getStatusLabel(ord.status)
                     return (
-                      <tr key={ord.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '15px' }}>
-                        <td style={{ padding: '16px 8px', fontWeight: 'bold', color: 'var(--color-cream)' }}>
+                      <tr key={ord.id}>
+                        <td className="orders-page__table td--no">
                           {ord.order_no}
                         </td>
-                        <td style={{ padding: '16px 8px', color: 'var(--color-cream-muted)' }}>
+                        <td className="orders-page__table td--date">
                           {new Date(ord.created_at).toLocaleDateString()}
                         </td>
-                        <td style={{ padding: '16px 8px', color: 'var(--color-gold)' }}>
+                        <td className="orders-page__table td--total">
                           NT$ {Math.round(ord.total)}
                         </td>
-                        <td style={{ padding: '16px 8px' }}>
+                        <td>
                           <span className={`badge ${statusObj.class}`}>{statusObj.text}</span>
                         </td>
-                        <td style={{ padding: '16px 8px', textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <td className="orders-page__table td--actions">
                           {ord.status === 'pending' && (
                             <Link
                               to={`/payment/${ord.order_no}`}
                               className="btn btn--sm btn--primary"
-                              style={{ padding: '4px 10px', fontSize: '12px' }}
                             >
-                              付款
+                              {t('orders.btn_pay')}
                             </Link>
                           )}
                           <button
@@ -191,7 +190,7 @@ export default function OrdersPage() {
                             className="btn btn--sm btn--ghost"
                             onClick={() => handleViewDetails(ord.order_no)}
                           >
-                            明細
+                            {t('orders.btn_view')}
                           </button>
                         </td>
                       </tr>
@@ -209,9 +208,9 @@ export default function OrdersPage() {
         <>
           <div className="overlay" onClick={() => setSelectedOrder(null)} />
           <div className="modal">
-            <div className="modal__box" style={{ maxWidth: '640px' }}>
+            <div className="modal__box order-detail-modal__box">
               <div className="modal__header">
-                <h2 className="modal__title">訂單明細</h2>
+                <h2 className="modal__title">{t('orders.detail_title')}</h2>
                 <button
                   type="button"
                   className="modal__close"
@@ -221,17 +220,17 @@ export default function OrdersPage() {
                 </button>
               </div>
 
-              <div style={{ marginBottom: '20px', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ color: 'var(--color-cream-faint)' }}>訂單號碼</span>
-                  <strong style={{ color: 'var(--color-gold)' }}>{selectedOrder.order_no}</strong>
+              <div className="order-detail-modal__meta">
+                <div className="order-detail-modal__meta-row">
+                  <span>{t('orders.order_no_label')}</span>
+                  <strong>{selectedOrder.order_no}</strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ color: 'var(--color-cream-faint)' }}>建立日期</span>
+                <div className="order-detail-modal__meta-row">
+                  <span>{t('orders.created_date')}</span>
                   <span>{new Date(selectedOrder.created_at).toLocaleString()}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-cream-faint)' }}>配送狀態</span>
+                <div className="order-detail-modal__meta-row">
+                  <span>{t('orders.delivery_status')}</span>
                   <span className={`badge ${getStatusLabel(selectedOrder.status).class}`}>
                     {getStatusLabel(selectedOrder.status).text}
                   </span>
@@ -239,31 +238,36 @@ export default function OrdersPage() {
               </div>
 
               {/* Items List */}
-              <h4 style={{ marginBottom: '12px', fontSize: '15px' }}>商品清單</h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px', maxHeight: '180px', overflowY: 'auto' }}>
+              <h4 className="order-detail-modal__section-title">{t('orders.items_list')}</h4>
+              <div className="order-detail-modal__items-list">
                 {selectedOrder.items?.map((item) => (
-                  <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '14px', background: 'var(--color-bg-surface)', padding: '8px 12px', borderRadius: '6px' }}>
-                    <div>
-                      <div style={{ fontWeight: 'bold', color: 'var(--color-cream)' }}>{item.product_name}</div>
-                      <div style={{ color: 'var(--color-cream-faint)', fontSize: '12px', marginTop: '2px' }}>
-                        規格: {item.sku_color || '預設'} / {item.sku_size || '預設'} × {item.quantity}
+                  <div key={item.id} className="order-detail-modal__item">
+                    <div className="order-detail-modal__item-info">
+                      <div className="order-detail-modal__item-name">{item.product_name}</div>
+                      <div className="order-detail-modal__item-spec">
+                        {t('orders.spec_format', {
+                          color: item.sku_color || t('orders.default_spec'),
+                          size: item.sku_size || t('orders.default_spec'),
+                          qty: item.quantity
+                        })}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <span style={{ color: 'var(--color-gold)', whiteSpace: 'nowrap' }}>
+                    <div className="order-detail-modal__item-right">
+                      <span className="order-detail-modal__item-price">
                         NT$ {Math.round(item.unit_price * item.quantity)}
                       </span>
                       {['paid', 'processing', 'shipped', 'delivered'].includes(selectedOrder.status) && (
                         parseInt(item.has_review) > 0 ? (
-                          <span style={{ fontSize: '12px', color: 'var(--color-cream-faint)', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px' }}>已評價</span>
+                          <span className="order-detail-modal__item-reviewed">
+                            {t('orders.reviewed')}
+                          </span>
                         ) : (
                           <button
                             type="button"
                             className="btn btn--sm btn--outline"
-                            style={{ padding: '4px 8px', fontSize: '11px', whiteSpace: 'nowrap' }}
                             onClick={() => setReviewingItem(item)}
                           >
-                            評價
+                            {t('orders.btn_review')}
                           </button>
                         )
                       )}
@@ -273,39 +277,39 @@ export default function OrdersPage() {
               </div>
 
               {/* Delivery Details */}
-              <h4 style={{ marginBottom: '12px', fontSize: '15px' }}>收件資訊</h4>
-              <div style={{ background: 'var(--color-bg-surface)', padding: '16px', borderRadius: '8px', fontSize: '14px', lineHeight: '1.8', color: 'var(--color-cream-muted)', marginBottom: '24px' }}>
-                <div><strong>收件人姓名:</strong> {selectedOrder.ship_name}</div>
-                <div><strong>收件人電話:</strong> {selectedOrder.ship_phone}</div>
-                <div><strong>配送方式:</strong> {getShipMethodLabel(selectedOrder.ship_method)}</div>
-                <div><strong>詳細地址:</strong> {selectedOrder.ship_zip} {selectedOrder.ship_city}{selectedOrder.ship_district}{selectedOrder.ship_address}</div>
-                {selectedOrder.notes && <div><strong>備註事項:</strong> {selectedOrder.notes}</div>}
+              <h4 className="order-detail-modal__section-title">{t('orders.shipping_info')}</h4>
+              <div className="order-detail-modal__delivery-info">
+                <div><strong>{t('orders.recipient_name')}:</strong> {selectedOrder.ship_name}</div>
+                <div><strong>{t('orders.recipient_phone')}:</strong> {selectedOrder.ship_phone}</div>
+                <div><strong>{t('orders.ship_method')}:</strong> {getShipMethodLabel(selectedOrder.ship_method)}</div>
+                <div><strong>{t('orders.detail_address')}:</strong> {selectedOrder.ship_zip} {selectedOrder.ship_city}{selectedOrder.ship_district}{selectedOrder.ship_address}</div>
+                {selectedOrder.notes && <div><strong>{t('orders.notes')}:</strong> {selectedOrder.notes}</div>}
               </div>
 
               {/* Summary Rows */}
-              <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>商品小計</span>
+              <div className="order-detail-modal__summary">
+                <div className="order-detail-modal__summary-row">
+                  <span>{t('orders.subtotal')}</span>
                   <span>NT$ {Math.round(selectedOrder.subtotal)}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>運費</span>
+                <div className="order-detail-modal__summary-row">
+                  <span>{t('orders.shipping_fee')}</span>
                   <span>NT$ {Math.round(selectedOrder.shipping_fee)}</span>
                 </div>
                 {parseFloat(selectedOrder.discount) > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-success)' }}>
-                    <span>折價券折抵</span>
+                  <div className="order-detail-modal__summary-row order-detail-modal__summary-row--discount">
+                    <span>{t('orders.coupon_discount')}</span>
                     <span>- NT$ {Math.round(selectedOrder.discount)}</span>
                   </div>
                 )}
                 {parseFloat(selectedOrder.points_discount) > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-success)' }}>
-                    <span>紅利點數折抵</span>
+                  <div className="order-detail-modal__summary-row order-detail-modal__summary-row--discount">
+                    <span>{t('orders.points_discount')}</span>
                     <span>- NT$ {Math.round(selectedOrder.points_discount)}</span>
                   </div>
                 )}
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 'bold', color: 'var(--color-gold)', paddingTop: '8px', borderTop: '1px dashed var(--color-border)' }}>
-                  <span>實付總額</span>
+                <div className="order-detail-modal__summary-row order-detail-modal__summary-row--total">
+                  <span>{t('orders.final_total')}</span>
                   <span>NT$ {Math.round(selectedOrder.total)}</span>
                 </div>
               </div>
@@ -317,11 +321,11 @@ export default function OrdersPage() {
       {/* ── Product Review Modal ── */}
       {reviewingItem && (
         <>
-          <div className="overlay" style={{ zIndex: 1100 }} onClick={() => setReviewingItem(null)} />
-          <div className="modal" style={{ zIndex: 1200 }}>
-            <div className="modal__box" style={{ maxWidth: '440px', padding: '32px' }}>
-              <div className="modal__header" style={{ marginBottom: '20px' }}>
-                <h3 className="modal__title" style={{ fontSize: '18px' }}>撰寫商品評價</h3>
+          <div className="overlay order-review-modal__overlay" onClick={() => setReviewingItem(null)} />
+          <div className="modal order-review-modal__container">
+            <div className="modal__box order-review-modal__box">
+              <div className="modal__header order-review-modal__header">
+                <h3 className="modal__title">{t('orders.write_review_title')}</h3>
                 <button
                   type="button"
                   className="modal__close"
@@ -331,28 +335,21 @@ export default function OrdersPage() {
                 </button>
               </div>
 
-              <div style={{ marginBottom: '16px', color: 'var(--color-cream-muted)', fontSize: '14px' }}>
-                評價商品：<strong style={{ color: 'var(--color-cream)' }}>{reviewingItem.product_name}</strong>
+              <div className="order-review-modal__product-hint">
+                {t('orders.reviewing_product')}<strong>{reviewingItem.product_name}</strong>
               </div>
 
               <form onSubmit={handleSubmitReview}>
                 {/* Stars Selector */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
-                  <label style={{ fontSize: '13px', color: 'var(--color-cream-faint)' }}>商品評分 (1 - 5 星)</label>
-                  <div style={{ display: 'flex', gap: '8px', fontSize: '28px' }}>
+                <div className="order-review-modal__group">
+                  <label>{t('orders.rating_label')}</label>
+                  <div className="order-review-modal__stars">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
                         type="button"
                         onClick={() => setReviewRating(star)}
-                        style={{
-                          background: 'none', border: 'none', cursor: 'pointer',
-                          color: star <= reviewRating ? 'var(--color-gold)' : 'rgba(255,255,255,0.15)',
-                          transition: 'transform 0.15s, color 0.15s',
-                          padding: 0
-                        }}
-                        onMouseEnter={e => e.target.style.transform = 'scale(1.2)'}
-                        onMouseLeave={e => e.target.style.transform = 'scale(1)'}
+                        className={`order-review-modal__star-btn ${star <= reviewRating ? 'order-review-modal__star-btn--active' : ''}`}
                       >
                         ★
                       </button>
@@ -361,47 +358,35 @@ export default function OrdersPage() {
                 </div>
 
                 {/* Comment Area */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '28px' }}>
-                  <label htmlFor="reviewComment" style={{ fontSize: '13px', color: 'var(--color-cream-faint)' }}>評價內容 (選填)</label>
+                <div className="order-review-modal__group">
+                  <label htmlFor="reviewComment">{t('orders.comment_label')}</label>
                   <textarea
                     id="reviewComment"
                     rows="4"
-                    placeholder="分享您穿著這件單品的心得，幫助更多喜歡古著的朋友..."
+                    placeholder={t('orders.comment_placeholder')}
                     value={reviewComment}
                     onChange={(e) => setReviewComment(e.target.value)}
                     disabled={submittingReview}
-                    style={{
-                      width: '100%',
-                      padding: '12px 16px',
-                      background: 'var(--color-bg-surface)',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: '8px',
-                      color: 'var(--color-cream)',
-                      resize: 'none',
-                      fontSize: '14px',
-                      lineHeight: '1.6'
-                    }}
+                    className="order-review-modal__textarea"
                   />
                 </div>
 
                 {/* Footer Buttons */}
-                <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                <div className="order-review-modal__actions">
                   <button
                     type="button"
                     className="btn btn--ghost"
                     onClick={() => setReviewingItem(null)}
                     disabled={submittingReview}
-                    style={{ padding: '8px 16px', fontSize: '14px' }}
                   >
-                    取消
+                    {t('orders.cancel')}
                   </button>
                   <button
                     type="submit"
                     className="btn btn--primary"
                     disabled={submittingReview}
-                    style={{ padding: '8px 24px', fontSize: '14px' }}
                   >
-                    {submittingReview ? '提交中...' : '送出評價'}
+                    {submittingReview ? t('orders.submitting') : t('orders.submit_review')}
                   </button>
                 </div>
               </form>

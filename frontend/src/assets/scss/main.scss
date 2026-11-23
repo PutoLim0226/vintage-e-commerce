@@ -32,6 +32,12 @@
 
 // ── 5. Pages ─────────────────────────────────────────────
 @use 'pages/home';
+@use 'pages/auth';
+@use 'pages/product-list';
 @use 'pages/product-detail';
+@use 'pages/cart';
 @use 'pages/checkout';
+@use 'pages/payment';
+@use 'pages/orders';
+@use 'pages/profile';
 @use 'pages/admin';

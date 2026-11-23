@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useLanguage } from '../context/LanguageContext'
 
 export default function LanguageSelector({ variant = 'desktop' }) {
-  const { language, changeLanguage, supportedLanguages, currentLanguage } = useLanguage()
+  const { language, changeLanguage, supportedLanguages, currentLanguage, t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
 
@@ -26,7 +26,7 @@ export default function LanguageSelector({ variant = 'desktop' }) {
             <line x1="2" y1="12" x2="22" y2="12" />
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
           </svg>
-          <span>語言 / Language</span>
+          <span>{t('header.language_select')}</span>
         </div>
         <div className="header__lang-mobile-group">
           {supportedLanguages.map((lang) => (
@@ -50,7 +50,7 @@ export default function LanguageSelector({ variant = 'desktop' }) {
         type="button"
         className={`header__lang-btn ${isOpen ? 'active' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="Select Language"
+        aria-label={t('header.language_select')}
         aria-expanded={isOpen}
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -66,10 +66,7 @@ export default function LanguageSelector({ variant = 'desktop' }) {
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
-          style={{
-            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.2s ease',
-          }}
+          className={`header__lang-arrow ${isOpen ? 'header__lang-arrow--open' : ''}`}
         >
           <path d="M6 9l6 6 6-6" />
         </svg>

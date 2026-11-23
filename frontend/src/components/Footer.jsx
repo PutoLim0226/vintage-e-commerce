@@ -76,13 +76,13 @@ export default function Footer() {
         <div>
           <h3 className="footer__col-title">{t('footer.col_contact')}</h3>
           <ul className="footer__links">
-            <li className="footer__link" style={{ cursor: 'default' }}>
+            <li className="footer__link footer__link--static">
               {t('footer.address')}
             </li>
-            <li className="footer__link" style={{ cursor: 'default' }}>
+            <li className="footer__link footer__link--static">
               {t('footer.phone')}
             </li>
-            <li className="footer__link" style={{ cursor: 'default' }}>
+            <li className="footer__link footer__link--static">
               {t('footer.email')}
             </li>
           </ul>
@@ -96,7 +96,7 @@ export default function Footer() {
             {t('footer.copyright', { year: new Date().getFullYear() })}
           </div>
           <div className="footer__payment-icons">
-            <span style={{ fontSize: '12px', color: 'var(--color-cream-faint)' }}>
+            <span className="footer__payment-note">
               {t('footer.payment_notice')}
             </span>
           </div>

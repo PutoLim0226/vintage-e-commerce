@@ -245,4 +245,111 @@
       &::placeholder { color: v.$color-cream-faint; }
     }
   }
+
+  &__field {
+    textarea {
+      width: 100%;
+      padding: v.$space-3 v.$space-4;
+      background: v.$color-bg-surface;
+      border: 1px solid v.$color-border;
+      border-radius: v.$radius-md;
+      color: v.$color-cream;
+      font-size: v.$font-size-md;
+      font-family: inherit;
+      resize: vertical;
+
+      &:focus {
+        border-color: v.$color-gold;
+        outline: none;
+      }
+    }
+  }
+
+  &__coupon-success {
+    font-size: 13px;
+    color: v.$color-success;
+    margin-bottom: v.$space-4;
+  }
+
+  &__submit-btn {
+    margin-top: v.$space-4;
+  }
+}
+
+// ── 建立訂單成功頁面 ──────────────────────────────────
+.checkout-success {
+  min-height: 80dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__box {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    padding: v.$space-10;
+    background: v.$color-bg-card;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-xl;
+
+    @media (max-width: 576px) {
+      padding: v.$space-6;
+    }
+  }
+
+  &__icon {
+    font-size: 64px;
+    margin-bottom: v.$space-4;
+  }
+
+  &__desc {
+    color: v.$color-cream-muted;
+    margin-bottom: v.$space-6;
+    line-height: 1.6;
+  }
+
+  &__meta {
+    background: v.$color-bg-surface;
+    border: 1px solid v.$color-border;
+    border-radius: v.$radius-md;
+    padding: v.$space-5;
+    margin-bottom: v.$space-8;
+    text-align: left;
+
+    &-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: v.$space-3;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      span {
+        color: v.$color-cream-faint;
+      }
+
+      strong {
+        color: v.$color-gold;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: v.$space-3;
+    align-items: center;
+  }
+
+  &__pay-btn {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  &__sub-actions {
+    display: flex;
+    gap: v.$space-4;
+    justify-content: center;
+  }
 }

@@ -147,35 +147,37 @@ export default function CheckoutPage() {
 
   if (step === 'success' && createdOrder) {
     return (
-      <main className="container section" style={{ minHeight: '80dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div className="checkout__form-section" style={{ width: '100%', maxWidth: '520px', textAlign: 'center', padding: '48px' }}>
-          <div style={{ fontSize: '64px', marginBottom: '16px' }}>🎉</div>
-          <h2 className="section-title">訂單<span>已建立</span></h2>
-          <p style={{ color: 'var(--color-cream-muted)', marginBottom: '24px' }}>
-            感謝您的購買！您的訂單已成功建立，以下是訂單資訊：
+      <main className="container section checkout-success">
+        <div className="checkout-success__box">
+          <div className="checkout-success__icon">🎉</div>
+          <h2 className="section-title">
+            {t('checkout.order_created_title_pre')}<span>{t('checkout.order_created_title_post')}</span>
+          </h2>
+          <p className="checkout-success__desc">
+            {t('checkout.order_created_desc')}
           </p>
 
-          <div style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '20px', marginBottom: '32px', textAlign: 'left' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ color: 'var(--color-cream-faint)' }}>訂單編號:</span>
-              <strong style={{ color: 'var(--color-gold)' }}>{createdOrder.order_no}</strong>
+          <div className="checkout-success__meta">
+            <div className="checkout-success__meta-row">
+              <span>{t('checkout.order_no_label')}</span>
+              <strong>{createdOrder.order_no}</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--color-cream-faint)' }}>應付總額:</span>
-              <strong style={{ color: 'var(--color-gold)' }}>NT$ {Math.round(createdOrder.total)}</strong>
+            <div className="checkout-success__meta-row">
+              <span>{t('checkout.amount_payable')}</span>
+              <strong>NT$ {Math.round(createdOrder.total)}</strong>
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
-            <Link to={`/payment/${createdOrder.order_no}`} className="btn btn--primary" style={{ width: '100%', maxWidth: '280px' }}>
-              💳 立即前往模擬付款 ➔
+          <div className="checkout-success__actions">
+            <Link to={`/payment/${createdOrder.order_no}`} className="btn btn--primary checkout-success__pay-btn">
+              {t('checkout.go_to_payment')}
             </Link>
-            <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+            <div className="checkout-success__sub-actions">
               <Link to="/profile/orders" className="btn btn--outline btn--sm">
-                查看訂單記錄
+                {t('payment.view_orders')}
               </Link>
               <Link to="/" className="btn btn--outline btn--sm">
-                返回首頁
+                {t('payment.back_home')}
               </Link>
             </div>
           </div>
@@ -294,7 +296,7 @@ export default function CheckoutPage() {
           <div className="checkout__form-section">
             <h3>{t('checkout.shipping_method')}</h3>
 
-            <div className="checkout__form-row checkout__form-row--full" style={{ marginBottom: '20px' }}>
+            <div className="checkout__form-row checkout__form-row--full">
               <div className="checkout__field">
                 <label htmlFor="shipMethod">{t('checkout.shipping_method')}</label>
                 <select
@@ -320,15 +322,6 @@ export default function CheckoutPage() {
                   onChange={(e) => setNotes(e.target.value)}
                   disabled={loading}
                   rows="3"
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    background: 'var(--color-bg-surface)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: '8px',
-                    color: 'var(--color-cream)',
-                    resize: 'vertical',
-                  }}
                 />
               </div>
             </div>
@@ -374,7 +367,7 @@ export default function CheckoutPage() {
           </form>
 
           {appliedCoupon && (
-            <div style={{ fontSize: '13px', color: 'var(--color-success)', marginBottom: '16px' }}>
+            <div className="checkout__coupon-success">
               ✓ {t('checkout.coupon_applied', { amount: `NT$ ${discount}` })}
             </div>
           )}
@@ -390,7 +383,7 @@ export default function CheckoutPage() {
               <span>NT$ {Math.round(shippingFee)}</span>
             </div>
             {appliedCoupon && (
-              <div className="checkout__summary-row checkout__summary-row--discount" style={{ color: 'var(--color-gold)' }}>
+              <div className="checkout__summary-row checkout__summary-row--discount">
                 <span>{t('common.discount')}</span>
                 <span>- NT$ {Math.round(discount)}</span>
               </div>
@@ -403,10 +396,9 @@ export default function CheckoutPage() {
 
           <button
             type="button"
-            className="btn btn--primary btn--full btn--lg"
+            className="btn btn--primary btn--full btn--lg checkout__submit-btn"
             onClick={handleSubmit}
             disabled={loading || !cart.items || cart.items.length === 0}
-            style={{ marginTop: '16px' }}
           >
             {loading ? t('checkout.processing') : t('checkout.submit_order')}
           </button>

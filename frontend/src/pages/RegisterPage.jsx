@@ -45,7 +45,7 @@ export default function RegisterPage() {
       }
     } catch (err) {
       if (err.response?.status === 409) {
-        setServerError('Email already exists')
+        setServerError(t('auth.email_exists', 'Email already exists'))
       } else {
         setServerError(err.response?.data?.message || t('common.error'))
       }
@@ -56,12 +56,12 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="checkout" style={{ minHeight: '80dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div className="checkout__form-section" style={{ width: '100%', maxWidth: '440px', margin: '0 auto', textAlign: 'center' }}>
-          <h3 style={{ fontFamily: "var(--heading)", fontSize: 'var(--font-size-2xl)', color: 'var(--color-success)', marginBottom: '16px' }}>
+      <div className="auth-page">
+        <div className="auth-page__box auth-page__box--success">
+          <h3>
             🎉 {t('common.success')}！
           </h3>
-          <p style={{ color: 'var(--color-cream-muted)' }}>
+          <p className="auth-page__desc">
             {t('auth.register_desc')}
           </p>
         </div>
@@ -70,23 +70,23 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="checkout" style={{ minHeight: '80dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="checkout__form-section" style={{ width: '100%', maxWidth: '440px', margin: '0 auto' }}>
-        <h3 style={{ textAlign: 'center', fontFamily: "var(--heading)", fontSize: 'var(--font-size-2xl)' }}>
+    <div className="auth-page">
+      <div className="auth-page__box">
+        <h3 className="auth-page__title">
           {t('auth.register_title')}
         </h3>
-        <p style={{ textAlign: 'center', color: 'var(--color-cream-muted)', marginBottom: '24px', fontSize: '14px' }}>
+        <p className="auth-page__desc">
           {t('auth.register_desc')}
         </p>
 
         {serverError && (
-          <div className="checkout__field--error" style={{ marginBottom: '16px', padding: '12px', background: 'rgba(224,84,84,0.1)', border: '1px solid rgba(224,84,84,0.3)', borderRadius: '8px' }}>
-            <span className="error-msg" style={{ fontSize: '14px' }}>{serverError}</span>
+          <div className="auth-page__error-alert">
+            <span className="error-msg">{serverError}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="checkout__field" style={{ marginBottom: '16px' }}>
+          <div className="checkout__field auth-page__field">
             <label htmlFor="name">{t('checkout.name')}</label>
             <input
               id="name"
@@ -96,10 +96,10 @@ export default function RegisterPage() {
               onChange={(e) => setName(e.target.value)}
               disabled={loading}
             />
-            {errors.name && <span className="error-msg" style={{ color: 'var(--color-error)', fontSize: '12px', marginTop: '4px' }}>{errors.name}</span>}
+            {errors.name && <span className="error-msg">{errors.name}</span>}
           </div>
 
-          <div className="checkout__field" style={{ marginBottom: '16px' }}>
+          <div className="checkout__field auth-page__field">
             <label htmlFor="email">{t('auth.email')}</label>
             <input
               id="email"
@@ -109,10 +109,10 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
             />
-            {errors.email && <span className="error-msg" style={{ color: 'var(--color-error)', fontSize: '12px', marginTop: '4px' }}>{errors.email}</span>}
+            {errors.email && <span className="error-msg">{errors.email}</span>}
           </div>
 
-          <div className="checkout__field" style={{ marginBottom: '16px' }}>
+          <div className="checkout__field auth-page__field">
             <label htmlFor="password">{t('auth.password')}</label>
             <input
               id="password"
@@ -122,10 +122,10 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
             />
-            {errors.password && <span className="error-msg" style={{ color: 'var(--color-error)', fontSize: '12px', marginTop: '4px' }}>{errors.password}</span>}
+            {errors.password && <span className="error-msg">{errors.password}</span>}
           </div>
 
-          <div className="checkout__field" style={{ marginBottom: '24px' }}>
+          <div className="checkout__field auth-page__field auth-page__field--last">
             <label htmlFor="confirmPassword">{t('auth.confirm_password')}</label>
             <input
               id="confirmPassword"
@@ -135,22 +135,21 @@ export default function RegisterPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={loading}
             />
-            {errors.confirmPassword && <span className="error-msg" style={{ color: 'var(--color-error)', fontSize: '12px', marginTop: '4px' }}>{errors.confirmPassword}</span>}
+            {errors.confirmPassword && <span className="error-msg">{errors.confirmPassword}</span>}
           </div>
 
           <button
             type="submit"
-            className="btn btn--primary btn--full"
+            className="btn btn--primary btn--full auth-page__submit-btn"
             disabled={loading}
-            style={{ marginBottom: '20px' }}
           >
             {loading ? t('common.loading') : t('auth.register_btn')}
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', fontSize: '14px', color: 'var(--color-cream-muted)' }}>
+        <div className="auth-page__footer-hint">
           {t('auth.has_account')}{' '}
-          <Link to="/login" className="btn--text" style={{ padding: 0, textDecoration: 'none' }}>
+          <Link to="/login" className="btn--text">
             {t('auth.go_login')}
           </Link>
         </div>

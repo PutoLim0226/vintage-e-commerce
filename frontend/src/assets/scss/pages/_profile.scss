@@ -1,0 +1,210 @@
+// ============================================================
+// pages/_profile.scss
+// 會員中心個人資料頁面樣式
+// ============================================================
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+.profile-page {
+  min-height: 80dvh;
+
+  &__loading {
+    min-height: 80dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: v.$color-cream-muted;
+  }
+
+  &__alert {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    text-align: center;
+    font-size: 14px;
+
+    &--success {
+      background: rgba(76, 175, 114, 0.1);
+      border: 1px solid rgba(76, 175, 114, 0.3);
+      color: v.$color-success;
+    }
+
+    &--error {
+      background: rgba(224, 84, 84, 0.1);
+      border: 1px solid rgba(224, 84, 84, 0.3);
+      color: v.$color-error;
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding: 16px;
+    background: v.$color-bg-surface;
+    border: 1px solid v.$color-border;
+    border-radius: 8px;
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+
+    &-label {
+      color: v.$color-cream-faint;
+      font-size: 14px;
+    }
+
+    &-val {
+      font-size: 20px;
+      font-weight: bold;
+      color: v.$color-gold;
+      margin-top: 4px;
+
+      &--uppercase {
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  &__field {
+    margin-bottom: 18px;
+
+    &--last {
+      margin-bottom: 28px;
+    }
+
+    input:read-only {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__line-section {
+    margin-top: 40px;
+    border-top: 1px solid v.$color-border;
+    padding-top: 32px;
+
+    &-title {
+      font-size: 18px;
+      color: v.$color-cream;
+      margin-bottom: 12px;
+    }
+
+    &-desc {
+      font-size: 14px;
+      color: v.$color-cream-muted;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+  }
+
+  &__line-bound-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 8px;
+
+    @media (max-width: 576px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__line-badge {
+    background: #06c755;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  &__line-bound-text {
+    font-size: 14px;
+    color: v.$color-success;
+
+    strong {
+      color: v.$color-cream;
+    }
+  }
+
+  &__line-action-box {
+    padding: 16px;
+    background: v.$color-bg-surface;
+    border: 1px solid v.$color-border;
+    border-radius: 8px;
+  }
+
+  &__line-btn {
+    background-color: #06c755 !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #05b34c !important;
+    }
+  }
+}
+
+// ── 404 頁面 ─────────────────────────────────────────────
+.not-found-page {
+  min-height: 80dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px;
+
+  &__code {
+    font-size: clamp(96px, 20vw, 160px);
+    font-family: v.$font-heading;
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(135deg, v.$color-gold, v.$color-gold-dark);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    user-select: none;
+  }
+
+  &__title {
+    font-size: clamp(22px, 4vw, 32px);
+    font-family: v.$font-heading;
+    color: v.$color-cream;
+    margin-bottom: 16px;
+  }
+
+  &__desc {
+    color: v.$color-cream-faint;
+    max-width: 380px;
+    line-height: 1.8;
+    margin-bottom: 40px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__deco {
+    margin-top: 64px;
+    opacity: 0.25;
+    pointer-events: none;
+    user-select: none;
+  }
+}

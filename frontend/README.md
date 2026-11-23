@@ -1,5 +1,5 @@
 # 🎨 復古刻痕 - 前端系統 (Frontend SPA)
-> **Version: 1.4.5**
+> **Version: 1.4.6**
 
 本目錄包含「復古刻痕」電商的前端 Single Page Application (SPA)。全站採用 React 18 搭配 Vite 構建，最大特色為**零 UI 庫依賴**，以底層 SCSS 與設計標記 (Design Tokens) 進行排版與精緻的微交互動畫。
 
@@ -15,6 +15,12 @@
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.4.6 — 2026-11-23
+refactor(quality): 全站程式碼品質稽核修復完成（i18n / SCSS / RWD）：
+- 清除全站所有元件與頁面之 Inline CSS (`style={{...}}`)，全數提取並收納至 `src/assets/scss/` 各模組中。
+- 前台全頁面（Home, ProductList, ProductDetail, Cart, Checkout, Payment, Orders, Profile, Wishlist, Login, Register, NotFound）與後台全管理頁面（AdminDashboard, AdminOrders, AdminProducts, AdminCoupons）全面補齊三語系 i18n 翻譯。
+- 表格增加 `.table-responsive` 容器並針對行動版（375px/576px/768px）提供靈活折行與 Modal 90vh 捲軸防破版優化。
 
 1.4.5 — 2026-11-23
 feat(i18n): 實作多語系國際化支援 (i18n)，涵蓋台灣繁體中文 (zh-TW)、簡體中文 (zh-CN) 與英文 (en)。自製輕量高效 LanguageContext，Header 內建桌面端下拉選單與行動端側邊語言切換器，具備持久化 localStorage 與自動 HTML lang 同步機制。

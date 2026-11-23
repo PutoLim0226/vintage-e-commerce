@@ -1,6 +1,6 @@
 // ============================================================
 // pages/_product-detail.scss
-// 商品詳情：圖片、規格切換、數量選擇、加入購物車
+// 商品詳情：圖片、規格切換、數量選擇、加入購物車、評價
 // ============================================================
 @use '../abstracts/variables' as v;
 @use '../abstracts/mixins' as m;
@@ -8,6 +8,25 @@
 .product-detail {
   @include m.container;
   padding-block: v.$space-12;
+
+  &--loading {
+    min-height: 80dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: v.$color-cream-muted;
+  }
+
+  &--error {
+    min-height: 80dvh;
+    text-align: center;
+    padding-block: 80px;
+
+    h3 {
+      color: v.$color-error;
+      margin-bottom: v.$space-4;
+    }
+  }
 
   &__inner {
     display: grid;
@@ -87,6 +106,24 @@
     color: v.$color-cream;
     line-height: v.$line-height-tight;
     margin-bottom: v.$space-4;
+  }
+
+  &__meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: v.$color-cream-faint;
+    margin-top: 8px;
+    margin-bottom: 16px;
+
+    &-rating {
+      color: v.$color-gold;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: bold;
+    }
   }
 
   &__price-area {
@@ -210,6 +247,72 @@
     .btn--primary { flex: 1; }
   }
 
+  &__wishlist-btn {
+    width: 56px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &--active {
+      border-color: #e05454 !important;
+      background-color: #e05454 !important;
+      color: #ffffff !important;
+    }
+  }
+
+  &__toast {
+    padding: 12px;
+    background: rgba(76, 175, 114, 0.1);
+    border: 1px solid rgba(76, 175, 114, 0.3);
+    border-radius: v.$radius-md;
+    color: v.$color-success;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  &__stock-box {
+    margin-bottom: 32px;
+
+    &-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+
+      .btn:first-child {
+        flex: 1;
+      }
+    }
+
+    &-subscribed {
+      padding: 12px;
+      background: rgba(200, 169, 110, 0.1);
+      border: 1px solid v.$color-gold;
+      border-radius: v.$radius-sm;
+      color: v.$color-gold;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    &-subscribe-panel {
+      padding: 16px;
+      background: v.$color-bg-card;
+      border: 1px solid v.$color-border;
+      border-radius: v.$radius-md;
+
+      p {
+        font-size: 14px;
+        color: v.$color-cream-muted;
+        margin-bottom: 12px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
   // ── 商品描述 ──────────────────────────────────────────
   &__desc {
     padding-top: v.$space-6;
@@ -217,5 +320,86 @@
     color: v.$color-cream-muted;
     line-height: v.$line-height-loose;
     font-size: v.$font-size-md;
+
+    h3 {
+      font-size: 18px;
+      color: v.$color-cream;
+      margin-bottom: 12px;
+      font-family: v.$font-heading;
+    }
+
+    p {
+      white-space: pre-line;
+    }
+  }
+
+  // ── 評價區塊 ──────────────────────────────────────────
+  &__reviews {
+    margin-top: 48px;
+    border-top: 1px solid v.$color-border;
+    padding-top: 32px;
+
+    &-title {
+      font-size: 20px;
+      color: v.$color-cream;
+      margin-bottom: 24px;
+      font-family: v.$font-heading;
+    }
+
+    &-empty {
+      color: v.$color-cream-faint;
+      font-size: 14px;
+      font-style: italic;
+    }
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    &-item {
+      background: v.$color-bg-card;
+      border: 1px solid v.$color-border;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      &-name {
+        font-size: 14px;
+        font-weight: bold;
+        color: v.$color-cream;
+      }
+
+      &-stars {
+        color: v.$color-gold;
+        font-size: 14px;
+      }
+    }
+
+    &-date {
+      font-size: 12px;
+      color: v.$color-cream-faint;
+    }
+
+    &-content {
+      font-size: 14px;
+      color: v.$color-cream-muted;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
   }
 }

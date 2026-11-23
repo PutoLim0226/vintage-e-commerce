@@ -452,3 +452,598 @@
   position: relative;
   margin: auto;
 }
+
+// ── 後台專用擴充樣式 ─────────────────────────────────────
+.admin-sidebar-user {
+  font-size: 13px;
+  color: v.$color-cream-faint;
+  margin-bottom: 8px;
+}
+
+.admin-sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-logout-btn {
+  font-size: 12px;
+  padding: 4px 8px;
+  width: 100%;
+  text-align: center;
+}
+
+.admin-loading {
+  color: v.$color-cream-muted;
+  text-align: center;
+  padding: 60px 0;
+  font-size: 14px;
+}
+
+.admin-empty {
+  color: v.$color-cream-faint;
+  text-align: center;
+  padding: 60px 0;
+  font-size: 14px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dashboard-top-products {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: v.$color-bg-surface;
+    border-radius: v.$radius-md;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  &__left {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60%;
+  }
+
+  &__rank {
+    color: v.$color-gold;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+
+  &__name {
+    font-size: 13px;
+    color: v.$color-cream;
+  }
+
+  &__right {
+    font-size: 13px;
+    text-align: right;
+  }
+
+  &__revenue {
+    color: v.$color-gold-light;
+    font-weight: 600;
+  }
+
+  &__qty {
+    font-size: 11px;
+    color: v.$color-cream-faint;
+  }
+}
+
+.stock-alert-title {
+  color: v.$color-warning;
+  margin-bottom: 16px;
+}
+
+.stock-alert-empty {
+  color: v.$color-success;
+  font-size: 14px;
+  padding: 12px 0;
+}
+
+.admin-modal {
+  &__box {
+    max-width: 780px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px;
+
+    &--sm {
+      max-width: 500px;
+    }
+
+    &--md {
+      max-width: 640px;
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h3 {
+      font-size: 20px;
+      color: v.$color-gold;
+      margin: 0;
+      font-family: v.$font-heading;
+    }
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: v.$color-cream-muted;
+    cursor: pointer;
+
+    &:hover {
+      color: v.$color-cream;
+    }
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 16px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-size: 13px;
+      color: v.$color-cream-faint;
+    }
+
+    input, select, textarea {
+      padding: 10px;
+      background: v.$color-bg-dark;
+      border: 1px solid v.$color-border;
+      border-radius: 6px;
+      color: v.$color-cream;
+      font-size: 14px;
+      font-family: inherit;
+
+      &:focus {
+        outline: none;
+        border-color: v.$color-gold;
+      }
+    }
+
+    &--code input {
+      font-family: monospace;
+      font-size: 15px;
+      color: v.$color-gold;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 16px;
+    border-top: 1px solid v.$color-border;
+  }
+}
+
+.admin-td-code {
+  font-family: monospace;
+  color: v.$color-gold;
+  font-weight: bold;
+}
+
+.admin-td-muted {
+  font-size: 12px;
+  color: v.$color-cream-faint;
+}
+
+.admin-td-price {
+  font-size: 14px;
+  color: v.$color-cream;
+  font-weight: 600;
+}
+
+.admin-td-danger {
+  color: v.$color-error;
+  font-weight: bold;
+}
+
+.admin-td-actions {
+  display: flex;
+  gap: 8px;
+}
+
+// ── 訂單頁專屬明細與狀態 ─────────────────────────────────
+.admin-order-user {
+  &__name {
+    color: v.$color-cream;
+    font-weight: 500;
+  }
+  &__sub {
+    font-size: 11px;
+    color: v.$color-cream-faint;
+  }
+}
+
+.admin-order-carrier {
+  font-size: 12px;
+  &__tracking {
+    font-family: monospace;
+    font-size: 11px;
+    color: v.$color-cream-muted;
+  }
+}
+
+.order-fulfill-btn {
+  font-size: 12px;
+  padding: 6px 12px;
+  color: v.$color-gold-light;
+  background-color: rgba(200, 169, 110, 0.2);
+  border: 1px solid v.$color-gold;
+  border-radius: v.$radius-sm;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all v.$transition-fast;
+
+  &:hover {
+    background-color: rgba(200, 169, 110, 0.35);
+  }
+}
+
+.order-recipient-card {
+  background: v.$color-bg-surface;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid v.$color-border;
+
+  &__title {
+    color: v.$color-cream;
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__content {
+    font-size: 13px;
+    color: v.$color-cream-muted;
+    line-height: 1.6;
+  }
+}
+
+.order-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.order-item-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: v.$color-bg-card;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+
+  &__left {
+    font-size: 13px;
+  }
+
+  &__name {
+    color: v.$color-cream;
+    font-weight: 500;
+  }
+
+  &__spec {
+    font-size: 11px;
+    color: v.$color-cream-faint;
+  }
+
+  &__right {
+    text-align: right;
+    font-size: 13px;
+  }
+
+  &__subtotal {
+    color: v.$color-gold-light;
+    font-weight: 600;
+  }
+}
+
+.order-summary-breakdown {
+  border-top: 1px solid v.$color-border;
+  padding-top: 12px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: v.$color-cream-muted;
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+
+    &--discount {
+      color: v.$color-gold;
+    }
+
+    &--points {
+      color: v.$color-success;
+    }
+
+    &--total {
+      font-weight: bold;
+      font-size: 16px;
+      color: v.$color-gold-light;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed v.$color-border;
+    }
+  }
+}
+
+.order-fulfillment-form {
+  background: rgba(200, 169, 110, 0.05);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid v.$color-border;
+
+  &__title {
+    color: v.$color-gold;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+// ── 商品管理頁專屬樣式 ─────────────────────────────────
+.admin-products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  &__info {
+    .page-title {
+      font-family: v.$font-heading;
+      font-size: 28px;
+      color: v.$color-cream;
+      margin-bottom: 4px;
+    }
+    .page-count {
+      color: v.$color-cream-faint;
+      font-size: 14px;
+    }
+  }
+}
+
+.admin-products-table {
+  background: v.$color-bg-card;
+  border: 1px solid v.$color-border;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &__header,
+  &__row {
+    display: grid;
+    grid-template-columns: 60px 2fr 1.2fr 1fr 1fr 90px 140px;
+    gap: 12px;
+    padding: 14px 20px;
+    align-items: center;
+
+    @media (max-width: 992px) {
+      grid-template-columns: 50px 1.5fr 1fr 1fr 80px 100px;
+    }
+
+    @media (max-width: 768px) {
+      min-width: 650px; // 保證在手機版透過外層 table-responsive 水平滑動不被擠扁
+    }
+  }
+
+  &__header {
+    border-bottom: 1px solid v.$color-border;
+    font-size: 12px;
+    color: v.$color-cream-faint;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__row {
+    border-bottom: 1px solid v.$color-border;
+    transition: background 0.15s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    &--inactive {
+      opacity: 0.55;
+    }
+  }
+
+  &__thumb {
+    width: 48px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: v.$color-bg-surface;
+  }
+
+  &__name-cell {
+    .title {
+      font-size: 14px;
+      color: v.$color-cream;
+      font-weight: 500;
+    }
+    .slug {
+      font-size: 12px;
+      color: v.$color-cream-faint;
+      font-family: monospace;
+    }
+  }
+
+  &__category {
+    font-size: 13px;
+    color: v.$color-cream-muted;
+  }
+
+  &__price {
+    font-size: 14px;
+    color: v.$color-cream;
+    font-weight: 600;
+  }
+
+  &__stock {
+    font-size: 14px;
+    color: v.$color-cream;
+
+    &--low {
+      color: v.$color-error;
+      font-weight: bold;
+    }
+  }
+
+  &__toggle-btn {
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid v.$color-border;
+    background: transparent;
+    color: v.$color-cream-faint;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &--active {
+      border-color: v.$color-gold;
+      background: rgba(198, 160, 87, 0.12);
+      color: v.$color-gold;
+    }
+  }
+
+  &__action-btn {
+    font-size: 12px;
+    background: none;
+    border: 1px solid v.$color-border;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: all 0.2s;
+    color: v.$color-cream;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &--edit {
+      color: v.$color-gold;
+    }
+
+    &--view {
+      color: v.$color-cream-faint;
+    }
+
+    &--delete {
+      color: v.$color-error;
+      border-color: transparent;
+
+      &:hover {
+        border-color: v.$color-error;
+      }
+    }
+  }
+}
+
+.sku-list-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &__item {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 2fr 40px;
+    gap: 10px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.01);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__input {
+    padding: 6px 8px;
+    font-size: 13px;
+    background: v.$color-bg-surface;
+    border: 1px solid v.$color-border;
+    border-radius: 4px;
+    color: v.$color-cream;
+    width: 100%;
+
+    &--code {
+      font-family: monospace;
+    }
+  }
+
+  &__delete-btn {
+    background: none;
+    border: none;
+    color: v.$color-error;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+

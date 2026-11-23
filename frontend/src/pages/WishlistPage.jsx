@@ -38,7 +38,7 @@ export default function WishlistPage() {
       const { data } = await api.post('/api/wishlist/toggle', { product_id: productId })
       if (data.success) {
         setProducts(products.filter(p => p.id !== productId))
-        setMessage('已從收藏清單移除')
+        setMessage(t('wishlist.removed_msg'))
         setTimeout(() => setMessage(''), 3000)
       }
     } catch (err) {
@@ -47,7 +47,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <main className="container section" style={{ minHeight: '90dvh' }}>
+    <main className="container section wishlist-page">
       <div className="breadcrumb">
         <span className="breadcrumb__item"><Link to="/">{t('product_detail.breadcrumb_home')}</Link></span>
         <span className="breadcrumb__item">{t('wishlist.title')}</span>
@@ -60,7 +60,7 @@ export default function WishlistPage() {
       </div>
 
       {message && (
-        <div style={{ background: 'rgba(200, 169, 110, 0.1)', border: '1px solid var(--color-gold)', color: 'var(--color-gold)', padding: '12px 16px', borderRadius: '6px', marginBottom: '24px', fontSize: '14px' }}>
+        <div className="wishlist-page__toast">
           {message}
         </div>
       )}
@@ -75,12 +75,12 @@ export default function WishlistPage() {
           ))}
         </div>
       ) : products.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--color-cream-muted)' }}>
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ marginBottom: '20px', color: 'var(--color-cream-faint)' }}>
+        <div className="wishlist-page__empty">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
             <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
           </svg>
           <h3>{t('wishlist.empty_title')}</h3>
-          <p style={{ marginTop: '8px', marginBottom: '24px' }}>{t('wishlist.empty_desc')}</p>
+          <p className="wishlist-page__empty-desc">{t('wishlist.empty_desc')}</p>
           <Link to="/products" className="btn btn--primary">{t('wishlist.explore_btn')}</Link>
         </div>
       ) : (
@@ -97,14 +97,8 @@ export default function WishlistPage() {
                 <button
                   type="button"
                   onClick={() => handleRemove(prod.id)}
-                  style={{
-                    position: 'absolute', top: '12px', right: '12px',
-                    background: 'rgba(18, 13, 7, 0.8)', border: '1px solid var(--color-border)',
-                    borderRadius: '50%', width: '36px', height: '36px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', color: 'var(--color-gold)', zIndex: 10
-                  }}
-                  aria-label="取消收藏"
+                  className="wishlist-page__remove-btn"
+                  aria-label={t('wishlist.remove_label')}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -116,10 +110,10 @@ export default function WishlistPage() {
                 <h3 className="product-card__name">
                   <Link to={`/products/${prod.slug}`}>{prod.name}</Link>
                 </h3>
-                <div className="product-card__price-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="product-card__price-row wishlist-page__price-row">
                   <span className="price">NT$ {Math.round(prod.base_price)}</span>
-                  <Link to={`/products/${prod.slug}`} className="btn btn--sm btn--primary" style={{ padding: '6px 12px', fontSize: '12px' }}>
-                    選購細項
+                  <Link to={`/products/${prod.slug}`} className="btn btn--sm btn--primary wishlist-page__view-btn">
+                    {t('wishlist.view_spec')}
                   </Link>
                 </div>
               </div>

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from '../../context/LanguageContext'
 import api from '../../api/api'
 
 export default function AdminCouponsPage() {
+  const { t } = useTranslation()
   const [coupons, setCoupons]   = useState([])
   const [loading, setLoading]   = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
@@ -39,26 +41,26 @@ export default function AdminCouponsPage() {
     fetchCoupons()
   }, [])
 
-  const handleToggleActive = async (id, currentStatus) => {
+  const handleToggleActive = async (id) => {
     try {
       const res = await api.put(`/api/admin/coupons/${id}/toggle`)
       if (res.data.success) {
         setCoupons(prev => prev.map(c => c.id === id ? { ...c, is_active: res.data.data.is_active } : c))
       }
     } catch (err) {
-      alert('切換開關失敗')
+      alert(t('common.error'))
     }
   }
 
   const handleDelete = async (id, code) => {
-    if (!confirm(`確定要刪除折價券 [${code}] 嗎？`)) return
+    if (!confirm(t('admin.delete_confirm', { name: code }))) return
     try {
       const res = await api.delete(`/api/admin/coupons/${id}`)
       if (res.data.success) {
         setCoupons(prev => prev.filter(c => c.id !== id))
       }
     } catch (err) {
-      alert('刪除失敗')
+      alert(t('common.error'))
     }
   }
 
@@ -102,20 +104,18 @@ export default function AdminCouponsPage() {
       if (editingCoupon) {
         const res = await api.put(`/api/admin/coupons/${editingCoupon.id}`, formData)
         if (res.data.success) {
-          alert('折價券已成功更新！')
           setModalOpen(false)
           fetchCoupons()
         }
       } else {
         const res = await api.post('/api/admin/coupons', formData)
         if (res.data.success) {
-          alert('折價券新增成功！')
           setModalOpen(false)
           fetchCoupons()
         }
       }
     } catch (err) {
-      alert(err.response?.data?.message || '儲存失敗，請檢查輸入內容')
+      alert(err.response?.data?.message || t('common.error'))
     } finally {
       setSubmitting(false)
     }
@@ -125,44 +125,44 @@ export default function AdminCouponsPage() {
     <div className="admin-coupons">
       <div className="admin-page-header">
         <div>
-          <h1 className="page-title">折價券管理 (Coupon Promotions)</h1>
-          <p className="subtitle">建立與管理全站促銷優惠碼、設定折扣金額、滿額門檻與使用次數上限</p>
+          <h1 className="page-title">{t('admin.coupons_title')}</h1>
+          <p className="subtitle">{t('admin.coupons_subtitle')}</p>
         </div>
         <button className="btn btn--primary" onClick={openAddModal}>
-          + 新增折價券
+          {t('admin.btn_add_coupon')}
         </button>
       </div>
 
       <div className="admin-table-card">
         {loading ? (
-          <div style={{ color: 'var(--color-cream-muted)', textAlign: 'center', padding: '60px 0' }}>
-            載入折價券清單中...
+          <div className="admin-loading">
+            {t('admin.loading')}
           </div>
         ) : coupons.length === 0 ? (
-          <div style={{ color: 'var(--color-cream-faint)', textAlign: 'center', padding: '60px 0' }}>
-            目前尚無任何折價券資料，點擊上方按鈕立即建立。
+          <div className="admin-empty">
+            {t('admin.empty')}
           </div>
         ) : (
-          <div className="admin-table-wrapper">
+          <div className="admin-table-wrapper table-responsive">
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>優惠碼 Code</th>
-                  <th>折扣類型 / 數值</th>
-                  <th>最低消費門檻</th>
-                  <th>使用次數 / 上限</th>
-                  <th>到期時間</th>
-                  <th>啟用狀態</th>
-                  <th>操作</th>
+                  <th>{t('admin.col_coupon_code')}</th>
+                  <th>{t('admin.col_discount')}</th>
+                  <th>{t('admin.col_threshold')}</th>
+                  <th>{t('admin.col_times_used')}</th>
+                  <th>{t('admin.col_expiry')}</th>
+                  <th>{t('admin.col_is_active')}</th>
+                  <th>{t('admin.col_actions')}</th>
                 </tr>
               </thead>
               <tbody>
                 {coupons.map(coupon => (
                   <tr key={coupon.id}>
-                    <td style={{ fontFamily: 'monospace', color: 'var(--color-gold)', fontWeight: 'bold', fontSize: '15px' }}>
+                    <td className="admin-td-code">
                       {coupon.code}
                     </td>
-                    <td style={{ color: 'var(--color-cream)' }}>
+                    <td>
                       {coupon.type === 'percent' ? (
                         <span>{coupon.value} % OFF {coupon.max_discount ? `(最高折 NT$ ${coupon.max_discount})` : ''}</span>
                       ) : (
@@ -173,34 +173,32 @@ export default function AdminCouponsPage() {
                     <td>
                       {coupon.used_count} / {coupon.usage_limit ? coupon.usage_limit : '無上限'}
                     </td>
-                    <td style={{ fontSize: '12px', color: 'var(--color-cream-faint)' }}>
-                      {coupon.expires_at ? new Date(coupon.expires_at).toLocaleDateString('zh-TW') : '無效期限制'}
+                    <td className="admin-td-muted">
+                      {coupon.expires_at ? new Date(coupon.expires_at).toLocaleDateString() : '無效期限制'}
                     </td>
                     <td>
                       <label className="toggle-switch">
                         <input
                           type="checkbox"
                           checked={Boolean(coupon.is_active)}
-                          onChange={() => handleToggleActive(coupon.id, coupon.is_active)}
+                          onChange={() => handleToggleActive(coupon.id)}
                         />
                         <span className="slider"></span>
                       </label>
                     </td>
                     <td>
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                      <div className="admin-td-actions">
                         <button
-                          className="btn btn--ghost"
-                          style={{ fontSize: '12px', padding: '4px 8px' }}
+                          className="btn btn--ghost btn--sm"
                           onClick={() => openEditModal(coupon)}
                         >
-                          編輯
+                          {t('admin.btn_edit')}
                         </button>
                         <button
-                          className="btn btn--ghost"
-                          style={{ fontSize: '12px', padding: '4px 8px', color: 'var(--color-error)' }}
+                          className="btn btn--ghost btn--sm admin-td-danger"
                           onClick={() => handleDelete(coupon.id, coupon.code)}
                         >
-                          刪除
+                          {t('admin.btn_delete')}
                         </button>
                       </div>
                     </td>
@@ -215,114 +213,108 @@ export default function AdminCouponsPage() {
       {/* 新增 / 編輯 Modal */}
       {modalOpen && (
         <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
-          <div className="modal-content" style={{ maxWidth: '500px' }} onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3 style={{ margin: 0, color: 'var(--color-gold)', fontFamily: 'var(--font-heading)' }}>
-                {editingCoupon ? `✏️ 編輯折價券 [${editingCoupon.code}]` : '🎟️ 新增行銷折價券'}
+          <div className="modal-content admin-modal__box admin-modal__box--sm" onClick={e => e.stopPropagation()}>
+            <div className="admin-modal__header">
+              <h3>
+                {editingCoupon ? `${t('admin.btn_edit')} [${editingCoupon.code}]` : t('admin.modal_add_coupon')}
               </h3>
-              <button className="modal-close" onClick={() => setModalOpen(false)}>×</button>
+              <button className="admin-modal__close" onClick={() => setModalOpen(false)}>×</button>
             </div>
 
-            <form onSubmit={handleSubmit} className="modal-body" style={{ padding: '20px 0' }}>
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '13px', color: 'var(--color-cream-muted)', marginBottom: '4px' }}>
-                  優惠代碼 (Code) *
+            <form onSubmit={handleSubmit} className="admin-modal__form">
+              <div className="admin-modal__field admin-modal__field--code">
+                <label>
+                  {t('admin.label_code')} *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="例如: VINTAGE2026"
+                  placeholder="VINTAGE2026"
                   value={formData.code}
                   onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                  style={{ width: '100%', padding: '8px', borderRadius: '4px', background: 'var(--color-bg-dark)', color: 'var(--color-gold)', border: '1px solid var(--color-border)', fontFamily: 'monospace', fontSize: '15px' }}
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', color: 'var(--color-cream-muted)', marginBottom: '4px' }}>
-                    折扣類型 *
+              <div className="admin-modal__grid-2">
+                <div className="admin-modal__field">
+                  <label>
+                    {t('admin.col_discount')} *
                   </label>
                   <select
                     value={formData.type}
                     onChange={e => setFormData({ ...formData, type: e.target.value })}
-                    style={{ width: '100%', padding: '8px', borderRadius: '4px', background: 'var(--color-bg-dark)', color: 'var(--color-cream)', border: '1px solid var(--color-border)' }}
                   >
                     <option value="percent">百分比打折 (% OFF)</option>
                     <option value="fixed">固定現折金額 (NT$)</option>
                   </select>
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', color: 'var(--color-cream-muted)', marginBottom: '4px' }}>
-                    折扣數值 *
+                <div className="admin-modal__field">
+                  <label>
+                    {t('admin.label_discount_amount')} *
                   </label>
                   <input
                     type="number"
                     required
                     step="0.01"
-                    placeholder={formData.type === 'percent' ? '如 15 (代表 85 折)' : '如 200 (代表現折200)'}
+                    placeholder={formData.type === 'percent' ? '15' : '200'}
                     value={formData.value}
                     onChange={e => setFormData({ ...formData, value: e.target.value })}
-                    style={{ width: '100%', padding: '8px', borderRadius: '4px', background: 'var(--color-bg-dark)', color: 'var(--color-cream)', border: '1px solid var(--color-border)' }}
                   />
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', color: 'var(--color-cream-muted)', marginBottom: '4px' }}>
-                    最低滿額消費 (NT$)
+              <div className="admin-modal__grid-2">
+                <div className="admin-modal__field">
+                  <label>
+                    {t('admin.label_min_order')}
                   </label>
                   <input
                     type="number"
-                    placeholder="0 表示不限門檻"
+                    placeholder="0"
                     value={formData.min_order}
                     onChange={e => setFormData({ ...formData, min_order: e.target.value })}
-                    style={{ width: '100%', padding: '8px', borderRadius: '4px', background: 'var(--color-bg-dark)', color: 'var(--color-cream)', border: '1px solid var(--color-border)' }}
                   />
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', color: 'var(--color-cream-muted)', marginBottom: '4px' }}>
-                    使用次數上限
+                <div className="admin-modal__field">
+                  <label>
+                    {t('admin.label_max_uses')}
                   </label>
                   <input
                     type="number"
-                    placeholder="留空表示不限次數"
+                    placeholder="無上限"
                     value={formData.usage_limit}
                     onChange={e => setFormData({ ...formData, usage_limit: e.target.value })}
-                    style={{ width: '100%', padding: '8px', borderRadius: '4px', background: 'var(--color-bg-dark)', color: 'var(--color-cream)', border: '1px solid var(--color-border)' }}
                   />
                 </div>
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '13px', color: 'var(--color-cream-muted)', marginBottom: '4px' }}>
-                  有效截止日期
+              <div className="admin-modal__field">
+                <label>
+                  {t('admin.label_expires_at')}
                 </label>
                 <input
                   type="date"
                   value={formData.expires_at}
                   onChange={e => setFormData({ ...formData, expires_at: e.target.value })}
-                  style={{ width: '100%', padding: '8px', borderRadius: '4px', background: 'var(--color-bg-dark)', color: 'var(--color-cream)', border: '1px solid var(--color-border)' }}
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', paddingTop: '12px', borderTop: '1px solid var(--color-border)' }}>
+              <div className="admin-modal__actions">
                 <button
                   type="button"
                   className="btn btn--ghost"
                   onClick={() => setModalOpen(false)}
                 >
-                  取消
+                  {t('orders.cancel')}
                 </button>
                 <button
                   type="submit"
                   className="btn btn--primary"
                   disabled={submitting}
                 >
-                  {submitting ? '處理中...' : '儲存折價券'}
+                  {submitting ? t('admin.saving') : t('admin.btn_save')}
                 </button>
               </div>
             </form>

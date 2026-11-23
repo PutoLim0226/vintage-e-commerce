@@ -89,6 +89,12 @@
     transition: color v.$transition-fast;
 
     &:hover { color: v.$color-gold; }
+
+    &--static {
+      cursor: default;
+
+      &:hover { color: v.$color-cream-faint; }
+    }
   }
 
   // ── 底部版權 ──────────────────────────────────────────
@@ -106,6 +112,11 @@
 
   &__copy {
     font-size: v.$font-size-sm;
+    color: v.$color-cream-faint;
+  }
+
+  &__payment-note {
+    font-size: 12px;
     color: v.$color-cream-faint;
   }
 

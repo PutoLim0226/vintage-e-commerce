@@ -38,9 +38,9 @@ export default function Header() {
   return (
     <>
       {connError && (
-        <div style={{ background: 'rgba(198,160,87,0.15)', borderBottom: '1px solid var(--color-gold)', color: 'var(--color-gold)', padding: '8px 16px', fontSize: '13px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', zIndex: 9999, position: 'relative' }}>
+        <div className="header-alert">
           <span>{t('header.api_error_hint')}</span>
-          <button type="button" onClick={() => setConnError(false)} style={{ background: 'none', border: 'none', color: 'var(--color-gold)', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' }}>✕</button>
+          <button type="button" onClick={() => setConnError(false)} className="header-alert__close">✕</button>
         </div>
       )}
       <header className="header">
@@ -89,11 +89,7 @@ export default function Header() {
                   type="button"
                   aria-label={t('header.clear_search')}
                   onClick={() => { setSearchVal(''); navigate('/products') }}
-                  style={{
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    color: 'var(--color-cream-faint)', lineHeight: 1, padding: '0 4px',
-                    display: 'flex', alignItems: 'center'
-                  }}
+                  className="header__search-clear"
                 >
                   ×
                 </button>
@@ -104,9 +100,8 @@ export default function Header() {
             {user && (
               <Link
                 to="/wishlist"
-                className="header__icon-btn"
+                className="header__icon-btn header__icon-btn--wishlist"
                 aria-label={t('header.wishlist')}
-                style={{ marginRight: '4px' }}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
@@ -134,15 +129,14 @@ export default function Header() {
             {/* Member Profile/Login */}
             <div className="header__member-desktop">
               {user ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Link to="/profile" className="btn--text" style={{ fontSize: '14px', color: 'var(--color-cream)' }}>
+                <div className="header__member-group">
+                  <Link to="/profile" className="btn--text header__member-name">
                     {user.name}
                   </Link>
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="btn btn--sm btn--ghost"
-                    style={{ padding: '6px 12px' }}
+                    className="btn btn--sm btn--ghost header__logout-btn"
                   >
                     {t('header.logout')}
                   </button>
@@ -187,8 +181,7 @@ export default function Header() {
                   handleLogout()
                   setIsMobileMenuOpen(false)
                 }}
-                className="mobile-menu__link"
-                style={{ width: '100%', textAlign: 'left', border: 'none', background: 'none', cursor: 'pointer' }}
+                className="mobile-menu__link mobile-menu__btn-logout"
               >
                 {t('header.logout')}
               </button>

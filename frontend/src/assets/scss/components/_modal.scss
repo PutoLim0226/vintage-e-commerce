@@ -117,6 +117,14 @@
     color: v.$color-cream-faint;
     font-size: v.$font-size-lg;
     text-align: center;
+
+    &-text {
+      margin-top: v.$space-4;
+    }
+
+    &-btn {
+      margin-top: v.$space-3;
+    }
   }
 
   &__footer {
@@ -177,6 +185,15 @@
     margin-bottom: v.$space-3;
   }
 
+  &__bottom-row {
+    @include m.flex-between;
+    align-items: center;
+  }
+
+  &__price {
+    font-size: v.$font-size-md;
+  }
+
   &__qty-row {
     @include m.flex(row, flex-start, center);
     gap: v.$space-3;
@@ -198,5 +215,15 @@
   }
 
   &__qty { font-weight: v.$font-weight-medium; min-width: 20px; text-align: center; }
-  &__remove { color: v.$color-cream-faint; cursor: pointer; transition: color v.$transition-fast; &:hover { color: v.$color-error; } }
+  &__remove {
+    background: none;
+    border: none;
+    color: v.$color-cream-faint;
+    cursor: pointer;
+    transition: color v.$transition-fast;
+    padding: 0;
+    line-height: 1;
+
+    &:hover { color: v.$color-error; }
+  }
 }

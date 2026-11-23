@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from '../../context/LanguageContext'
 import api from '../../api/api'
 
 export default function AdminProductsPage() {
-  const [products, setProducts]   = useState([])
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading]       = useState(true)
-  const [toggling, setToggling]     = useState(null)
+  const { t } = useTranslation()
+  const [products, setProducts]       = useState([])
+  const [categories, setCategories]   = useState([])
+  const [loading, setLoading]         = useState(true)
+  const [toggling, setToggling]       = useState(null)
 
   // 新增/編輯 Modal 狀態
-  const [showModal, setShowModal]   = useState(false)
+  const [showModal, setShowModal]     = useState(false)
   const [modalLoading, setModalLoading] = useState(false)
-  const [form, setForm]             = useState({
+  const [form, setForm]               = useState({
     id: null,
     name: '',
     category_id: '',
@@ -53,14 +55,14 @@ export default function AdminProductsPage() {
       }
     } catch (err) {
       console.error(err)
-      alert('操作失敗')
+      alert(t('common.error', '操作失敗'))
     } finally {
       setToggling(null)
     }
   }
 
   const handleDelete = async (product) => {
-    if (!window.confirm(`確定要刪除「${product.name}」嗎？此操作無法還原。`)) return
+    if (!window.confirm(t('admin.delete_confirm', '確定要刪除「{{name}}」嗎？此操作無法還原。', { name: product.name }))) return
     try {
       const { data } = await api.delete(`/api/admin/products/${product.id}`)
       if (data.success) {
@@ -68,7 +70,7 @@ export default function AdminProductsPage() {
       }
     } catch (err) {
       console.error(err)
-      alert('刪除失敗')
+      alert(t('common.error', '刪除失敗'))
     }
   }
 
@@ -121,7 +123,7 @@ export default function AdminProductsPage() {
       }
     } catch (err) {
       console.error(err)
-      alert('讀取商品詳情失敗')
+      alert(t('product_detail.load_failed', '讀取商品詳情失敗'))
       setShowModal(false)
     } finally {
       setModalLoading(false)
@@ -154,8 +156,8 @@ export default function AdminProductsPage() {
   // 提交商品表單
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.name.trim()) return alert('商品名稱必填')
-    if (form.skus.length === 0) return alert('商品至少需要一個 SKU 規格組合')
+    if (!form.name.trim()) return alert(t('admin.label_product_name', '商品名稱必填'))
+    if (form.skus.length === 0) return alert(t('admin.sku_section_title', '商品至少需要一個 SKU 規格組合'))
 
     setModalLoading(true)
     try {
@@ -169,7 +171,7 @@ export default function AdminProductsPage() {
         // 編輯更新
         const { data } = await api.put(`/api/admin/products/${form.id}`, payload)
         if (data.success) {
-          alert('商品修改成功！')
+          alert(t('common.success', '商品修改成功！'))
           loadProducts()
           setShowModal(false)
         }
@@ -177,13 +179,13 @@ export default function AdminProductsPage() {
         // 新增商品
         const { data } = await api.post('/api/admin/products', payload)
         if (data.success) {
-          alert('商品新增成功！')
+          alert(t('common.success', '商品新增成功！'))
           loadProducts()
           setShowModal(false)
         }
       }
     } catch (err) {
-      alert(err.response?.data?.message || '操作失敗，請檢查資料欄位')
+      alert(err.response?.data?.message || t('common.error', '操作失敗，請檢查資料欄位'))
     } finally {
       setModalLoading(false)
     }
@@ -199,368 +201,298 @@ export default function AdminProductsPage() {
   }
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px' }}>
-        <div>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '28px', color: 'var(--color-cream)', marginBottom: '4px' }}>
-            商品管理
+    <div className="admin-products">
+      <div className="admin-products-header">
+        <div className="admin-products-header__info">
+          <h1 className="page-title">
+            {t('admin.products_title', '商品管理')}
           </h1>
-          <p style={{ color: 'var(--color-cream-faint)', fontSize: '14px' }}>
-            共 {products.length} 件商品
+          <p className="page-count">
+            {t('admin.product_total_count', '共 {{count}} 件商品', { count: products.length })}
           </p>
         </div>
         <button
           type="button"
           className="btn btn--primary"
           onClick={handleOpenAdd}
-          style={{ padding: '8px 16px', fontSize: '14px' }}
         >
-          + 新增商品
+          {t('admin.btn_add_product', '+ 新增商品')}
         </button>
       </div>
 
       {loading ? (
-        <div style={{ color: 'var(--color-cream-faint)', textAlign: 'center', paddingTop: '60px' }}>載入中...</div>
+        <div className="admin-loading">{t('admin.loading', '載入中...')}</div>
       ) : (
-        <div style={{
-          background: 'var(--color-bg-card)',
-          border: '1px solid var(--color-border)',
-          borderRadius: '12px',
-          overflow: 'hidden',
-        }}>
-          {/* Header */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '60px 1fr 120px 100px 100px 80px 140px',
-            gap: '12px',
-            padding: '14px 24px',
-            borderBottom: '1px solid var(--color-border)',
-            fontSize: '12px',
-            color: 'var(--color-cream-faint)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-          }}>
-            <span>圖片</span>
-            <span>商品名稱</span>
-            <span>分類</span>
-            <span>售價</span>
-            <span>庫存</span>
-            <span>狀態</span>
-            <span>操作</span>
-          </div>
-
-          {/* Rows */}
-          {products.map((prod, idx) => (
-            <div
-              key={prod.id}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '60px 1fr 120px 100px 100px 80px 140px',
-                gap: '12px',
-                padding: '14px 24px',
-                alignItems: 'center',
-                borderBottom: idx !== products.length - 1 ? '1px solid var(--color-border)' : 'none',
-                transition: 'background 0.15s',
-                opacity: prod.is_active ? 1 : 0.55,
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
-              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-            >
-              {/* Image */}
-              <img
-                src={prod.cover_image_url || 'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&w=80&q=60'}
-                alt={prod.name}
-                style={{ width: '48px', height: '60px', objectFit: 'cover', borderRadius: '6px' }}
-              />
-
-              {/* Name */}
-              <div>
-                <div style={{ fontSize: '14px', color: 'var(--color-cream)', fontWeight: 500 }}>
-                  {prod.name}
-                </div>
-                <div style={{ fontSize: '12px', color: 'var(--color-cream-faint)', fontFamily: 'monospace' }}>
-                  {prod.slug}
-                </div>
-              </div>
-
-              <span style={{ fontSize: '13px', color: 'var(--color-cream-muted)' }}>
-                {prod.category_name}
-              </span>
-
-              <span style={{ fontSize: '14px', color: 'var(--color-cream)', fontWeight: 600 }}>
-                NT$ {Math.round(prod.base_price).toLocaleString()}
-              </span>
-
-              <span style={{
-                fontSize: '14px',
-                color: (prod.total_stock || 0) < 5 ? 'var(--color-error)' : 'var(--color-cream)',
-              }}>
-                {prod.total_stock ?? 0} 件
-              </span>
-
-              {/* Toggle Active */}
-              <button
-                type="button"
-                disabled={toggling === prod.id}
-                onClick={() => handleToggleActive(prod)}
-                style={{
-                  padding: '4px 10px',
-                  borderRadius: '20px',
-                  border: `1px solid ${prod.is_active ? 'var(--color-gold)' : 'var(--color-border)'}`,
-                  background: prod.is_active ? 'rgba(198,160,87,0.12)' : 'transparent',
-                  color: prod.is_active ? 'var(--color-gold)' : 'var(--color-cream-faint)',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                }}
-              >
-                {toggling === prod.id ? '…' : prod.is_active ? '上架中' : '已下架'}
-              </button>
-
-              {/* Actions */}
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  type="button"
-                  onClick={() => handleOpenEdit(prod)}
-                  style={{
-                    fontSize: '12px', color: 'var(--color-gold)', background: 'none',
-                    border: '1px solid var(--color-border)', borderRadius: '4px', cursor: 'pointer',
-                    padding: '4px 8px', transition: 'all 0.2s',
-                  }}
-                  title="編輯商品"
-                >
-                  ✏️
-                </button>
-                <a
-                  href={`/products/${prod.slug}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    fontSize: '12px', color: 'var(--color-cream-faint)',
-                    textDecoration: 'none', padding: '4px 8px', border: '1px solid var(--color-border)',
-                    borderRadius: '4px', transition: 'color 0.2s',
-                  }}
-                  title="前台預覽"
-                >
-                  ↗
-                </a>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(prod)}
-                  style={{
-                    fontSize: '12px', color: 'var(--color-error)', background: 'none',
-                    border: '1px solid transparent', borderRadius: '4px', cursor: 'pointer',
-                    padding: '4px 8px', transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={e => e.target.style.borderColor = 'var(--color-error)'}
-                  onMouseLeave={e => e.target.style.borderColor = 'transparent'}
-                  title="刪除商品"
-                >
-                  ✕
-                </button>
-              </div>
+        <div className="table-responsive">
+          <div className="admin-products-table">
+            {/* Header */}
+            <div className="admin-products-table__header">
+              <span>{t('admin.col_image', '圖片')}</span>
+              <span>{t('admin.col_product_name', '商品名稱')}</span>
+              <span>{t('admin.col_category', '分類')}</span>
+              <span>{t('admin.col_base_price', '售價')}</span>
+              <span>{t('admin.col_stock', '庫存')}</span>
+              <span>{t('admin.col_status', '狀態')}</span>
+              <span>{t('admin.col_actions', '操作')}</span>
             </div>
-          ))}
+
+            {/* Rows */}
+            {products.map((prod) => (
+              <div
+                key={prod.id}
+                className={`admin-products-table__row ${!prod.is_active ? 'admin-products-table__row--inactive' : ''}`}
+              >
+                {/* Image */}
+                <img
+                  src={prod.cover_image_url || 'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&w=80&q=60'}
+                  alt={prod.name}
+                  className="admin-products-table__thumb"
+                />
+
+                {/* Name */}
+                <div className="admin-products-table__name-cell">
+                  <div className="title">
+                    {prod.name}
+                  </div>
+                  <div className="slug">
+                    {prod.slug}
+                  </div>
+                </div>
+
+                <span className="admin-products-table__category">
+                  {prod.category_name}
+                </span>
+
+                <span className="admin-products-table__price">
+                  NT$ {Math.round(prod.base_price).toLocaleString()}
+                </span>
+
+                <span className={`admin-products-table__stock ${(prod.total_stock || 0) < 5 ? 'admin-products-table__stock--low' : ''}`}>
+                  {t('admin.items_unit', '{{count}} 件', { count: prod.total_stock ?? 0 })}
+                </span>
+
+                {/* Toggle Active */}
+                <div>
+                  <button
+                    type="button"
+                    disabled={toggling === prod.id}
+                    onClick={() => handleToggleActive(prod)}
+                    className={`admin-products-table__toggle-btn ${prod.is_active ? 'admin-products-table__toggle-btn--active' : ''}`}
+                  >
+                    {toggling === prod.id ? '…' : prod.is_active ? t('admin.status_active', '上架中') : t('admin.status_inactive', '已下架')}
+                  </button>
+                </div>
+
+                {/* Actions */}
+                <div className="admin-td-actions">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEdit(prod)}
+                    className="admin-products-table__action-btn admin-products-table__action-btn--edit"
+                    title={t('admin.btn_edit', '編輯商品')}
+                  >
+                    ✏️
+                  </button>
+                  <a
+                    href={`/products/${prod.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="admin-products-table__action-btn admin-products-table__action-btn--view"
+                    title={t('common.view', '前台預覽')}
+                  >
+                    ↗
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(prod)}
+                    className="admin-products-table__action-btn admin-products-table__action-btn--delete"
+                    title={t('admin.btn_delete', '刪除商品')}
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {/* ── Product Create/Edit Modal ── */}
       {showModal && (
-        <>
-          <div className="overlay" style={{ zIndex: 1100 }} onClick={() => !modalLoading && setShowModal(false)} />
-          <div className="modal" style={{ zIndex: 1200 }}>
-            <div className="modal__box" style={{ maxWidth: '780px', padding: '32px', maxHeight: '90dvh', overflowY: 'auto' }}>
-              <div className="modal__header" style={{ marginBottom: '24px' }}>
-                <h3 className="modal__title" style={{ fontSize: '20px' }}>
-                  {form.id ? '✏️ 編輯商品與規格' : '＋ 新增商品'}
-                </h3>
-                <button
-                  type="button"
-                  className="modal__close"
-                  onClick={() => !modalLoading && setShowModal(false)}
-                  disabled={modalLoading}
-                >
-                  ×
-                </button>
-              </div>
+        <div className="modal-backdrop" onClick={() => !modalLoading && setShowModal(false)}>
+          <div className="modal-content admin-modal__box" onClick={e => e.stopPropagation()}>
+            <div className="admin-modal__header">
+              <h3>
+                {form.id ? t('admin.modal_edit_title', '✏️ 編輯商品與規格') : t('admin.modal_add_title', '＋ 新增商品')}
+              </h3>
+              <button
+                type="button"
+                className="admin-modal__close"
+                onClick={() => !modalLoading && setShowModal(false)}
+                disabled={modalLoading}
+              >
+                ×
+              </button>
+            </div>
 
-              {modalLoading ? (
-                <div style={{ padding: '60px 0', textAlign: 'center', color: 'var(--color-cream-faint)' }}>儲存/加載中...</div>
-              ) : (
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                  {/* Row 1 */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <label style={{ fontSize: '13px', color: 'var(--color-cream-faint)' }}>商品名稱</label>
-                      <input
-                        type="text"
-                        value={form.name}
-                        onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="例如: 70s 經典燈芯絨夾克"
-                        required
-                        style={{ padding: '10px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', color: 'var(--color-cream)' }}
-                      />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <label style={{ fontSize: '13px', color: 'var(--color-cream-faint)' }}>所屬分類</label>
-                      <select
-                        value={form.category_id}
-                        onChange={e => setForm(prev => ({ ...prev, category_id: e.target.value }))}
-                        style={{ padding: '10px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', color: 'var(--color-cream)' }}
-                      >
-                        {categories.map(c => (
-                          <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Row 2 */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '16px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <label style={{ fontSize: '13px', color: 'var(--color-cream-faint)' }}>基本售價</label>
-                      <input
-                        type="number"
-                        value={form.base_price}
-                        onChange={e => setForm(prev => ({ ...prev, base_price: e.target.value }))}
-                        required
-                        style={{ padding: '10px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', color: 'var(--color-cream)' }}
-                      />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <label style={{ fontSize: '13px', color: 'var(--color-cream-faint)' }}>劃線原價 (選填)</label>
-                      <input
-                        type="number"
-                        value={form.compare_price}
-                        onChange={e => setForm(prev => ({ ...prev, compare_price: e.target.value }))}
-                        style={{ padding: '10px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', color: 'var(--color-cream)' }}
-                      />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <label style={{ fontSize: '13px', color: 'var(--color-cream-faint)' }}>主圖 URL</label>
-                      <input
-                        type="text"
-                        value={form.cover_image_url}
-                        onChange={e => setForm(prev => ({ ...prev, cover_image_url: e.target.value }))}
-                        placeholder="Unsplash 圖片網址或本地檔案路徑"
-                        style={{ padding: '10px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', color: 'var(--color-cream)' }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '13px', color: 'var(--color-cream-faint)' }}>商品詳情與故事</label>
-                    <textarea
-                      rows="3"
-                      value={form.description}
-                      onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="寫寫這件商品的年代、材質與背後的故事..."
-                      style={{ padding: '10px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', color: 'var(--color-cream)', resize: 'vertical' }}
+            {modalLoading ? (
+              <div className="admin-loading">{t('admin.saving', '儲存/加載中...')}</div>
+            ) : (
+              <form onSubmit={handleSubmit} className="admin-modal__form">
+                {/* Row 1 */}
+                <div className="admin-modal__grid-2">
+                  <div className="admin-modal__field">
+                    <label>{t('admin.label_product_name', '商品名稱')}</label>
+                    <input
+                      type="text"
+                      value={form.name}
+                      onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder={t('admin.placeholder_prod_name', '例如: 70s 經典燈芯絨夾克')}
+                      required
                     />
                   </div>
-
-                  {/* SKU Section */}
-                  <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '20px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                      <h4 style={{ fontSize: '15px', color: 'var(--color-cream)' }}>SKU 規格組合清單</h4>
-                      <button
-                        type="button"
-                        onClick={handleAddSku}
-                        className="btn btn--outline btn--sm"
-                        style={{ padding: '4px 10px', fontSize: '12px' }}
-                      >
-                        ＋ 新增規格組合
-                      </button>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {form.skus.map((sku, idx) => (
-                        <div
-                          key={idx}
-                          style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr 1fr 1fr 2fr 40px',
-                            gap: '10px',
-                            alignItems: 'center',
-                            background: 'rgba(255,255,255,0.01)',
-                            padding: '8px 12px',
-                            borderRadius: '8px',
-                            border: '1px dashed rgba(255,255,255,0.08)'
-                          }}
-                        >
-                          <input
-                            type="text"
-                            placeholder="顏色 (如:藍)"
-                            value={sku.color}
-                            onChange={e => handleSkuChange(idx, 'color', e.target.value)}
-                            style={{ padding: '6px 8px', fontSize: '13px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '4px', color: 'var(--color-cream)' }}
-                          />
-                          <input
-                            type="text"
-                            placeholder="尺寸 (如:M)"
-                            value={sku.size}
-                            onChange={e => handleSkuChange(idx, 'size', e.target.value)}
-                            style={{ padding: '6px 8px', fontSize: '13px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '4px', color: 'var(--color-cream)' }}
-                          />
-                          <input
-                            type="number"
-                            placeholder="售價"
-                            value={sku.price}
-                            onChange={e => handleSkuChange(idx, 'price', e.target.value)}
-                            required
-                            style={{ padding: '6px 8px', fontSize: '13px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '4px', color: 'var(--color-cream)' }}
-                          />
-                          <input
-                            type="number"
-                            placeholder="庫存"
-                            value={sku.stock}
-                            onChange={e => handleSkuChange(idx, 'stock', e.target.value)}
-                            required
-                            style={{ padding: '6px 8px', fontSize: '13px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '4px', color: 'var(--color-cream)' }}
-                          />
-                          <input
-                            type="text"
-                            placeholder="SKU 編碼 (選填)"
-                            value={sku.sku_code}
-                            onChange={e => handleSkuChange(idx, 'sku_code', e.target.value)}
-                            style={{ padding: '6px 8px', fontSize: '13px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '4px', color: 'var(--color-cream)', fontFamily: 'monospace' }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveSku(idx)}
-                            style={{ background: 'none', border: 'none', color: 'var(--color-error)', fontSize: '16px', cursor: 'pointer' }}
-                          >
-                            ✕
-                          </button>
-                        </div>
+                  <div className="admin-modal__field">
+                    <label>{t('admin.label_category', '所屬分類')}</label>
+                    <select
+                      value={form.category_id}
+                      onChange={e => setForm(prev => ({ ...prev, category_id: e.target.value }))}
+                    >
+                      {categories.map(c => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
                       ))}
-                    </div>
+                    </select>
                   </div>
+                </div>
 
-                  {/* Modal Footer */}
-                  <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', borderTop: '1px solid var(--color-border)', paddingTop: '20px' }}>
+                {/* Row 2 */}
+                <div className="admin-modal__grid-3">
+                  <div className="admin-modal__field">
+                    <label>{t('admin.label_base_price', '基本售價')}</label>
+                    <input
+                      type="number"
+                      value={form.base_price}
+                      onChange={e => setForm(prev => ({ ...prev, base_price: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div className="admin-modal__field">
+                    <label>{t('admin.label_compare_price', '劃線原價 (選填)')}</label>
+                    <input
+                      type="number"
+                      value={form.compare_price}
+                      onChange={e => setForm(prev => ({ ...prev, compare_price: e.target.value }))}
+                    />
+                  </div>
+                  <div className="admin-modal__field">
+                    <label>{t('admin.label_cover_image', '主圖 URL')}</label>
+                    <input
+                      type="text"
+                      value={form.cover_image_url}
+                      onChange={e => setForm(prev => ({ ...prev, cover_image_url: e.target.value }))}
+                      placeholder={t('admin.placeholder_img_url', 'Unsplash 圖片網址或本地檔案路徑')}
+                    />
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="admin-modal__field">
+                  <label>{t('admin.label_desc', '商品詳情與故事')}</label>
+                  <textarea
+                    rows="3"
+                    value={form.description}
+                    onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder={t('admin.placeholder_desc', '寫寫這件商品的年代、材質與背後的故事...')}
+                  />
+                </div>
+
+                {/* SKU Section */}
+                <div className="order-recipient-card">
+                  <div className="admin-page-header">
+                    <h4 className="order-recipient-card__title">
+                      {t('admin.sku_section_title', 'SKU 規格組合清單')}
+                    </h4>
                     <button
                       type="button"
-                      className="btn btn--ghost"
-                      onClick={() => setShowModal(false)}
-                      style={{ padding: '8px 16px', fontSize: '14px' }}
+                      onClick={handleAddSku}
+                      className="btn btn--outline btn--sm"
                     >
-                      取消
-                    </button>
-                    <button
-                      type="submit"
-                      className="btn btn--primary"
-                      style={{ padding: '8px 24px', fontSize: '14px' }}
-                    >
-                      儲存商品
+                      {t('admin.btn_add_sku', '＋ 新增規格組合')}
                     </button>
                   </div>
-                </form>
-              )}
-            </div>
+
+                  <div className="sku-list-box">
+                    {form.skus.map((sku, idx) => (
+                      <div key={idx} className="sku-list-box__item">
+                        <input
+                          type="text"
+                          placeholder={t('admin.placeholder_color', '顏色 (如:藍)')}
+                          value={sku.color}
+                          onChange={e => handleSkuChange(idx, 'color', e.target.value)}
+                          className="sku-list-box__input"
+                        />
+                        <input
+                          type="text"
+                          placeholder={t('admin.placeholder_size', '尺寸 (如:M)')}
+                          value={sku.size}
+                          onChange={e => handleSkuChange(idx, 'size', e.target.value)}
+                          className="sku-list-box__input"
+                        />
+                        <input
+                          type="number"
+                          placeholder={t('admin.placeholder_price', '售價')}
+                          value={sku.price}
+                          onChange={e => handleSkuChange(idx, 'price', e.target.value)}
+                          required
+                          className="sku-list-box__input"
+                        />
+                        <input
+                          type="number"
+                          placeholder={t('admin.placeholder_stock', '庫存')}
+                          value={sku.stock}
+                          onChange={e => handleSkuChange(idx, 'stock', e.target.value)}
+                          required
+                          className="sku-list-box__input"
+                        />
+                        <input
+                          type="text"
+                          placeholder={t('admin.placeholder_sku_code', 'SKU 編碼 (選填)')}
+                          value={sku.sku_code}
+                          onChange={e => handleSkuChange(idx, 'sku_code', e.target.value)}
+                          className="sku-list-box__input sku-list-box__input--code"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSku(idx)}
+                          className="sku-list-box__delete-btn"
+                          title={t('admin.btn_delete', '移除')}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Modal Footer */}
+                <div className="admin-modal__actions">
+                  <button
+                    type="button"
+                    className="btn btn--ghost"
+                    onClick={() => setShowModal(false)}
+                  >
+                    {t('admin.btn_cancel', '取消')}
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn--primary"
+                  >
+                    {t('admin.btn_save', '儲存商品')}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
-        </>
+        </div>
       )}
     </div>
   )

@@ -226,7 +226,7 @@ export default function ProductListPage() {
   }
 
   return (
-    <main className="container section" style={{ minHeight: '90dvh' }}>
+    <main className="container section product-list-page">
       <div className="breadcrumb">
         <span className="breadcrumb__item"><Link to="/">{t('products.breadcrumb_home')}</Link></span>
         <span className="breadcrumb__item">{t('products.breadcrumb_products')}</span>
@@ -235,41 +235,23 @@ export default function ProductListPage() {
       {/* 行動裝置專用篩選展開按鈕 */}
       <button
         type="button"
-        className="btn btn--outline mobile-filter-toggle"
+        className="btn btn--outline product-list-page__mobile-toggle"
         onClick={() => setShowMobileFilters(!showMobileFilters)}
-        style={{
-          width: '100%',
-          marginBottom: '24px',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-          padding: '12px 16px',
-          fontWeight: 'bold',
-          letterSpacing: '0.05em'
-        }}
       >
         {showMobileFilters ? `✕ ${t('common.close')}` : `🔍 ${t('products.filter_title')}...`}
       </button>
 
       <div className="layout-sidebar">
         {/* ── Sidebar Filter ── */}
-        <aside className={`checkout__form-section product-filter-sidebar ${showMobileFilters ? 'expanded' : ''}`} style={{ padding: '24px' }}>
-          <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
+        <aside className={`product-filter-sidebar ${showMobileFilters ? 'expanded' : ''}`}>
+          <h3 className="product-filter-sidebar__title">
             {t('products.filter_category')}
           </h3>
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
+          <ul className="product-filter-sidebar__categories-list">
             <li>
               <button
-                className={`btn--text ${!currentCategory ? 'active' : ''}`}
+                className={`product-filter-sidebar__category-btn ${!currentCategory ? 'active' : ''}`}
                 onClick={() => handleCategorySelect('')}
-                style={{
-                  color: !currentCategory ? 'var(--color-gold)' : 'var(--color-cream-muted)',
-                  fontWeight: !currentCategory ? 'bold' : 'normal',
-                  textAlign: 'left',
-                  borderLeft: !currentCategory ? '3px solid var(--color-gold)' : '3px solid transparent',
-                  paddingLeft: !currentCategory ? '10px' : '4px',
-                  transition: 'all 0.2s'
-                }}
               >
                 {t('products.filter_all_categories')}
               </button>
@@ -277,35 +259,18 @@ export default function ProductListPage() {
             {categories.map((cat) => (
               <li key={cat.id}>
                 <button
-                  className={`btn--text ${currentCategory === cat.slug ? 'active' : ''}`}
+                  className={`product-filter-sidebar__category-btn ${currentCategory === cat.slug ? 'active' : ''}`}
                   onClick={() => handleCategorySelect(cat.slug)}
-                  style={{
-                    color: currentCategory === cat.slug ? 'var(--color-gold)' : 'var(--color-cream-muted)',
-                    fontWeight: currentCategory === cat.slug ? 'bold' : 'normal',
-                    textAlign: 'left',
-                    borderLeft: currentCategory === cat.slug ? '3px solid var(--color-gold)' : '3px solid transparent',
-                    paddingLeft: currentCategory === cat.slug ? '10px' : '4px',
-                    transition: 'all 0.2s'
-                  }}
                 >
                   {cat.name}
                 </button>
                 {cat.children && cat.children.length > 0 && (
-                  <ul style={{ paddingLeft: '14px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <ul className="product-filter-sidebar__subcategories-list">
                     {cat.children.map(sub => (
                       <li key={sub.id}>
                         <button
-                          className={`btn--text ${currentCategory === sub.slug ? 'active' : ''}`}
+                          className={`product-filter-sidebar__subcategory-btn ${currentCategory === sub.slug ? 'active' : ''}`}
                           onClick={() => handleCategorySelect(sub.slug)}
-                          style={{
-                            color: currentCategory === sub.slug ? 'var(--color-gold)' : 'var(--color-cream-faint)',
-                            fontSize: '13px',
-                            fontWeight: currentCategory === sub.slug ? 'bold' : 'normal',
-                            textAlign: 'left',
-                            borderLeft: currentCategory === sub.slug ? '3px solid var(--color-gold)' : '3px solid transparent',
-                            paddingLeft: currentCategory === sub.slug ? '10px' : '4px',
-                            transition: 'all 0.2s'
-                          }}
                         >
                           └ {sub.name}
                         </button>
@@ -317,14 +282,14 @@ export default function ProductListPage() {
             ))}
           </ul>
 
-          <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
+          <h3 className="product-filter-sidebar__title">
             {t('products.sort_title')}
           </h3>
           <div className="checkout__field">
             <select
               value={currentSort}
               onChange={(e) => handleSortChange(e.target.value)}
-              style={{ padding: '8px 12px', width: '100%' }}
+              className="product-filter-sidebar__sort-select"
             >
               <option value="newest">{t('products.sort_latest')}</option>
               <option value="price_asc">{t('products.sort_price_asc')}</option>
@@ -332,28 +297,26 @@ export default function ProductListPage() {
             </select>
           </div>
           {/* 複合篩選：價格區間 */}
-          <h3 style={{ fontSize: '18px', marginTop: '32px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
+          <h3 className="product-filter-sidebar__title product-filter-sidebar__title--spaced">
             {t('products.filter_price')}
           </h3>
-          <form onSubmit={handlePriceApply} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <form onSubmit={handlePriceApply} className="product-filter-sidebar__price-form">
+            <div className="product-filter-sidebar__price-row">
               <input
                 type="number"
                 placeholder="Min"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                style={{ padding: '8px', width: '100%', background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', color: 'var(--color-cream)', borderRadius: '4px' }}
               />
-              <span style={{ color: 'var(--color-cream-faint)' }}>~</span>
+              <span>~</span>
               <input
                 type="number"
                 placeholder="Max"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                style={{ padding: '8px', width: '100%', background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', color: 'var(--color-cream)', borderRadius: '4px' }}
               />
             </div>
-            <button type="submit" className="btn btn--sm btn--outline" style={{ width: '100%' }}>
+            <button type="submit" className="btn btn--sm btn--outline product-filter-sidebar__price-btn">
               {t('common.confirm')}
             </button>
           </form>
@@ -361,10 +324,10 @@ export default function ProductListPage() {
           {/* 複合篩選：顏色 */}
           {filterMetadata.colors?.length > 0 && (
             <>
-              <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
+              <h3 className="product-filter-sidebar__title">
                 {t('product_detail.color')}
               </h3>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '32px' }}>
+              <div className="product-filter-sidebar__tags">
                 {filterMetadata.colors.map(color => {
                   const isActive = selectedColors.includes(color)
                   return (
@@ -372,22 +335,9 @@ export default function ProductListPage() {
                       key={color}
                       type="button"
                       onClick={() => handleColorToggle(color)}
-                      style={{
-                        padding: '6px 12px',
-                        borderRadius: '20px',
-                        background: isActive ? 'var(--color-gold)' : 'var(--color-bg-card)',
-                        border: '1px solid ' + (isActive ? 'var(--color-gold)' : 'var(--color-border)'),
-                        color: isActive ? 'var(--color-bg-dark)' : 'var(--color-cream)',
-                        fontSize: '12px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        boxShadow: isActive ? '0 2px 8px rgba(200, 169, 110, 0.4)' : 'none'
-                      }}
+                      className={`product-filter-sidebar__tag-btn ${isActive ? 'active' : ''}`}
                     >
-                      {isActive && <span style={{ fontWeight: 'bold' }}>✓</span>}
+                      {isActive && <span>✓</span>}
                       {color}
                     </button>
                   )
@@ -399,10 +349,10 @@ export default function ProductListPage() {
           {/* 複合篩選：尺寸 */}
           {filterMetadata.sizes?.length > 0 && (
             <>
-              <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
+              <h3 className="product-filter-sidebar__title">
                 {t('product_detail.size')}
               </h3>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '32px' }}>
+              <div className="product-filter-sidebar__tags">
                 {filterMetadata.sizes.map(size => {
                   const isActive = selectedSizes.includes(size)
                   return (
@@ -410,22 +360,9 @@ export default function ProductListPage() {
                       key={size}
                       type="button"
                       onClick={() => handleSizeToggle(size)}
-                      style={{
-                        padding: '6px 12px',
-                        borderRadius: '4px',
-                        background: isActive ? 'var(--color-gold)' : 'var(--color-bg-card)',
-                        border: '1px solid ' + (isActive ? 'var(--color-gold)' : 'var(--color-border)'),
-                        color: isActive ? 'var(--color-bg-dark)' : 'var(--color-cream)',
-                        fontSize: '12px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        boxShadow: isActive ? '0 2px 8px rgba(200, 169, 110, 0.4)' : 'none'
-                      }}
+                      className={`product-filter-sidebar__tag-btn product-filter-sidebar__tag-btn--size ${isActive ? 'active' : ''}`}
                     >
-                      {isActive && <span style={{ fontWeight: 'bold' }}>✓</span>}
+                      {isActive && <span>✓</span>}
                       {size}
                     </button>
                   )
@@ -439,8 +376,7 @@ export default function ProductListPage() {
             <button
               type="button"
               onClick={clearAllFilters}
-              className="btn btn--sm btn--ghost"
-              style={{ width: '100%', color: 'var(--color-gold)', border: '1px solid var(--color-gold)' }}
+              className="btn btn--sm btn--ghost product-filter-sidebar__clear-btn"
             >
               {t('products.clear_filters')}
             </button>
@@ -450,17 +386,16 @@ export default function ProductListPage() {
         {/* ── Main Content Area ── */}
         <div>
           {/* Search Header */}
-          <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-            <div className="checkout__field" style={{ flex: 1 }}>
+          <form onSubmit={handleSearchSubmit} className="product-list-page__search-form">
+            <div className="checkout__field">
               <input
                 type="text"
                 placeholder={t('header.search_placeholder')}
                 value={searchVal}
                 onChange={(e) => setSearchVal(e.target.value)}
-                style={{ padding: '10px 16px' }}
               />
             </div>
-            <button type="submit" className="btn btn--primary" style={{ padding: '0 24px' }}>
+            <button type="submit" className="btn btn--primary">
               {t('common.search')}
             </button>
           </form>
@@ -479,8 +414,8 @@ export default function ProductListPage() {
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--color-cream-muted)' }}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ marginBottom: '16px', color: 'var(--color-cream-faint)' }}>
+            <div className="product-list-page__empty">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                 <circle cx="12" cy="12" r="10" />
                 <path d="M8 12h8" />
               </svg>
@@ -499,19 +434,12 @@ export default function ProductListPage() {
                           <img
                             src={prod.cover_image_url || 'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&w=400&q=80'}
                             alt={prod.name}
-                            style={isSoldOut ? { filter: 'grayscale(1)' } : {}}
+                            className={isSoldOut ? 'product-card__img--grayscale' : ''}
                           />
                         </Link>
                         {isSoldOut && (
-                          <div style={{
-                            position: 'absolute', inset: 0, background: 'rgba(18, 13, 7, 0.65)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5
-                          }}>
-                            <span style={{
-                              border: '2px solid var(--color-gold)', color: 'var(--color-gold)',
-                              padding: '6px 16px', fontWeight: 'bold', fontSize: '14px', letterSpacing: '0.15em',
-                              background: 'var(--color-bg)'
-                            }}>
+                          <div className="product-card__sold-out-badge">
+                            <span>
                               SOLD OUT
                             </span>
                           </div>
@@ -537,27 +465,27 @@ export default function ProductListPage() {
                         </div>
                       </div>
                       <div className="product-card__info">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div className="product-card__info-header">
                           <span className="product-card__category">{prod.category_name}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--color-cream-faint)' }}>
-                          <span style={{ color: 'var(--color-gold)' }}>★ {parseFloat(prod.rating || 5).toFixed(1)}</span>
-                          <span>({prod.view_count || 0})</span>
+                          <div className="product-card__rating-badge">
+                            <span>★ {parseFloat(prod.rating || 5).toFixed(1)}</span>
+                            <span>({prod.view_count || 0})</span>
+                          </div>
+                        </div>
+                        <h3 className="product-card__name">
+                          <Link to={`/products/${prod.slug}`}>{prod.name}</Link>
+                        </h3>
+                        <div className="product-card__price-row">
+                          <span className="price">
+                            NT$ {Math.round(prod.base_price)}
+                            {prod.compare_price && (
+                              <span className="price price--compare">NT$ {Math.round(prod.compare_price)}</span>
+                            )}
+                          </span>
                         </div>
                       </div>
-                      <h3 className="product-card__name">
-                        <Link to={`/products/${prod.slug}`}>{prod.name}</Link>
-                      </h3>
-                      <div className="product-card__price-row">
-                        <span className="price">
-                          NT$ {Math.round(prod.base_price)}
-                          {prod.compare_price && (
-                            <span className="price price--compare">NT$ {Math.round(prod.compare_price)}</span>
-                          )}
-                        </span>
-                      </div>
                     </div>
-                  </div>
-                )
+                  )
                 })}
               </div>
 

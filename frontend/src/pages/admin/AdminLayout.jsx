@@ -1,9 +1,11 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useTranslation } from '../../context/LanguageContext'
 import { useEffect } from 'react'
 
 export default function AdminLayout() {
   const { user, logout } = useAuth()
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -18,10 +20,10 @@ export default function AdminLayout() {
   }
 
   const navItems = [
-    { to: '/admin/dashboard', label: '營收儀表板', icon: '📊' },
-    { to: '/admin/orders',    label: '訂單管理',   icon: '📦' },
-    { to: '/admin/products',  label: '商品與SKU',  icon: '🧥' },
-    { to: '/admin/coupons',   label: '折價券管理', icon: '🎟️' },
+    { to: '/admin/dashboard', label: t('admin.nav_dashboard'), icon: '📊' },
+    { to: '/admin/orders',    label: t('admin.nav_orders'),    icon: '📦' },
+    { to: '/admin/products',  label: t('admin.nav_products'),  icon: '🧥' },
+    { to: '/admin/coupons',   label: t('admin.nav_coupons'),   icon: '🎟️' },
   ]
 
   return (
@@ -29,8 +31,8 @@ export default function AdminLayout() {
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <div className="admin-sidebar-header">
-          <div className="brand-title">復古刻痕 Admin</div>
-          <span className="admin-badge">最高權限管理員</span>
+          <div className="brand-title">{t('admin.brand')}</div>
+          <span className="admin-badge">{t('admin.role_badge')}</span>
         </div>
 
         <nav className="admin-nav">
@@ -47,20 +49,19 @@ export default function AdminLayout() {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <div style={{ fontSize: '13px', color: 'var(--color-cream-faint)', marginBottom: '8px' }}>
-            管理者: {user?.name || 'Admin'}
+          <div className="admin-sidebar-user">
+            {t('admin.admin_user', { name: user?.name || 'Admin' })}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div className="admin-sidebar-actions">
             <a href="/" className="back-to-store">
-              ← 返回商城首頁
+              {t('admin.back_to_store')}
             </a>
             <button
               type="button"
               onClick={handleLogout}
-              className="btn btn--ghost"
-              style={{ fontSize: '12px', padding: '4px 8px', width: '100%', textAlign: 'center' }}
+              className="btn btn--ghost admin-logout-btn"
             >
-              登出系統
+              {t('admin.logout')}
             </button>
           </div>
         </div>

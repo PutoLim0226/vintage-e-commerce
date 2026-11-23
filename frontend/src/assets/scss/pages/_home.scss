@@ -181,6 +181,10 @@
     cursor: pointer;
     @include m.img-hover-zoom;
 
+    &--skeleton {
+      background: #261c12;
+    }
+
     &::after {
       content: '';
       position: absolute;
@@ -212,6 +216,11 @@
 // ── 精選商品 ─────────────────────────────────────────────
 .home-featured {
   @include m.section;
+
+  &__actions {
+    text-align: center;
+    margin-top: v.$space-12;
+  }
 }
 
 // ── 品牌故事 ─────────────────────────────────────────────
@@ -238,7 +247,16 @@
 
   &__text {
     .section-title { text-align: left; }
-    .section-subtitle { text-align: left; margin-inline: 0; }
+    .section-subtitle { text-align: left; margin-inline: 0; margin-bottom: v.$space-6; }
+  }
+
+  &__desc {
+    color: v.$color-cream-muted;
+    margin-bottom: v.$space-4;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
   }
 
   &__stats {
