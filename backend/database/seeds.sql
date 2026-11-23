@@ -8,17 +8,17 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- ─── Categories ──────────────────────────────────────────────
 TRUNCATE TABLE categories;
-INSERT INTO categories (id, parent_id, name, slug, sort_order) VALUES
-(1,  NULL, '男裝',        'mens',            1),
-(2,  NULL, '女裝',        'womens',          2),
-(3,  NULL, '配件',        'accessories',     3),
-(4,  1,    '外套 & 大衣', 'mens-outerwear',  1),
-(5,  1,    '牛仔褲',      'mens-denim',      2),
-(6,  1,    'T-Shirt',     'mens-tshirts',    3),
-(7,  2,    '洋裝',        'womens-dresses',  1),
-(8,  2,    '上衣',        'womens-tops',     2),
-(9,  3,    '包袋',        'bags',            1),
-(10, 3,    '帽子',        'hats',            2);
+INSERT INTO categories (id, parent_id, name, name_en, name_zh_cn, slug, sort_order) VALUES
+(1,  NULL, '男裝',        'Men\'s',             '男装',        'mens',            1),
+(2,  NULL, '女裝',        'Women\'s',           '女装',        'womens',          2),
+(3,  NULL, '配件',        'Accessories',       '配件',        'accessories',     3),
+(4,  1,    '外套 & 大衣', 'Outerwear & Coats',  '外套 & 大衣', 'mens-outerwear',  1),
+(5,  1,    '牛仔褲',      'Denim & Jeans',      '牛仔裤',      'mens-denim',      2),
+(6,  1,    'T-Shirt',     'T-Shirts',           'T-Shirt',     'mens-tshirts',    3),
+(7,  2,    '洋裝',        'Dresses',            '连衣裙',      'womens-dresses',  1),
+(8,  2,    '上衣',        'Tops & Blouses',     '上衣',        'womens-tops',     2),
+(9,  3,    '包袋',        'Bags & Wallets',     '箱包',        'bags',            1),
+(10, 3,    '帽子',        'Hats & Caps',        '帽子',        'hats',            2);
 
 -- ─── Products ────────────────────────────────────────────────
 DELETE FROM product_images;

@@ -44,6 +44,11 @@ api.interceptors.request.use(
       localStorage.setItem('cart_token', cartToken)
     }
     config.headers['X-Cart-Token'] = cartToken
+
+    // 多語系標頭傳遞 (支援後端方案 B 多語系動態資料輸出)
+    const lang = localStorage.getItem('vintage_lang') || 'zh-TW'
+    config.headers['Accept-Language'] = lang
+
     return config
   },
   (error) => Promise.reject(error)

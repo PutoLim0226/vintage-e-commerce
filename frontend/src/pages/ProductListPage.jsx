@@ -6,7 +6,7 @@ import api from '../api/api'
 
 export default function ProductListPage() {
   const { user } = useAuth()
-  const { t } = useTranslation()
+  const { t, language } = useTranslation()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const [products, setProducts] = useState([])
@@ -57,7 +57,7 @@ export default function ProductListPage() {
       }
     }
     loadInitData()
-  }, [])
+  }, [language])
 
   // 載入會員願望清單
   useEffect(() => {
@@ -117,7 +117,7 @@ export default function ProductListPage() {
       }
     }
     loadProducts()
-  }, [searchParams, currentPage, currentCategory, currentSort])
+  }, [searchParams, currentPage, currentCategory, currentSort, language])
 
   const handleCategorySelect = (slug) => {
     const nextParams = new URLSearchParams(searchParams)

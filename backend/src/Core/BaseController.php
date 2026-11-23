@@ -38,4 +38,26 @@ abstract class BaseController
     {
         return $_GET[$key] ?? $default;
     }
+
+    protected function getLanguage(): string
+    {
+        $header = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '';
+        if (stripos($header, 'en') === 0 || stripos($header, ',en') !== false) {
+            return 'en';
+        }
+        if (stripos($header, 'zh-cn') !== false || stripos($header, 'zh-hans') !== false) {
+            return 'zh-CN';
+        }
+        return 'zh-TW';
+    }
+
+    protected function getCategoryNameSQL(string $alias = 'c'): string
+    {
+        $lang = $this->getLanguage();
+        return match ($lang) {
+            'en'    => "COALESCE(NULLIF({$alias}.name_en, ''), {$alias}.name)",
+            'zh-CN' => "COALESCE(NULLIF({$alias}.name_zh_cn, ''), {$alias}.name)",
+            default => "{$alias}.name",
+        };
+    }
 }

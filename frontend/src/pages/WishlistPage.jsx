@@ -6,7 +6,7 @@ import api from '../api/api'
 
 export default function WishlistPage() {
   const { user } = useAuth()
-  const { t } = useTranslation()
+  const { t, language } = useTranslation()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
@@ -31,7 +31,7 @@ export default function WishlistPage() {
       }
     }
     fetchWishlist()
-  }, [user, navigate])
+  }, [user, navigate, language])
 
   const handleRemove = async (productId) => {
     try {

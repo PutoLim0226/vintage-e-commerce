@@ -6,7 +6,7 @@ import api from '../api/api'
 
 export default function HomePage() {
   const { user } = useAuth()
-  const { t } = useTranslation()
+  const { t, language } = useTranslation()
   const [categories, setCategories] = useState([])
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [wishlistIds, setWishlistIds] = useState([])
@@ -29,7 +29,7 @@ export default function HomePage() {
       }
     }
     fetchData()
-  }, [])
+  }, [language])
 
   useEffect(() => {
     if (!user) {

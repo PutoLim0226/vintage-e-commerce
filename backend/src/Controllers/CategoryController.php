@@ -13,9 +13,10 @@ class CategoryController extends BaseController
     public function index(array $params): void
     {
         $db = Database::getInstance();
+        $nameField = $this->getCategoryNameSQL('categories');
         $stmt = $db->query(
-            'SELECT id, parent_id, name, slug, description, image_url, sort_order
-             FROM categories WHERE is_active = 1 ORDER BY sort_order, name'
+            "SELECT id, parent_id, {$nameField} AS name, name AS original_name, name_en, name_zh_cn, slug, description, image_url, sort_order
+             FROM categories WHERE is_active = 1 ORDER BY sort_order, name"
         );
         $rows = $stmt->fetchAll();
 

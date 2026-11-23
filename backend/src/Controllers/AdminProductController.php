@@ -13,9 +13,10 @@ class AdminProductController extends BaseController
     public function index(array $params): void
     {
         $db = Database::getInstance();
+        $catNameField = $this->getCategoryNameSQL('c');
         $stmt = $db->query(
             "SELECT p.id, p.name, p.slug, p.base_price, p.is_active, p.is_featured, p.cover_image_url,
-                    c.name AS category_name, p.created_at, p.category_id,
+                    {$catNameField} AS category_name, p.created_at, p.category_id,
                     (SELECT SUM(stock) FROM product_skus ps WHERE ps.product_id = p.id) AS total_stock
              FROM products p
              JOIN categories c ON c.id = p.category_id

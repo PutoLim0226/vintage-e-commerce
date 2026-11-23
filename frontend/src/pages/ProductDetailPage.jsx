@@ -9,7 +9,7 @@ export default function ProductDetailPage() {
   const { slug } = useParams()
   const { setCart } = useCart()
   const { user } = useAuth()
-  const { t } = useTranslation()
+  const { t, language } = useTranslation()
   const navigate = useNavigate()
 
   const [product, setProduct] = useState(null)
@@ -64,7 +64,7 @@ export default function ProductDetailPage() {
       }
     }
     loadProductAndReviews()
-  }, [slug, t])
+  }, [slug, t, language])
 
   // 載入會員願望清單
   useEffect(() => {

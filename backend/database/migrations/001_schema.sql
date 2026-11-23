@@ -63,6 +63,8 @@ CREATE TABLE `categories` (
     `id`          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `parent_id`   INT UNSIGNED DEFAULT NULL,
     `name`        VARCHAR(100) NOT NULL,
+    `name_en`     VARCHAR(100) NULL,
+    `name_zh_cn`  VARCHAR(100) NULL,
     `slug`        VARCHAR(120) NOT NULL UNIQUE,
     `description` TEXT,
     `image_url`   VARCHAR(500),

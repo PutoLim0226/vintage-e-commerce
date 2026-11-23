@@ -70,6 +70,16 @@
   <h2>顧客購物與行銷 API 模組 (Customer &amp; Marketing Endpoints)</h2>
 
   <div class="endpoint">
+    <span class="method get">GET</span> <span class="path">/api/categories</span>
+    <p>公開端點。取得樹狀分類層級清單。<strong>支援 <code>Accept-Language</code> 請求標頭</strong>（如 <code>en</code>、<code>zh-CN</code>、<code>zh-TW</code>），後端將自動依所選語言動態輸出對應之分類名稱 <code>name</code>（如 Men's / 男装 / 男裝），同時回傳 <code>name_en</code> 與 <code>name_zh_cn</code> 原始欄位。</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method get">GET</span> <span class="path">/api/products?page=1&amp;category={slug}&amp;sort={sort}&amp;colors={colors}&amp;sizes={sizes}</span>
+    <p>公開端點。分頁取得商品清單。<strong>支援 <code>Accept-Language</code> 請求標頭</strong>，每項商品的 <code>category_name</code> 欄位將自動輸出當前語系對應之分類名稱。</p>
+  </div>
+
+  <div class="endpoint">
     <span class="method get">GET</span> <span class="path">/api/products/filter-metadata</span>
     <p>公開端點。動態計算全站有庫存之商品的顏色清單、尺寸清單，以及商品 base_price 的最高/最低值，用於前端複合篩選側邊欄。</p>
   </div>

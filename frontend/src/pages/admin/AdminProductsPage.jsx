@@ -3,7 +3,7 @@ import { useTranslation } from '../../context/LanguageContext'
 import api from '../../api/api'
 
 export default function AdminProductsPage() {
-  const { t } = useTranslation()
+  const { t, language } = useTranslation()
   const [products, setProducts]       = useState([])
   const [categories, setCategories]   = useState([])
   const [loading, setLoading]         = useState(true)
@@ -40,7 +40,7 @@ export default function AdminProductsPage() {
     }
   }
 
-  useEffect(() => { loadData() }, [])
+  useEffect(() => { loadData() }, [language])
 
   const handleToggleActive = async (product) => {
     const nextVal = product.is_active ? 0 : 1

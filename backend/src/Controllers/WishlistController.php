@@ -18,11 +18,12 @@ class WishlistController extends BaseController
     {
         $db = Database::getInstance();
         $userId = $_REQUEST['_auth']['sub'] ?? 0;
+        $catNameField = $this->getCategoryNameSQL('c');
 
         $stmt = $db->prepare(
             "SELECT p.id, p.name, p.slug, p.base_price, p.compare_price,
                     p.cover_image_url, p.rating, p.view_count,
-                    c.name AS category_name, c.slug AS category_slug
+                    {$catNameField} AS category_name, c.slug AS category_slug
              FROM wishlists w
              JOIN products p      ON p.id = w.product_id
              JOIN categories c    ON c.id = p.category_id

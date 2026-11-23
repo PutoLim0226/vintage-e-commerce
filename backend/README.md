@@ -1,5 +1,5 @@
 # ⚙️ 復古刻痕 - 後端 API 系統 (Backend API)
-> **Version: 1.4.0**
+> **Version: 1.4.1**
 
 本目錄為「復古刻痕」電商的後端 API 系統。採用 **無框架 PHP 8.3** 開發，自製物件導向的 MVC 設計、RESTful 路由分發器與中間件 (Middleware) 機制，確保最高運作效率。
 
@@ -15,6 +15,11 @@
 ---
 
 ## 📝 更新日誌 (Changelog)
+
+1.4.1 — 2026-11-23
+feat(i18n): 實作分類多語系支援 (方案 B)：
+- 資料庫 `categories` 表新增 `name_en` 與 `name_zh_cn` 多語系欄位並完成遷移與種子資料補充。
+- 後端 `BaseController`、`CategoryController`、`ProductController`、`AdminProductController`、`WishlistController` 支援 `Accept-Language` 請求標頭，自動按語言動態輸出分類名稱。
 
 1.4.0 — 2026-07-22
 feat(customer-experience): 實作前台顧客購物體驗與行銷功能後端 API（商品收藏/願望清單 toggle 與 index 端點、全動態屬性元數據 filter-metadata 擷取、商品補貨訂閱、LINE 官方帳號關聯綁定端點、以及 NotificationService 補貨/降價事件通知分流器與背景郵件發送 mail-worker.php）。

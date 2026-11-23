@@ -94,10 +94,11 @@ class ProductController extends BaseController
         $total = (int)$countStmt->fetchColumn();
 
         // 查詢商品
+        $catNameField = $this->getCategoryNameSQL('c');
         $stmt = $db->prepare(
             "SELECT p.id, p.name, p.slug, p.base_price, p.compare_price,
                     p.cover_image_url, p.is_featured, p.rating, p.view_count,
-                    c.name AS category_name, c.slug AS category_slug,
+                    {$catNameField} AS category_name, c.slug AS category_slug,
                     (SELECT SUM(stock) FROM product_skus WHERE product_id = p.id AND is_active = 1) AS total_stock
              FROM products p
              JOIN categories c ON c.id = p.category_id
@@ -129,8 +130,9 @@ class ProductController extends BaseController
         $db->prepare('UPDATE products SET view_count = view_count + 1 WHERE slug = ? AND is_active = 1')
            ->execute([$slug]);
 
+        $catNameField = $this->getCategoryNameSQL('c');
         $stmt = $db->prepare(
-            "SELECT p.*, c.name AS category_name, c.slug AS category_slug
+            "SELECT p.*, {$catNameField} AS category_name, c.slug AS category_slug
              FROM products p
              JOIN categories c ON c.id = p.category_id
              WHERE p.slug = ? AND p.is_active = 1
