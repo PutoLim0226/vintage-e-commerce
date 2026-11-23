@@ -1,5 +1,5 @@
 # 🧥 復古刻痕 - 全端電商平台 (Vintage E-Commerce)
-> **Version: 1.4.1**
+> **Version: 1.4.2**
 > **🔗 Live Demo:** [https://putolim0226.github.io/vintage-e-commerce/](https://putolim0226.github.io/vintage-e-commerce/)
 
 這是一個從零到完整上線的電商作品，專注於復古服飾零售。**本專案最大的特色在於「零 UI 框架依賴」** — 所有視覺效果皆由底層 SCSS 手刻打造，前端採用 React + Vite，後端使用純 PHP 自製 RESTful API，完整實現電商進銷存、金物流串接與會員行銷系統。
@@ -18,6 +18,10 @@
 ---
 
 ### 🌟 新增特色亮點
+- **國際化多語系支援 (Internationalization - i18n)**：
+  - 支援**台灣繁體中文 (zh-TW)**、**簡體中文 (zh-CN)** 及**英文 (en)**。
+  - 自製高效 `LanguageContext` 與 `useTranslation` Hook，零外部套件依賴，包含參數動態替換與兜底回退 (Fallback) 機制。
+  - Header 導航列整合現代復古黑金風格之下拉切換選單與手機端側邊快速切換按鈕，切換時自動持久化於 `localStorage` 並動態更新 HTML `lang` 標籤。
 - **前台顧客購物體驗與行銷擴充 (Customer Experience & Marketing)**：
   - **商品收藏/願望清單 (Wishlist)**：會員專屬收藏功能，支援列表頁/詳情頁心形按鈕動畫、專屬 `/wishlist` 管理頁面。
   - **多條件複合篩選 (Colors, Sizes, Min/Max Price)**：動態從商品 SKU 與庫存擷取元數據（全站顏色、尺寸與價格極值），提供價格滑軌與屬性複選，完全實現前端無刷過濾。

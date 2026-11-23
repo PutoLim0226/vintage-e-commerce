@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/api'
 import { useAuth } from '../context/AuthContext'
+import { useTranslation } from '../context/LanguageContext'
 
 export default function ProfilePage() {
   const { user } = useAuth()
+  const { t } = useTranslation()
   const [profile, setProfile] = useState(null)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')

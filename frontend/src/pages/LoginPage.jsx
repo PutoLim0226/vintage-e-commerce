@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 
 export default function LoginPage() {
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const { login } = useAuth()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -27,10 +29,10 @@ export default function LoginPage() {
         login(data.data)
         navigate(from, { replace: true })
       } else {
-        setError(data.message || '登入失敗，請檢查輸入資訊')
+        setError(data.message || t('auth.login_title'))
       }
     } catch (err) {
-      setError(err.response?.data?.message || '伺服器連線失敗，請稍後再試')
+      setError(err.response?.data?.message || t('common.error'))
     } finally {
       setLoading(false)
     }
@@ -40,10 +42,10 @@ export default function LoginPage() {
     <div className="checkout" style={{ minHeight: '80dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="checkout__form-section" style={{ width: '100%', maxWidth: '440px', margin: '0 auto' }}>
         <h3 style={{ textAlign: 'center', fontFamily: "var(--heading)", fontSize: 'var(--font-size-2xl)' }}>
-          會員<span>登入</span>
+          {t('auth.login_title')}
         </h3>
         <p style={{ textAlign: 'center', color: 'var(--color-cream-muted)', marginBottom: '24px', fontSize: '14px' }}>
-          歡迎回到復古刻痕，請輸入您的會員帳密
+          {t('auth.login_desc')}
         </p>
 
         {error && (
@@ -54,7 +56,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit}>
           <div className="checkout__field" style={{ marginBottom: '18px' }}>
-            <label htmlFor="email">電子信箱 Email</label>
+            <label htmlFor="email">{t('auth.email')}</label>
             <input
               id="email"
               type="email"
@@ -67,12 +69,12 @@ export default function LoginPage() {
           </div>
 
           <div className="checkout__field" style={{ marginBottom: '24px' }}>
-            <label htmlFor="password">密碼 Password</label>
+            <label htmlFor="password">{t('auth.password')}</label>
             <input
               id="password"
               type="password"
               required
-              placeholder="請輸入密碼"
+              placeholder={t('auth.password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
@@ -85,14 +87,14 @@ export default function LoginPage() {
             disabled={loading}
             style={{ marginBottom: '20px' }}
           >
-            {loading ? '登入中...' : '安全登入'}
+            {loading ? t('common.loading') : t('auth.login_btn')}
           </button>
         </form>
 
         <div style={{ textAlign: 'center', fontSize: '14px', color: 'var(--color-cream-muted)' }}>
-          還沒有帳號嗎？{' '}
+          {t('auth.no_account')}{' '}
           <Link to="/register" className="btn--text" style={{ padding: 0, textDecoration: 'none' }}>
-            立即註冊
+            {t('auth.go_register')}
           </Link>
         </div>
       </div>

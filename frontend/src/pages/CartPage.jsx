@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 
 export default function CartPage() {
   const { cart, setCart, setIsCartOpen } = useCart()
+  const { t } = useTranslation()
 
   const handleQtyChange = async (itemId, currentQty, type, stockLimit) => {
     const nextQty = type === 'inc' ? currentQty + 1 : currentQty - 1
@@ -12,7 +14,7 @@ export default function CartPage() {
       return
     }
     if (type === 'inc' && nextQty > stockLimit) {
-      alert(`已達庫存上限 (${stockLimit} 件)`)
+      alert(t('cart.stock_limit_alert', { count: stockLimit }))
       return
     }
     try {
@@ -43,12 +45,12 @@ export default function CartPage() {
   return (
     <main className="container section" style={{ minHeight: '80dvh' }}>
       <div className="breadcrumb">
-        <span className="breadcrumb__item"><Link to="/">首頁</Link></span>
-        <span className="breadcrumb__item">購物車</span>
+        <span className="breadcrumb__item"><Link to="/">{t('product_detail.breadcrumb_home')}</Link></span>
+        <span className="breadcrumb__item">{t('cart.title')}</span>
       </div>
 
       <h1 style={{ fontFamily: 'var(--font-heading)', marginBottom: '32px', fontSize: 'clamp(28px, 4vw, 40px)' }}>
-        購物 <span style={{ color: 'var(--color-gold)' }}>清單</span>
+        {t('cart.title')}
       </h1>
 
       {isEmpty ? (
@@ -58,11 +60,11 @@ export default function CartPage() {
             <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
           </svg>
           <h2 style={{ fontSize: '24px', marginBottom: '12px', color: 'var(--color-cream-muted)' }}>
-            購物車目前是空的
+            {t('cart.empty_title')}
           </h2>
-          <p style={{ marginBottom: '32px' }}>找找看有沒有喜歡的復古單品吧！</p>
+          <p style={{ marginBottom: '32px' }}>{t('cart.empty_desc')}</p>
           <Link to="/products" className="btn btn--primary btn--lg">
-            前往逛逛
+            {t('cart.explore_btn')}
           </Link>
         </div>
       ) : (
@@ -97,9 +99,9 @@ export default function CartPage() {
                       <Link to={`/products/${item.slug || ''}`} style={{ color: 'inherit' }}>{item.product_name}</Link>
                     </h3>
                     <div style={{ fontSize: '13px', color: 'var(--color-cream-faint)', marginBottom: '12px' }}>
-                      {item.color && <span>顏色：{item.color}</span>}
+                      {item.color && <span>{t('product_detail.color')}: {item.color}</span>}
                       {item.color && item.size && <span>　</span>}
-                      {item.size && <span>尺寸：{item.size}</span>}
+                      {item.size && <span>{t('product_detail.size')}: {item.size}</span>}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div className="product-detail__qty-control">
@@ -114,7 +116,7 @@ export default function CartPage() {
                         onMouseEnter={e => e.target.style.color = 'var(--color-error)'}
                         onMouseLeave={e => e.target.style.color = 'var(--color-cream-faint)'}
                       >
-                        移除
+                        {t('cart.remove')}
                       </button>
                     </div>
                   </div>
@@ -124,11 +126,6 @@ export default function CartPage() {
                     <div className="price" style={{ fontSize: '18px', whiteSpace: 'nowrap' }}>
                       NT$ {Math.round(item.price * item.quantity)}
                     </div>
-                    {item.quantity > 1 && (
-                      <div style={{ fontSize: '12px', color: 'var(--color-cream-faint)', marginTop: '2px' }}>
-                        單價 NT$ {Math.round(item.price)}
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}
@@ -136,44 +133,35 @@ export default function CartPage() {
 
             <div style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
               <Link to="/products" className="btn btn--ghost">
-                ← 繼續購物
+                ← {t('footer.shop_all')}
               </Link>
             </div>
           </div>
 
           {/* Order Summary Sidebar */}
           <div className="checkout__summary">
-            <h3 className="checkout__summary-title">訂單摘要</h3>
+            <h3 className="checkout__summary-title">{t('cart.summary_title')}</h3>
 
             <div className="checkout__summary-rows">
               <div className="checkout__summary-row">
-                <span>商品小計</span>
+                <span>{t('cart.subtotal')}</span>
                 <span>NT$ {Math.round(cart.total)}</span>
               </div>
               <div className="checkout__summary-row">
-                <span>運費估算</span>
+                <span>{t('cart.shipping')}</span>
                 <span style={{ color: 'var(--color-cream-faint)', fontSize: '13px' }}>
-                  {cart.total >= 1500 ? '免運費 🎉' : '結帳時計算'}
+                  {cart.total >= 1500 ? `${t('common.free_shipping')} 🎉` : t('common.loading')}
                 </span>
               </div>
-              {cart.total < 1500 && (
-                <div style={{ padding: '8px 0', fontSize: '13px', color: 'var(--color-gold)' }}>
-                  再購 NT$ {Math.round(1500 - cart.total)} 即可享免運優惠！
-                </div>
-              )}
               <div className="checkout__summary-row checkout__summary-row--total">
-                <span>預估總計</span>
+                <span>{t('cart.total')}</span>
                 <span>NT$ {Math.round(cart.total)}</span>
               </div>
             </div>
 
             <Link to="/checkout" className="btn btn--primary btn--full btn--lg" style={{ marginTop: '12px', textAlign: 'center' }}>
-              前往結帳
+              {t('cart.checkout_btn')}
             </Link>
-
-            <p style={{ fontSize: '12px', color: 'var(--color-cream-faint)', textAlign: 'center', marginTop: '12px' }}>
-              可在結帳頁輸入折價券代碼
-            </p>
           </div>
         </div>
       )}

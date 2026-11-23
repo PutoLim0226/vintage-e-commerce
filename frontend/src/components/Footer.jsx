@@ -1,16 +1,19 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from '../context/LanguageContext'
 
 export default function Footer() {
+  const { t } = useTranslation()
+
   return (
     <footer className="footer">
       <div className="footer__main">
         {/* Brand Column */}
         <div className="footer__brand">
           <h2 className="footer__logo">
-            復古<span>刻痕</span>
+            {t('header.brand_prefix')}<span>{t('header.brand_suffix')}</span>
           </h2>
           <p className="footer__desc">
-            專注於復古服飾零售，嚴選數十年前珍貴設計，手刻時代的經典與情懷。
+            {t('footer.brand_desc')}
           </p>
           <div className="footer__social">
             <a href="https://instagram.com" target="_blank" rel="noreferrer" className="footer__social-link" aria-label="Instagram">
@@ -27,21 +30,21 @@ export default function Footer() {
 
         {/* Links Column 1 */}
         <div>
-          <h3 className="footer__col-title">線上購物</h3>
+          <h3 className="footer__col-title">{t('footer.col_shop')}</h3>
           <ul className="footer__links">
             <li>
               <Link to="/products" className="footer__link">
-                所有單品
+                {t('footer.shop_all')}
               </Link>
             </li>
             <li>
               <Link to="/products?category=jackets" className="footer__link">
-                經典外套
+                {t('footer.shop_jackets')}
               </Link>
             </li>
             <li>
               <Link to="/products?category=shirts" className="footer__link">
-                復古襯衫
+                {t('footer.shop_shirts')}
               </Link>
             </li>
           </ul>
@@ -49,21 +52,21 @@ export default function Footer() {
 
         {/* Links Column 2 */}
         <div>
-          <h3 className="footer__col-title">顧客服務</h3>
+          <h3 className="footer__col-title">{t('footer.col_service')}</h3>
           <ul className="footer__links">
             <li>
               <a href="#faq" className="footer__link">
-                常見問題 FAQ
+                {t('footer.faq')}
               </a>
             </li>
             <li>
               <a href="#shipping" className="footer__link">
-                運送與配送說明
+                {t('footer.shipping_info')}
               </a>
             </li>
             <li>
               <a href="#returns" className="footer__link">
-                退換貨政策
+                {t('footer.returns_info')}
               </a>
             </li>
           </ul>
@@ -71,16 +74,16 @@ export default function Footer() {
 
         {/* Links Column 3 */}
         <div>
-          <h3 className="footer__col-title">聯絡資訊</h3>
+          <h3 className="footer__col-title">{t('footer.col_contact')}</h3>
           <ul className="footer__links">
             <li className="footer__link" style={{ cursor: 'default' }}>
-              📍 台北市大安區復古路 19 號
+              {t('footer.address')}
             </li>
             <li className="footer__link" style={{ cursor: 'default' }}>
-              📞 02-2345-6789
+              {t('footer.phone')}
             </li>
             <li className="footer__link" style={{ cursor: 'default' }}>
-              ✉️ service@vintage-ec.com
+              {t('footer.email')}
             </li>
           </ul>
         </div>
@@ -90,11 +93,11 @@ export default function Footer() {
       <div className="footer__bottom">
         <div className="footer__bottom-inner">
           <div className="footer__copy">
-            © {new Date().getFullYear()} 復古刻痕 Vintage E-Commerce. All rights reserved.
+            {t('footer.copyright', { year: new Date().getFullYear() })}
           </div>
           <div className="footer__payment-icons">
             <span style={{ fontSize: '12px', color: 'var(--color-cream-faint)' }}>
-              安全串接：綠界科技 / 藍新支付 / 信用卡 / CVS
+              {t('footer.payment_notice')}
             </span>
           </div>
         </div>

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 
 export default function ProductListPage() {
   const { user } = useAuth()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const [products, setProducts] = useState([])
@@ -226,8 +228,8 @@ export default function ProductListPage() {
   return (
     <main className="container section" style={{ minHeight: '90dvh' }}>
       <div className="breadcrumb">
-        <span className="breadcrumb__item"><Link to="/">首頁</Link></span>
-        <span className="breadcrumb__item">所有單品</span>
+        <span className="breadcrumb__item"><Link to="/">{t('products.breadcrumb_home')}</Link></span>
+        <span className="breadcrumb__item">{t('products.breadcrumb_products')}</span>
       </div>
 
       {/* 行動裝置專用篩選展開按鈕 */}
@@ -246,14 +248,14 @@ export default function ProductListPage() {
           letterSpacing: '0.05em'
         }}
       >
-        {showMobileFilters ? '關閉篩選條件 ✕' : '🔍 篩選與分類商品...'}
+        {showMobileFilters ? `✕ ${t('common.close')}` : `🔍 ${t('products.filter_title')}...`}
       </button>
 
       <div className="layout-sidebar">
         {/* ── Sidebar Filter ── */}
         <aside className={`checkout__form-section product-filter-sidebar ${showMobileFilters ? 'expanded' : ''}`} style={{ padding: '24px' }}>
           <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
-            商品分類
+            {t('products.filter_category')}
           </h3>
           <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
             <li>
@@ -269,7 +271,7 @@ export default function ProductListPage() {
                   transition: 'all 0.2s'
                 }}
               >
-                全部商品
+                {t('products.filter_all_categories')}
               </button>
             </li>
             {categories.map((cat) => (
@@ -316,7 +318,7 @@ export default function ProductListPage() {
           </ul>
 
           <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
-            排序方式
+            {t('products.sort_title')}
           </h3>
           <div className="checkout__field">
             <select
@@ -324,20 +326,20 @@ export default function ProductListPage() {
               onChange={(e) => handleSortChange(e.target.value)}
               style={{ padding: '8px 12px', width: '100%' }}
             >
-              <option value="newest">最新上架</option>
-              <option value="price_asc">價格：由低到高</option>
-              <option value="price_desc">價格：由高到低</option>
+              <option value="newest">{t('products.sort_latest')}</option>
+              <option value="price_asc">{t('products.sort_price_asc')}</option>
+              <option value="price_desc">{t('products.sort_price_desc')}</option>
             </select>
           </div>
           {/* 複合篩選：價格區間 */}
           <h3 style={{ fontSize: '18px', marginTop: '32px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
-            價格區間
+            {t('products.filter_price')}
           </h3>
           <form onSubmit={handlePriceApply} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <input
                 type="number"
-                placeholder="最低"
+                placeholder="Min"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
                 style={{ padding: '8px', width: '100%', background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', color: 'var(--color-cream)', borderRadius: '4px' }}
@@ -345,14 +347,14 @@ export default function ProductListPage() {
               <span style={{ color: 'var(--color-cream-faint)' }}>~</span>
               <input
                 type="number"
-                placeholder="最高"
+                placeholder="Max"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
                 style={{ padding: '8px', width: '100%', background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', color: 'var(--color-cream)', borderRadius: '4px' }}
               />
             </div>
             <button type="submit" className="btn btn--sm btn--outline" style={{ width: '100%' }}>
-              套用價格
+              {t('common.confirm')}
             </button>
           </form>
 
@@ -360,7 +362,7 @@ export default function ProductListPage() {
           {filterMetadata.colors?.length > 0 && (
             <>
               <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
-                顏色篩選
+                {t('product_detail.color')}
               </h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '32px' }}>
                 {filterMetadata.colors.map(color => {
@@ -398,7 +400,7 @@ export default function ProductListPage() {
           {filterMetadata.sizes?.length > 0 && (
             <>
               <h3 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
-                尺寸篩選
+                {t('product_detail.size')}
               </h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '32px' }}>
                 {filterMetadata.sizes.map(size => {
@@ -440,7 +442,7 @@ export default function ProductListPage() {
               className="btn btn--sm btn--ghost"
               style={{ width: '100%', color: 'var(--color-gold)', border: '1px solid var(--color-gold)' }}
             >
-              清除所有篩選
+              {t('products.clear_filters')}
             </button>
           )}
         </aside>
@@ -452,14 +454,14 @@ export default function ProductListPage() {
             <div className="checkout__field" style={{ flex: 1 }}>
               <input
                 type="text"
-                placeholder="搜尋經典復古服飾、單品..."
+                placeholder={t('header.search_placeholder')}
                 value={searchVal}
                 onChange={(e) => setSearchVal(e.target.value)}
                 style={{ padding: '10px 16px' }}
               />
             </div>
             <button type="submit" className="btn btn--primary" style={{ padding: '0 24px' }}>
-              搜尋
+              {t('common.search')}
             </button>
           </form>
 
@@ -482,8 +484,8 @@ export default function ProductListPage() {
                 <circle cx="12" cy="12" r="10" />
                 <path d="M8 12h8" />
               </svg>
-              <h3>沒有找到符合的商品</h3>
-              <p>請嘗試其他搜尋關鍵字或分類</p>
+              <h3>{t('products.empty_title')}</h3>
+              <p>{t('products.empty_desc')}</p>
             </div>
           ) : (
             <>
@@ -522,7 +524,7 @@ export default function ProductListPage() {
                             e.preventDefault()
                             toggleWishlist(prod.id)
                           }}
-                          aria-label="加入收藏"
+                          aria-label={t('home.add_wishlist')}
                         >
                           <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlistIds.includes(prod.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                             <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
@@ -530,7 +532,7 @@ export default function ProductListPage() {
                         </button>
                         <div className="product-card__actions">
                           <Link to={`/products/${prod.slug}`} className="btn btn--primary">
-                            {isSoldOut ? '查看補貨狀態' : '查看規格'}
+                            {isSoldOut ? t('products.sold_out') : t('home.view_spec')}
                           </Link>
                         </div>
                       </div>

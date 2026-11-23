@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { useTranslation } from '../context/LanguageContext'
+import LanguageSelector from './LanguageSelector'
 
 export default function Header() {
   const { user, logout } = useAuth()
   const { cart, setIsCartOpen } = useCart()
+  const { t } = useTranslation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchVal, setSearchVal] = useState('')
   const [searchParams] = useSearchParams()
@@ -36,7 +39,7 @@ export default function Header() {
     <>
       {connError && (
         <div style={{ background: 'rgba(198,160,87,0.15)', borderBottom: '1px solid var(--color-gold)', color: 'var(--color-gold)', padding: '8px 16px', fontSize: '13px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', zIndex: 9999, position: 'relative' }}>
-          <span>⚠️ 提示：無法連線至 API 後端 (ERR_CONNECTION_REFUSED)。若為線上展示，請確認本機 PHP 伺服器已啟動，或設定全域 API 網址。</span>
+          <span>{t('header.api_error_hint')}</span>
           <button type="button" onClick={() => setConnError(false)} style={{ background: 'none', border: 'none', color: 'var(--color-gold)', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' }}>✕</button>
         </div>
       )}
@@ -44,16 +47,16 @@ export default function Header() {
         <div className="header__inner">
           {/* Logo */}
           <Link to="/" className="header__logo">
-            復古<span>刻痕</span>
+            {t('header.brand_prefix')}<span>{t('header.brand_suffix')}</span>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="header__nav">
             <NavLink to="/" className={({ isActive }) => `header__nav-link ${isActive ? 'active' : ''}`}>
-              首頁
+              {t('header.home')}
             </NavLink>
             <NavLink to="/products" className={({ isActive }) => `header__nav-link ${isActive ? 'active' : ''}`}>
-              所有單品
+              {t('header.products')}
             </NavLink>
           </nav>
 
@@ -67,7 +70,7 @@ export default function Header() {
               </svg>
               <input
                 type="text"
-                placeholder="搜尋經典..."
+                placeholder={t('header.search_placeholder')}
                 value={searchVal}
                 onChange={(e) => setSearchVal(e.target.value)}
                 onKeyDown={(e) => {
@@ -79,12 +82,12 @@ export default function Header() {
                     navigate('/products')
                   }
                 }}
-                aria-label="搜尋商品"
+                aria-label={t('header.search_aria')}
               />
               {searchVal && (
                 <button
                   type="button"
-                  aria-label="清除搜尋"
+                  aria-label={t('header.clear_search')}
                   onClick={() => { setSearchVal(''); navigate('/products') }}
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
@@ -102,8 +105,8 @@ export default function Header() {
               <Link
                 to="/wishlist"
                 className="header__icon-btn"
-                aria-label="查看願望清單"
-                style={{ marginRight: '8px' }}
+                aria-label={t('header.wishlist')}
+                style={{ marginRight: '4px' }}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
@@ -116,7 +119,7 @@ export default function Header() {
               type="button"
               className="header__icon-btn"
               onClick={() => setIsCartOpen(true)}
-              aria-label="開啟購物車"
+              aria-label={t('header.cart')}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
@@ -124,6 +127,9 @@ export default function Header() {
               </svg>
               {cartItemCount > 0 && <span className="header__cart-badge">{cartItemCount}</span>}
             </button>
+
+            {/* Language Selector */}
+            <LanguageSelector />
 
             {/* Member Profile/Login */}
             <div className="header__member-desktop">
@@ -138,12 +144,12 @@ export default function Header() {
                     className="btn btn--sm btn--ghost"
                     style={{ padding: '6px 12px' }}
                   >
-                    登出
+                    {t('header.logout')}
                   </button>
                 </div>
               ) : (
                 <Link to="/login" className="btn btn--sm btn--outline">
-                  登入
+                  {t('header.login')}
                 </Link>
               )}
             </div>
@@ -165,15 +171,15 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div className="mobile-menu">
           <Link to="/" className="mobile-menu__link" onClick={() => setIsMobileMenuOpen(false)}>
-            首頁
+            {t('header.home')}
           </Link>
           <Link to="/products" className="mobile-menu__link" onClick={() => setIsMobileMenuOpen(false)}>
-            所有單品
+            {t('header.products')}
           </Link>
           {user ? (
             <>
               <Link to="/profile" className="mobile-menu__link" onClick={() => setIsMobileMenuOpen(false)}>
-                會員中心 ({user.name})
+                {t('header.profile')} ({user.name})
               </Link>
               <button
                 type="button"
@@ -184,14 +190,17 @@ export default function Header() {
                 className="mobile-menu__link"
                 style={{ width: '100%', textAlign: 'left', border: 'none', background: 'none', cursor: 'pointer' }}
               >
-                登出
+                {t('header.logout')}
               </button>
             </>
           ) : (
             <Link to="/login" className="mobile-menu__link" onClick={() => setIsMobileMenuOpen(false)}>
-              登入會員
+              {t('header.login')}
             </Link>
           )}
+
+          {/* Mobile Language Switcher */}
+          <LanguageSelector variant="mobile" />
         </div>
       )}
     </>

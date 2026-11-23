@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 
 export default function RegisterPage() {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -16,10 +18,10 @@ export default function RegisterPage() {
 
   const validate = () => {
     const tempErrors = {}
-    if (!name.trim()) tempErrors.name = '姓名為必填項目'
-    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) tempErrors.email = '請輸入有效的 Email'
-    if (password.length < 8) tempErrors.password = '密碼長度至少需 8 個字元'
-    if (password !== confirmPassword) tempErrors.confirmPassword = '密碼與確認密碼不符'
+    if (!name.trim()) tempErrors.name = t('checkout.name')
+    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) tempErrors.email = t('checkout.email')
+    if (password.length < 8) tempErrors.password = t('auth.password')
+    if (password !== confirmPassword) tempErrors.confirmPassword = t('auth.confirm_password')
     setErrors(tempErrors)
     return Object.keys(tempErrors).length === 0
   }
@@ -39,13 +41,13 @@ export default function RegisterPage() {
           navigate('/login')
         }, 2000)
       } else {
-        setServerError(data.message || '註冊失敗，請重試')
+        setServerError(data.message || t('common.error'))
       }
     } catch (err) {
       if (err.response?.status === 409) {
-        setServerError('此 Email 已被註冊使用')
+        setServerError('Email already exists')
       } else {
-        setServerError(err.response?.data?.message || '伺服器連線失敗，請稍後再試')
+        setServerError(err.response?.data?.message || t('common.error'))
       }
     } finally {
       setLoading(false)
@@ -57,10 +59,10 @@ export default function RegisterPage() {
       <div className="checkout" style={{ minHeight: '80dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="checkout__form-section" style={{ width: '100%', maxWidth: '440px', margin: '0 auto', textAlign: 'center' }}>
           <h3 style={{ fontFamily: "var(--heading)", fontSize: 'var(--font-size-2xl)', color: 'var(--color-success)', marginBottom: '16px' }}>
-            🎉 註冊成功！
+            🎉 {t('common.success')}！
           </h3>
           <p style={{ color: 'var(--color-cream-muted)' }}>
-            恭喜您成為復古刻痕會員，系統即將在 2 秒內為您跳轉至登入頁面...
+            {t('auth.register_desc')}
           </p>
         </div>
       </div>
@@ -71,10 +73,10 @@ export default function RegisterPage() {
     <div className="checkout" style={{ minHeight: '80dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="checkout__form-section" style={{ width: '100%', maxWidth: '440px', margin: '0 auto' }}>
         <h3 style={{ textAlign: 'center', fontFamily: "var(--heading)", fontSize: 'var(--font-size-2xl)' }}>
-          會員<span>註冊</span>
+          {t('auth.register_title')}
         </h3>
         <p style={{ textAlign: 'center', color: 'var(--color-cream-muted)', marginBottom: '24px', fontSize: '14px' }}>
-          加入復古刻痕，開啟您的獨特穿搭美學
+          {t('auth.register_desc')}
         </p>
 
         {serverError && (
@@ -85,11 +87,11 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit}>
           <div className="checkout__field" style={{ marginBottom: '16px' }}>
-            <label htmlFor="name">真實姓名 Name</label>
+            <label htmlFor="name">{t('checkout.name')}</label>
             <input
               id="name"
               type="text"
-              placeholder="請輸入姓名"
+              placeholder={t('checkout.name')}
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={loading}
@@ -98,7 +100,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="checkout__field" style={{ marginBottom: '16px' }}>
-            <label htmlFor="email">電子信箱 Email</label>
+            <label htmlFor="email">{t('auth.email')}</label>
             <input
               id="email"
               type="email"
@@ -111,11 +113,11 @@ export default function RegisterPage() {
           </div>
 
           <div className="checkout__field" style={{ marginBottom: '16px' }}>
-            <label htmlFor="password">密碼 Password</label>
+            <label htmlFor="password">{t('auth.password')}</label>
             <input
               id="password"
               type="password"
-              placeholder="至少 8 個字元"
+              placeholder={t('auth.password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
@@ -124,11 +126,11 @@ export default function RegisterPage() {
           </div>
 
           <div className="checkout__field" style={{ marginBottom: '24px' }}>
-            <label htmlFor="confirmPassword">確認密碼 Confirm Password</label>
+            <label htmlFor="confirmPassword">{t('auth.confirm_password')}</label>
             <input
               id="confirmPassword"
               type="password"
-              placeholder="請再次輸入密碼"
+              placeholder={t('auth.confirm_password')}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={loading}
@@ -142,14 +144,14 @@ export default function RegisterPage() {
             disabled={loading}
             style={{ marginBottom: '20px' }}
           >
-            {loading ? '註冊中...' : '提交註冊'}
+            {loading ? t('common.loading') : t('auth.register_btn')}
           </button>
         </form>
 
         <div style={{ textAlign: 'center', fontSize: '14px', color: 'var(--color-cream-muted)' }}>
-          已經有帳號了嗎？{' '}
+          {t('auth.has_account')}{' '}
           <Link to="/login" className="btn--text" style={{ padding: 0, textDecoration: 'none' }}>
-            立即登入
+            {t('auth.go_login')}
           </Link>
         </div>
       </div>

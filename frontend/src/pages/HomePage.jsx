@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 
 export default function HomePage() {
   const { user } = useAuth()
+  const { t } = useTranslation()
   const [categories, setCategories] = useState([])
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [wishlistIds, setWishlistIds] = useState([])
@@ -72,20 +74,20 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero__content">
           <div className="hero__text">
-            <span className="hero__eyebrow">復古服飾零售</span>
+            <span className="hero__eyebrow">{t('home.eyebrow')}</span>
             <h1 className="hero__title">
-              復古刻痕
-              <em>Vintage Aesthetics</em>
+              {t('home.title')}
+              <em>{t('home.subtitle')}</em>
             </h1>
             <p className="hero__desc">
-              在現代的浪潮中尋找時間的遺痕。每一件復古單品都蘊含著獨一無二的故事與手感刻痕，等待與你重逢。
+              {t('home.desc')}
             </p>
             <div className="hero__cta">
               <Link to="/products" className="btn btn--primary btn--lg">
-                探索全部單品
+                {t('home.explore_all')}
               </Link>
               <a href="#featured" className="btn btn--outline btn--lg">
-                精選推薦
+                {t('home.featured_cta')}
               </a>
             </div>
           </div>
@@ -97,7 +99,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="hero__scroll-hint">
-          <span>向下滾動</span>
+          <span>{t('home.scroll_hint')}</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 5v14M19 12l-7 7-7-7" />
           </svg>
@@ -107,8 +109,10 @@ export default function HomePage() {
       {/* ── Categories Section ── */}
       <section className="home-categories">
         <div className="container">
-          <h2 className="section-title">依<span>分類</span>瀏覽</h2>
-          <p className="section-subtitle">精心挑選的復古服飾分類，尋找適合你獨特風格的系列單品</p>
+          <h2 className="section-title">
+            {t('home.categories_title_pre')}<span>{t('home.categories_title_mid')}</span>{t('home.categories_title_post')}
+          </h2>
+          <p className="section-subtitle">{t('home.categories_subtitle')}</p>
           
           <div className="home-categories__grid">
             {loading
@@ -127,7 +131,7 @@ export default function HomePage() {
                     />
                     <div className="home-categories__card-text">
                       <h3>{cat.name}</h3>
-                      <span>探索系列</span>
+                      <span>{t('home.explore_category')}</span>
                     </div>
                   </div>
                 ))}
@@ -138,8 +142,10 @@ export default function HomePage() {
       {/* ── Featured Products Section ── */}
       <section id="featured" className="home-featured">
         <div className="container">
-          <h2 className="section-title">最新<span>到貨</span>推薦</h2>
-          <p className="section-subtitle">本季剛發掘的珍貴經典，限量到貨，每件僅此一個或少數庫存</p>
+          <h2 className="section-title">
+            {t('home.featured_title_pre')}<span>{t('home.featured_title_mid')}</span>{t('home.featured_title_post')}
+          </h2>
+          <p className="section-subtitle">{t('home.featured_subtitle')}</p>
 
           <div className="product-grid">
             {loading
@@ -170,7 +176,7 @@ export default function HomePage() {
                           e.preventDefault()
                           toggleWishlist(prod.id)
                         }}
-                        aria-label="加入收藏"
+                        aria-label={t('home.add_wishlist')}
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlistIds.includes(prod.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                           <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
@@ -178,7 +184,7 @@ export default function HomePage() {
                       </button>
                       <div className="product-card__actions">
                         <Link to={`/products/${prod.slug}`} className="btn btn--primary">
-                          查看規格
+                          {t('home.view_spec')}
                         </Link>
                       </div>
                     </div>
@@ -208,7 +214,7 @@ export default function HomePage() {
 
           <div style={{ textAlign: 'center', marginTop: '48px' }}>
             <Link to="/products" className="btn btn--outline btn--lg">
-              瀏覽所有商品
+              {t('home.view_all_products')}
             </Link>
           </div>
         </div>
@@ -224,29 +230,31 @@ export default function HomePage() {
             />
           </div>
           <div className="home-story__text">
-            <h2 className="section-title" style={{ textAlign: 'left' }}>復古的<span>精神</span></h2>
+            <h2 className="section-title" style={{ textAlign: 'left' }}>
+              {t('home.story_title_pre')}<span>{t('home.story_title_mid')}</span>
+            </h2>
             <p className="section-subtitle" style={{ textAlign: 'left', marginInline: 0, marginBottom: '24px' }}>
-              「復古不是過時的重複，而是對過去手工藝與黃金年代的無聲敬意。」
+              {t('home.story_quote')}
             </p>
             <p style={{ color: 'var(--color-cream-muted)', marginBottom: '16px' }}>
-              我們奔走於世界各地的古著倉庫、二手市集，發掘數十年前的單品。它們身上帶有年代感的洗滌刻痕、五金氧化的光澤以及昔日裁縫師精心剪裁的針腳。
+              {t('home.story_p1')}
             </p>
             <p style={{ color: 'var(--color-cream-muted)' }}>
-              我們提供的不僅是服飾，更是一種抗拒快時尚污染、崇尚永續與經典慢生活的生活態度。
+              {t('home.story_p2')}
             </p>
             
             <div className="home-story__stats">
               <div className="home-story__stat">
                 <strong>100%</strong>
-                <span>古著精選</span>
+                <span>{t('home.stat_curated')}</span>
               </div>
               <div className="home-story__stat">
                 <strong>24h</strong>
-                <span>快速出貨</span>
+                <span>{t('home.stat_shipping')}</span>
               </div>
               <div className="home-story__stat">
                 <strong>7+</strong>
-                <span>天安心退換</span>
+                <span>{t('home.stat_returns')}</span>
               </div>
             </div>
           </div>

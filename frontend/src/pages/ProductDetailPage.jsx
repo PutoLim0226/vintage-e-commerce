@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 import { useCart } from '../context/CartContext'
 
@@ -8,6 +9,7 @@ export default function ProductDetailPage() {
   const { slug } = useParams()
   const { setCart } = useCart()
   const { user } = useAuth()
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   const [product, setProduct] = useState(null)
@@ -199,8 +201,8 @@ export default function ProductDetailPage() {
   return (
     <main className="product-detail">
       <div className="breadcrumb">
-        <span className="breadcrumb__item"><Link to="/">首頁</Link></span>
-        <span className="breadcrumb__item"><Link to="/products">所有單品</Link></span>
+        <span className="breadcrumb__item"><Link to="/">{t('product_detail.breadcrumb_home')}</Link></span>
+        <span className="breadcrumb__item"><Link to="/products">{t('product_detail.breadcrumb_products')}</Link></span>
         <span className="breadcrumb__item"><Link to={`/products?category=${product.category_slug}`}>{product.category_name}</Link></span>
         <span className="breadcrumb__item">{product.name}</span>
       </div>
@@ -255,7 +257,7 @@ export default function ProductDetailPage() {
           {colors.length > 0 && (
             <div className="product-detail__option-group">
               <label>
-                顏色 Color: <span>{selectedColor || '請選擇'}</span>
+                {t('product_detail.color')}: <span>{selectedColor || t('product_detail.select_spec')}</span>
               </label>
               <div className="product-detail__options">
                 {colors.map((color) => {
@@ -278,7 +280,7 @@ export default function ProductDetailPage() {
           {sizes.length > 0 && (
             <div className="product-detail__option-group">
               <label>
-                尺寸 Size: <span>{selectedSize || '請選擇'}</span>
+                {t('product_detail.size')}: <span>{selectedSize || t('product_detail.select_spec')}</span>
               </label>
               <div className="product-detail__options">
                 {sizes.map((size) => {
@@ -301,7 +303,7 @@ export default function ProductDetailPage() {
           {currentSku && currentSku.stock > 0 ? (
             <>
               <div className="product-detail__qty-group">
-                <span className="product-detail__qty-label">數量 Qty</span>
+                <span className="product-detail__qty-label">{t('product_detail.quantity')}</span>
                 <div className="product-detail__qty-control">
                   <button type="button" onClick={() => handleQtyChange('dec')}>-</button>
                   <input type="text" readOnly value={quantity} />
@@ -309,13 +311,8 @@ export default function ProductDetailPage() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <span style={{ fontSize: '14px', color: 'var(--color-cream-faint)' }}>
-                    剩餘庫存 {currentSku.stock} 件
+                    {t('product_detail.in_stock', { count: currentSku.stock })}
                   </span>
-                  {currentSku.stock <= 5 && (
-                    <span style={{ color: '#e05454', fontSize: '13px', fontWeight: 'bold' }}>
-                      ⚠️ 僅剩 {currentSku.stock} 件，欲購從速！
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -327,7 +324,7 @@ export default function ProductDetailPage() {
                   disabled={adding}
                   style={{ flex: 1 }}
                 >
-                  {adding ? '正在加入購物車...' : '加入購物車'}
+                  {adding ? t('common.loading') : t('product_detail.add_to_cart')}
                 </button>
                 <button
                   type="button"
@@ -339,7 +336,7 @@ export default function ProductDetailPage() {
                     color: wishlistIds.includes(product.id) ? '#ffffff' : ''
                   }}
                   onClick={() => toggleWishlist(product.id)}
-                  aria-label="加入收藏"
+                  aria-label={t('home.add_wishlist')}
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill={wishlistIds.includes(product.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                     <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
@@ -349,7 +346,7 @@ export default function ProductDetailPage() {
 
               {addSuccess && (
                 <div style={{ padding: '12px', background: 'rgba(76,175,114,0.1)', border: '1px solid rgba(76,175,114,0.3)', borderRadius: '8px', color: 'var(--color-success)', marginBottom: '24px', textAlign: 'center' }}>
-                  🎉 成功加入購物車！
+                  🎉 {t('product_detail.added_to_cart')}
                 </div>
               )}
             </>
@@ -357,7 +354,7 @@ export default function ProductDetailPage() {
             <div style={{ marginBottom: '32px' }}>
               <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
                 <button className="btn btn--ghost btn--lg" style={{ flex: 1 }} disabled>
-                  已售罄 (Out of Stock)
+                  {t('product_detail.out_of_stock')}
                 </button>
                 <button
                   type="button"
@@ -369,7 +366,7 @@ export default function ProductDetailPage() {
                     color: wishlistIds.includes(product.id) ? '#ffffff' : ''
                   }}
                   onClick={() => toggleWishlist(product.id)}
-                  aria-label="加入收藏"
+                  aria-label={t('home.add_wishlist')}
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill={wishlistIds.includes(product.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                     <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />

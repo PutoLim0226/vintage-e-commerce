@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart()
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   // 步驟狀態: 'fill' | 'success'
@@ -188,12 +190,12 @@ export default function CheckoutPage() {
       <div className="checkout__steps">
         <div className="checkout__step active">
           <span className="checkout__step-num">1</span>
-          <span className="checkout__step-label">填寫資料</span>
+          <span className="checkout__step-label">{t('checkout.breadcrumb')}</span>
           <span className="checkout__step-line" />
         </div>
         <div className="checkout__step">
           <span className="checkout__step-num">2</span>
-          <span className="checkout__step-label">完成訂單</span>
+          <span className="checkout__step-label">{t('payment.title')}</span>
         </div>
       </div>
 
@@ -201,15 +203,15 @@ export default function CheckoutPage() {
         {/* Left Form */}
         <form onSubmit={handleSubmit}>
           <div className="checkout__form-section">
-            <h3>收件人資訊</h3>
+            <h3>{t('checkout.customer_info')}</h3>
 
             <div className="checkout__form-row">
               <div className={`checkout__field ${errors.shipName ? 'checkout__field--error' : ''}`}>
-                <label htmlFor="shipName">收件人姓名</label>
+                <label htmlFor="shipName">{t('checkout.name')}</label>
                 <input
                   id="shipName"
                   type="text"
-                  placeholder="請輸入姓名"
+                  placeholder={t('checkout.name')}
                   value={shipName}
                   onChange={(e) => setShipName(e.target.value)}
                   disabled={loading}
@@ -218,11 +220,11 @@ export default function CheckoutPage() {
               </div>
 
               <div className={`checkout__field ${errors.shipPhone ? 'checkout__field--error' : ''}`}>
-                <label htmlFor="shipPhone">聯絡電話 (手機)</label>
+                <label htmlFor="shipPhone">{t('checkout.phone')}</label>
                 <input
                   id="shipPhone"
                   type="text"
-                  placeholder="如: 0912345678"
+                  placeholder="0912345678"
                   value={shipPhone}
                   onChange={(e) => setShipPhone(e.target.value)}
                   disabled={loading}
@@ -233,11 +235,11 @@ export default function CheckoutPage() {
 
             <div className="checkout__form-row">
               <div className={`checkout__field ${errors.shipCity ? 'checkout__field--error' : ''}`}>
-                <label htmlFor="shipCity">縣市 City</label>
+                <label htmlFor="shipCity">City</label>
                 <input
                   id="shipCity"
                   type="text"
-                  placeholder="如: 台北市"
+                  placeholder="City"
                   value={shipCity}
                   onChange={(e) => setShipCity(e.target.value)}
                   disabled={loading}
@@ -246,11 +248,11 @@ export default function CheckoutPage() {
               </div>
 
               <div className={`checkout__field ${errors.shipDistrict ? 'checkout__field--error' : ''}`}>
-                <label htmlFor="shipDistrict">區域 District</label>
+                <label htmlFor="shipDistrict">District</label>
                 <input
                   id="shipDistrict"
                   type="text"
-                  placeholder="如: 大安區"
+                  placeholder="District"
                   value={shipDistrict}
                   onChange={(e) => setShipDistrict(e.target.value)}
                   disabled={loading}
@@ -261,11 +263,11 @@ export default function CheckoutPage() {
 
             <div className="checkout__form-row checkout__form-row--full">
               <div className="checkout__field">
-                <label htmlFor="shipZip">郵遞區號 (選填)</label>
+                <label htmlFor="shipZip">Zip Code</label>
                 <input
                   id="shipZip"
                   type="text"
-                  placeholder="如: 106"
+                  placeholder="106"
                   value={shipZip}
                   onChange={(e) => setShipZip(e.target.value)}
                   disabled={loading}
@@ -275,11 +277,11 @@ export default function CheckoutPage() {
 
             <div className="checkout__form-row checkout__form-row--full">
               <div className={`checkout__field ${errors.shipAddress ? 'checkout__field--error' : ''}`}>
-                <label htmlFor="shipAddress">詳細收件地址 / 門市名稱</label>
+                <label htmlFor="shipAddress">{t('checkout.address')}</label>
                 <input
                   id="shipAddress"
                   type="text"
-                  placeholder="如: 忠孝東路四段 XX 號，或超商門市名稱"
+                  placeholder={t('checkout.address')}
                   value={shipAddress}
                   onChange={(e) => setShipAddress(e.target.value)}
                   disabled={loading}
@@ -290,30 +292,30 @@ export default function CheckoutPage() {
           </div>
 
           <div className="checkout__form-section">
-            <h3>配送與備註</h3>
+            <h3>{t('checkout.shipping_method')}</h3>
 
             <div className="checkout__form-row checkout__form-row--full" style={{ marginBottom: '20px' }}>
               <div className="checkout__field">
-                <label htmlFor="shipMethod">配送方式</label>
+                <label htmlFor="shipMethod">{t('checkout.shipping_method')}</label>
                 <select
                   id="shipMethod"
                   value={shipMethod}
                   onChange={(e) => setShipMethod(e.target.value)}
                   disabled={loading}
                 >
-                  <option value="home_delivery">黑貓宅急便 (運費 NT$ 120，滿 1500 免運)</option>
-                  <option value="cvs_711">7-11 超商取貨 (運費 NT$ 60)</option>
-                  <option value="cvs_family">全家超商取貨 (運費 NT$ 60)</option>
+                  <option value="home_delivery">{t('checkout.ship_standard')}</option>
+                  <option value="cvs_711">7-11 ({t('checkout.ship_cvs')})</option>
+                  <option value="cvs_family">FamilyMart ({t('checkout.ship_cvs')})</option>
                 </select>
               </div>
             </div>
 
             <div className="checkout__form-row checkout__form-row--full">
               <div className="checkout__field">
-                <label htmlFor="notes">訂單備註 (選填)</label>
+                <label htmlFor="notes">{t('checkout.note')}</label>
                 <textarea
                   id="notes"
-                  placeholder="有什麼想告訴我們的細節嗎？"
+                  placeholder={t('checkout.note')}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   disabled={loading}
@@ -335,7 +337,7 @@ export default function CheckoutPage() {
 
         {/* Right Summary Panel */}
         <div className="checkout__summary">
-          <h3 className="checkout__summary-title">訂單明細</h3>
+          <h3 className="checkout__summary-title">{t('checkout.order_items', { count: cart.items?.length || 0 })}</h3>
 
           <div className="checkout__summary-items">
             {cart.items?.map((item) => (
@@ -361,63 +363,40 @@ export default function CheckoutPage() {
           <form onSubmit={handleApplyCoupon} className="checkout__coupon">
             <input
               type="text"
-              placeholder="輸入折價券代碼"
+              placeholder={t('checkout.coupon_placeholder')}
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
               disabled={loading}
             />
             <button type="submit" className="btn btn--ghost btn--sm" disabled={loading}>
-              套用
+              {t('checkout.coupon_apply')}
             </button>
           </form>
 
           {appliedCoupon && (
             <div style={{ fontSize: '13px', color: 'var(--color-success)', marginBottom: '16px' }}>
-              ✓ 已套用折價券: {appliedCoupon}
+              ✓ {t('checkout.coupon_applied', { amount: `NT$ ${discount}` })}
             </div>
           )}
-
-          {/* Points Redeeming Checkbox */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', marginBottom: '20px', fontSize: '13px' }}>
-            <input
-              type="checkbox"
-              id="usePointsCheckbox"
-              checked={usePoints}
-              disabled={userPoints <= 0 || loading}
-              onChange={(e) => setUsePoints(e.target.checked)}
-              style={{ width: '16px', height: '16px', cursor: userPoints > 0 ? 'pointer' : 'not-allowed', accentColor: 'var(--color-gold)' }}
-            />
-            <label htmlFor="usePointsCheckbox" style={{ cursor: userPoints > 0 ? 'pointer' : 'not-allowed', color: userPoints > 0 ? 'var(--color-cream)' : 'var(--color-cream-faint)', userSelect: 'none' }}>
-              {userPoints > 0 
-                ? `使用紅利點數折抵 (可用 ${userPoints} 點，折抵 NT$ ${userPoints} 元)` 
-                : '目前無可用紅利點數 (消費 100 元回饋 1 點)'}
-            </label>
-          </div>
 
           {/* Checkout Totals */}
           <div className="checkout__summary-rows">
             <div className="checkout__summary-row">
-              <span>商品小計</span>
+              <span>{t('cart.subtotal')}</span>
               <span>NT$ {Math.round(cart.total)}</span>
             </div>
             <div className="checkout__summary-row">
-              <span>運費</span>
+              <span>{t('cart.shipping')}</span>
               <span>NT$ {Math.round(shippingFee)}</span>
             </div>
             {appliedCoupon && (
               <div className="checkout__summary-row checkout__summary-row--discount" style={{ color: 'var(--color-gold)' }}>
-                <span>折價券折抵</span>
+                <span>{t('common.discount')}</span>
                 <span>- NT$ {Math.round(discount)}</span>
               </div>
             )}
-            {pointsDiscount > 0 && (
-              <div className="checkout__summary-row checkout__summary-row--discount" style={{ color: 'var(--color-gold)' }}>
-                <span>紅利點數折抵</span>
-                <span>- NT$ {Math.round(pointsDiscount)}</span>
-              </div>
-            )}
             <div className="checkout__summary-row checkout__summary-row--total">
-              <span>總計</span>
+              <span>{t('cart.total')}</span>
               <span>NT$ {Math.round(orderTotal)}</span>
             </div>
           </div>
@@ -429,7 +408,7 @@ export default function CheckoutPage() {
             disabled={loading || !cart.items || cart.items.length === 0}
             style={{ marginTop: '16px' }}
           >
-            {loading ? '正在建立訂單...' : '提交訂單'}
+            {loading ? t('checkout.processing') : t('checkout.submit_order')}
           </button>
         </div>
       </div>

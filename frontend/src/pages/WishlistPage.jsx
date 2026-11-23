@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 
 export default function WishlistPage() {
   const { user } = useAuth()
+  const { t } = useTranslation()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
@@ -47,14 +49,13 @@ export default function WishlistPage() {
   return (
     <main className="container section" style={{ minHeight: '90dvh' }}>
       <div className="breadcrumb">
-        <span className="breadcrumb__item"><Link to="/">首頁</Link></span>
-        <span className="breadcrumb__item">我的收藏願望清單</span>
+        <span className="breadcrumb__item"><Link to="/">{t('product_detail.breadcrumb_home')}</Link></span>
+        <span className="breadcrumb__item">{t('wishlist.title')}</span>
       </div>
 
       <div className="admin-page-header">
         <div>
-          <h2 className="page-title">❤️ 我的收藏單品</h2>
-          <p className="subtitle">隨時追蹤您喜愛的經典復古服飾與補貨降價動態</p>
+          <h2 className="page-title">❤️ {t('wishlist.title')}</h2>
         </div>
       </div>
 
@@ -78,9 +79,9 @@ export default function WishlistPage() {
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ marginBottom: '20px', color: 'var(--color-cream-faint)' }}>
             <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
           </svg>
-          <h3>收藏清單目前是空的</h3>
-          <p style={{ marginTop: '8px', marginBottom: '24px' }}>快去逛逛尋找您的復古經典單品吧！</p>
-          <Link to="/products" className="btn btn--primary">瀏覽所有單品</Link>
+          <h3>{t('wishlist.empty_title')}</h3>
+          <p style={{ marginTop: '8px', marginBottom: '24px' }}>{t('wishlist.empty_desc')}</p>
+          <Link to="/products" className="btn btn--primary">{t('wishlist.explore_btn')}</Link>
         </div>
       ) : (
         <div className="product-grid">

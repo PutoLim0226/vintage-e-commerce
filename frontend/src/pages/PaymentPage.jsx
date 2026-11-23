@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 
 export default function PaymentPage() {
   const { order_no } = useParams()
   const navigate     = useNavigate()
+  const { t }        = useTranslation()
 
   const [order, setOrder]     = useState(null)
   const [loading, setLoading] = useState(true)

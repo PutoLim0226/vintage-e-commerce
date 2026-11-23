@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useTranslation } from '../context/LanguageContext'
 import api from '../api/api'
 
 export default function CartDrawer() {
   const { cart, setCart, isCartOpen, setIsCartOpen } = useCart()
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   if (!isCartOpen) return null
@@ -16,7 +18,7 @@ export default function CartDrawer() {
     }
 
     if (type === 'inc' && nextQty > stockLimit) {
-      alert(`已達庫存上限：該規格目前最多僅能選購 ${stockLimit} 件`)
+      alert(t('cart.stock_limit_alert', { count: stockLimit }))
       return
     }
 
@@ -64,12 +66,12 @@ export default function CartDrawer() {
       {/* Cart Drawer Panel */}
       <div className="cart-drawer">
         <div className="cart-drawer__header">
-          <h2 className="cart-drawer__title">購物車</h2>
+          <h2 className="cart-drawer__title">{t('cart.title')}</h2>
           <button
             type="button"
             className="modal__close"
             onClick={() => setIsCartOpen(false)}
-            aria-label="關閉"
+            aria-label={t('common.close')}
           >
             ×
           </button>
@@ -83,14 +85,14 @@ export default function CartDrawer() {
                 <circle cx="20" cy="21" r="1" />
                 <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
               </svg>
-              <p style={{ marginTop: '16px' }}>您的購物車是空的</p>
+              <p style={{ marginTop: '16px' }}>{t('cart.empty_title')}</p>
               <button
                 type="button"
                 className="btn btn--outline btn--sm"
                 onClick={() => setIsCartOpen(false)}
                 style={{ marginTop: '12px' }}
               >
-                前往選購
+                {t('cart.explore_btn')}
               </button>
             </div>
           ) : (
@@ -104,8 +106,8 @@ export default function CartDrawer() {
                 <div className="cart-item__info">
                   <h3 className="cart-item__name">{item.product_name}</h3>
                   <div className="cart-item__meta">
-                    {item.color && <span>顏色: {item.color} </span>}
-                    {item.size && <span>尺寸: {item.size}</span>}
+                    {item.color && <span>{t('product_detail.color')}: {item.color} </span>}
+                    {item.size && <span>{t('product_detail.size')}: {item.size}</span>}
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div className="cart-item__qty-row">
@@ -134,7 +136,7 @@ export default function CartDrawer() {
                   type="button"
                   className="cart-item__remove"
                   onClick={() => handleRemoveItem(item.id)}
-                  aria-label="移除品項"
+                  aria-label={t('cart.remove')}
                   style={{ border: 'none', background: 'none' }}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -149,7 +151,7 @@ export default function CartDrawer() {
         {cart.items && cart.items.length > 0 && (
           <div className="cart-drawer__footer">
             <div className="cart-drawer__total-row">
-              <span>小計 Subtotal</span>
+              <span>{t('common.subtotal')}</span>
               <span>NT$ {Math.round(cart.total)}</span>
             </div>
             <button
@@ -157,7 +159,7 @@ export default function CartDrawer() {
               className="btn btn--primary btn--full btn--lg"
               onClick={handleCheckoutClick}
             >
-              前往結帳
+              {t('cart.checkout_btn')}
             </button>
           </div>
         )}
