@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- 復古金屬黃金漸層 -->
+    <linearGradient id="vintageGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F2D696" />
+      <stop offset="30%" stop-color="#C6A057" />
+      <stop offset="70%" stop-color="#8C662B" />
+      <stop offset="100%" stop-color="#E5C080" />
+    </linearGradient>
+    <radialGradient id="darkBg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#241B14" />
+      <stop offset="100%" stop-color="#0E0A07" />
+    </radialGradient>
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#C6A057" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- 背景圓盾與復古鋸齒刻紋邊框 -->
+  <circle cx="256" cy="256" r="240" fill="url(#darkBg)" stroke="url(#vintageGold)" stroke-width="16" filter="url(#goldGlow)" />
+  <circle cx="256" cy="256" r="216" fill="none" stroke="url(#vintageGold)" stroke-width="3" stroke-dasharray="8 6" opacity="0.85" />
+
+  <!-- 復古經典衣架與字母 V 造型 -->
+  <g transform="translate(0, 10)">
+    <!-- 衣架頂部掛鉤 -->
+    <path d="M 256 135 C 232 135 225 102 246 84 C 268 66 288 92 272 115 C 266 122 256 126 256 142 L 256 170" 
+          fill="none" stroke="url(#vintageGold)" stroke-width="16" stroke-linecap="round" />
+
+    <!-- 衣架主骨架 -->
+    <path d="M 116 255 L 256 175 L 396 255 A 22 22 0 0 1 384 290 L 128 290 A 22 22 0 0 1 116 255 Z" 
+          fill="none" stroke="url(#vintageGold)" stroke-width="16" stroke-linejoin="round" stroke-linecap="round" />
+
+    <!-- 底部大寫 'V' 復古字樣線條 -->
+    <path d="M 190 235 L 256 380 L 322 235" 
+          fill="none" stroke="url(#vintageGold)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- 中央典雅寶石點綴 -->
+    <circle cx="256" cy="225" r="14" fill="url(#vintageGold)" />
+  </g>
+</svg>
