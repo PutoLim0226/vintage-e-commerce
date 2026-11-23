@@ -72,11 +72,11 @@ export default function CheckoutPage() {
 
   const validate = () => {
     const tempErrors = {}
-    if (!shipName.trim()) tempErrors.shipName = '收件人姓名必填'
-    if (!shipPhone.trim() || !/^\d{8,11}$/.test(shipPhone.trim())) tempErrors.shipPhone = '請輸入正確的聯絡電話格式'
-    if (!shipCity.trim()) tempErrors.shipCity = '收件城市必填'
-    if (!shipDistrict.trim()) tempErrors.shipDistrict = '收件地區必填'
-    if (!shipAddress.trim()) tempErrors.shipAddress = '收件詳細地址必填'
+    if (!shipName.trim()) tempErrors.shipName = t('checkout.error_name_required')
+    if (!shipPhone.trim() || !/^\d{8,11}$/.test(shipPhone.trim())) tempErrors.shipPhone = t('checkout.error_phone_invalid')
+    if (!shipCity.trim()) tempErrors.shipCity = t('checkout.error_city_required')
+    if (!shipDistrict.trim()) tempErrors.shipDistrict = t('checkout.error_district_required')
+    if (!shipAddress.trim()) tempErrors.shipAddress = t('checkout.error_address_required')
     setErrors(tempErrors)
     return Object.keys(tempErrors).length === 0
   }
@@ -94,12 +94,12 @@ export default function CheckoutPage() {
       if (data.success) {
         setAppliedCoupon(data.data.code)
         setDiscount(parseFloat(data.data.discount || 0))
-        alert(`成功套用折價券「${data.data.code}」，已折抵 NT$ ${Math.round(data.data.discount)}`)
+        alert(t('checkout.coupon_applied_alert', { code: data.data.code, discount: Math.round(data.data.discount) }))
       }
     } catch (err) {
       setAppliedCoupon('')
       setDiscount(0)
-      alert(err.response?.data?.message || '折價券無效或未達消費門檻')
+      alert(err.response?.data?.message || t('checkout.coupon_invalid'))
     } finally {
       setLoading(false)
     }
@@ -139,7 +139,7 @@ export default function CheckoutPage() {
         setStep('success')
       }
     } catch (err) {
-      alert(err.response?.data?.message || '建立訂單失敗，請稍後再試')
+      alert(err.response?.data?.message || t('checkout.order_create_failed'))
     } finally {
       setLoading(false)
     }
@@ -340,9 +340,9 @@ export default function CheckoutPage() {
                   alt={item.product_name}
                 />
                 <div className="checkout__summary-item-info">
-                  <h4 className="checkout__summary-item-name">{item.product_name}</h4>
+                  <h4 className="checkout__summary-item-name">{t(`products_name.${item.slug}`, item.product_name)}</h4>
                   <div className="checkout__summary-item-meta">
-                    {item.color} / {item.size} × {item.quantity}
+                    {t(`colors.${item.color}`, item.color)} / {item.size} × {item.quantity}
                   </div>
                 </div>
                 <span className="checkout__summary-item-price">

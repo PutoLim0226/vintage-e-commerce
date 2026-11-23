@@ -243,10 +243,10 @@ export default function OrdersPage() {
                 {selectedOrder.items?.map((item) => (
                   <div key={item.id} className="order-detail-modal__item">
                     <div className="order-detail-modal__item-info">
-                      <div className="order-detail-modal__item-name">{item.product_name}</div>
+                      <div className="order-detail-modal__item-name">{t(`products_name.${item.slug}`, item.product_name)}</div>
                       <div className="order-detail-modal__item-spec">
                         {t('orders.spec_format', {
-                          color: item.sku_color || t('orders.default_spec'),
+                          color: item.sku_color ? t(`colors.${item.sku_color}`, item.sku_color) : t('orders.default_spec'),
                           size: item.sku_size || t('orders.default_spec'),
                           qty: item.quantity
                         })}

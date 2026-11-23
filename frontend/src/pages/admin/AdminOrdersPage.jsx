@@ -263,10 +263,10 @@ export default function AdminOrdersPage() {
                 {(selectedOrder.items || []).map(item => (
                   <div key={item.id} className="order-item-card">
                     <div className="order-item-card__left">
-                      <div className="order-item-card__name">{item.product_name}</div>
+                      <div className="order-item-card__name">{t(`products_name.${item.slug}`, item.product_name)}</div>
                       <div className="order-item-card__spec">
                         {t('admin.spec_label', '規格: {{color}} / {{size}}', {
-                          color: item.sku_color || '-',
+                          color: item.sku_color ? t(`colors.${item.sku_color}`, item.sku_color) : '-',
                           size: item.sku_size || '-'
                         })}
                       </div>

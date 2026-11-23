@@ -86,10 +86,10 @@ export default function CartPage() {
                   {/* Info */}
                   <div className="cart-item-row__info">
                     <h3 className="cart-item-row__name">
-                      <Link to={`/products/${item.slug || ''}`}>{item.product_name}</Link>
+                      <Link to={`/products/${item.slug || ''}`}>{t(`products_name.${item.slug}`, item.product_name)}</Link>
                     </h3>
                     <div className="cart-item-row__meta">
-                      {item.color && <span>{t('product_detail.color')}: {item.color}</span>}
+                      {item.color && <span>{t('product_detail.color')}: {t(`colors.${item.color}`, item.color)}</span>}
                       {item.color && item.size && <span>　</span>}
                       {item.size && <span>{t('product_detail.size')}: {item.size}</span>}
                     </div>

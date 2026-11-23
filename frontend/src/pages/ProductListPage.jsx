@@ -338,7 +338,7 @@ export default function ProductListPage() {
                       className={`product-filter-sidebar__tag-btn ${isActive ? 'active' : ''}`}
                     >
                       {isActive && <span>✓</span>}
-                      {color}
+                      {t(`colors.${color}`, color)}
                     </button>
                   )
                 })}
@@ -473,7 +473,7 @@ export default function ProductListPage() {
                           </div>
                         </div>
                         <h3 className="product-card__name">
-                          <Link to={`/products/${prod.slug}`}>{prod.name}</Link>
+                          <Link to={`/products/${prod.slug}`}>{t(`products_name.${prod.slug}`, prod.name)}</Link>
                         </h3>
                         <div className="product-card__price-row">
                           <span className="price">

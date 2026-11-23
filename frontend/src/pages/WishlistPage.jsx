@@ -108,7 +108,7 @@ export default function WishlistPage() {
               <div className="product-card__info">
                 <span className="product-card__category">{prod.category_name}</span>
                 <h3 className="product-card__name">
-                  <Link to={`/products/${prod.slug}`}>{prod.name}</Link>
+                  <Link to={`/products/${prod.slug}`}>{t(`products_name.${prod.slug}`, prod.name)}</Link>
                 </h3>
                 <div className="product-card__price-row wishlist-page__price-row">
                   <span className="price">NT$ {Math.round(prod.base_price)}</span>

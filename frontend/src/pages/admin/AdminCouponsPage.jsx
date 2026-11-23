@@ -164,17 +164,17 @@ export default function AdminCouponsPage() {
                     </td>
                     <td>
                       {coupon.type === 'percent' ? (
-                        <span>{coupon.value} % OFF {coupon.max_discount ? `(最高折 NT$ ${coupon.max_discount})` : ''}</span>
+                        <span>{coupon.value} % OFF {coupon.max_discount ? `(${t('admin.coupon_max_discount', { amount: coupon.max_discount })})` : ''}</span>
                       ) : (
-                        <span>立減 NT$ {Math.round(coupon.value).toLocaleString()}</span>
+                        <span>{t('admin.coupon_discount_fixed', { amount: Math.round(coupon.value).toLocaleString() })}</span>
                       )}
                     </td>
                     <td>NT$ {Math.round(coupon.min_order).toLocaleString()}</td>
                     <td>
-                      {coupon.used_count} / {coupon.usage_limit ? coupon.usage_limit : '無上限'}
+                      {coupon.used_count} / {coupon.usage_limit ? coupon.usage_limit : t('admin.unlimited')}
                     </td>
                     <td className="admin-td-muted">
-                      {coupon.expires_at ? new Date(coupon.expires_at).toLocaleDateString() : '無效期限制'}
+                      {coupon.expires_at ? new Date(coupon.expires_at).toLocaleDateString() : t('admin.no_expiry_limit')}
                     </td>
                     <td>
                       <label className="toggle-switch">
@@ -244,8 +244,8 @@ export default function AdminCouponsPage() {
                     value={formData.type}
                     onChange={e => setFormData({ ...formData, type: e.target.value })}
                   >
-                    <option value="percent">百分比打折 (% OFF)</option>
-                    <option value="fixed">固定現折金額 (NT$)</option>
+                    <option value="percent">{t('admin.discount_type_percent')}</option>
+                    <option value="fixed">{t('admin.discount_type_fixed')}</option>
                   </select>
                 </div>
 
@@ -283,7 +283,7 @@ export default function AdminCouponsPage() {
                   </label>
                   <input
                     type="number"
-                    placeholder="無上限"
+                    placeholder={t('admin.unlimited')}
                     value={formData.usage_limit}
                     onChange={e => setFormData({ ...formData, usage_limit: e.target.value })}
                   />

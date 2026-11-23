@@ -87,7 +87,7 @@ export default function AdminProductsPage() {
       is_active: 1,
       is_featured: 0,
       skus: [
-        { sku_code: '', color: '黑', size: 'M', price: 1000, stock: 10 }
+        { sku_code: '', color: '', size: 'M', price: 1000, stock: 10 }
       ]
     })
     setShowModal(true)

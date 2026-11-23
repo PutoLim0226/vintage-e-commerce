@@ -204,14 +204,14 @@ export default function ProductDetailPage() {
         <span className="breadcrumb__item"><Link to="/">{t('product_detail.breadcrumb_home')}</Link></span>
         <span className="breadcrumb__item"><Link to="/products">{t('product_detail.breadcrumb_products')}</Link></span>
         <span className="breadcrumb__item"><Link to={`/products?category=${product.category_slug}`}>{product.category_name}</Link></span>
-        <span className="breadcrumb__item">{product.name}</span>
+        <span className="breadcrumb__item">{t(`products_name.${product.slug}`, product.name)}</span>
       </div>
 
       <div className="product-detail__inner">
         {/* ── Gallery Left Column ── */}
         <div className="product-detail__gallery">
           <div className="product-detail__main-img">
-            <img src={activeImage} alt={product.name} />
+            <img src={activeImage} alt={t(`products_name.${product.slug}`, product.name)} />
           </div>
           {allImages.length > 1 && (
             <div className="product-detail__thumbs">
@@ -231,7 +231,7 @@ export default function ProductDetailPage() {
         {/* ── Product Info Right Column ── */}
         <div className="product-detail__info">
           <span className="product-detail__category">{product.category_name}</span>
-          <h1 className="product-detail__name">{product.name}</h1>
+          <h1 className="product-detail__name">{t(`products_name.${product.slug}`, product.name)}</h1>
           <div className="product-detail__meta-bar">
             <span className="product-detail__meta-bar-rating">
               ★ {parseFloat(product.rating || 5).toFixed(1)}
@@ -257,7 +257,7 @@ export default function ProductDetailPage() {
           {colors.length > 0 && (
             <div className="product-detail__option-group">
               <label>
-                {t('product_detail.color')}: <span>{selectedColor || t('product_detail.select_spec')}</span>
+                {t('product_detail.color')}: <span>{selectedColor ? t(`colors.${selectedColor}`, selectedColor) : t('product_detail.select_spec')}</span>
               </label>
               <div className="product-detail__options">
                 {colors.map((color) => {
@@ -268,7 +268,7 @@ export default function ProductDetailPage() {
                       className={`product-detail__option-btn ${selectedColor === color ? 'active' : ''} ${outOfStock ? 'out-of-stock' : ''}`}
                       onClick={() => setSelectedColor(color)}
                     >
-                      {color}
+                      {t(`colors.${color}`, color)}
                     </button>
                   )
                 })}
@@ -386,7 +386,7 @@ export default function ProductDetailPage() {
             <h3>
               {t('product_detail.desc_title')}
             </h3>
-            <p>{product.description || t('product_detail.no_desc')}</p>
+            <p>{t(`products_desc.${product.slug}`, product.description || t('product_detail.no_desc'))}</p>
           </div>
 
           {/* Customer Reviews Section */}

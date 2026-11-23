@@ -103,9 +103,9 @@ export default function CartDrawer() {
                   alt={item.product_name}
                 />
                 <div className="cart-item__info">
-                  <h3 className="cart-item__name">{item.product_name}</h3>
+                  <h3 className="cart-item__name">{t(`products_name.${item.slug}`, item.product_name)}</h3>
                   <div className="cart-item__meta">
-                    {item.color && <span>{t('product_detail.color')}: {item.color} </span>}
+                    {item.color && <span>{t('product_detail.color')}: {t(`colors.${item.color}`, item.color)} </span>}
                     {item.size && <span>{t('product_detail.size')}: {item.size}</span>}
                   </div>
                   <div className="cart-item__bottom-row">
